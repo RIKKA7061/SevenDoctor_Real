@@ -1,0 +1,3 @@
+puzzle_id,slot_no,앞문장,뒷문장,정답evidence,후보카테고리,오답반응대화,비고
+pzl_ch1_deduce,1,모두가 이름을 말하지 않는 건,"이고,",ev_chr_pride,인물,dlg_ch1_wrong_person,
+pzl_ch1_deduce,2,그걸 알려준 건,이다.,ev_child_drawing,물건,dlg_ch1_wrong_thing,

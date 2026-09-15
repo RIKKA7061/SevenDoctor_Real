@@ -1,0 +1,52 @@
+# ── Unity ───────────────────────────────────────────────────────────────────
+# 이 파일들은 유니티가 자동으로 다시 만들기 때문에 저장소에 올리면 안 됩니다.
+# Library/ 만 해도 수 GB 라, 올리는 순간 clone 이 불가능해집니다.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# 에셋스토어 임시
+/[Aa]ssets/AssetStoreTools*
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# ── IDE ─────────────────────────────────────────────────────────────────────
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# ── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── 빌드 산출물 ──────────────────────────────────────────────────────────────
+*.apk
+*.aab
+*.unitypackage
+*.app
+crashlytics-build.properties
+sysinfo.txt
+
+# ── 중요 ─────────────────────────────────────────────────────────────────────
+# .meta 파일은 절대 무시하면 안 됩니다. 이게 빠지면 다른 사람 프로젝트에서
+# 참조가 전부 끊어집니다. (아래 줄을 지우거나 수정하지 마세요)
+!*.meta

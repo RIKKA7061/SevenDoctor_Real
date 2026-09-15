@@ -1,0 +1,7 @@
+room_id,표시명,배경키,해금조건플래그,BGM,비고
+room_lab,연구실,bg_lab,,bgm_lab,프롤로그 전용
+room_front,저택 앞,bg_front,flg_prologue_end,bgm_mansion,
+room_living,거실,bg_living,flg_met_sloth,bgm_mansion,튜토리얼
+room_hall,저택 복도,bg_hall,flg_ch1_start,bgm_mansion,허브
+room_storage,창고,bg_storage,flg_ch1_start,bgm_mansion,자물쇠 퍼즐
+room_secret,깊숙한 방,bg_secret,flg_ch2_clear,bgm_truth,3장 전용
