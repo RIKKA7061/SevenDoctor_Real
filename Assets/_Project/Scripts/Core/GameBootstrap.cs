@@ -76,6 +76,7 @@ namespace SevenDoctors.Core
 
             Game.Room = managers.AddComponent<SevenDoctors.Room.RoomController>();
             Game.Puzzle = managers.AddComponent<SevenDoctors.Puzzle.PuzzleDirector>();
+            Game.Audio = managers.AddComponent<SevenDoctors.Audio.AudioManager>();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // F1 — 퍼즐 미리보기. 정식 빌드에는 클래스 자체가 없습니다.

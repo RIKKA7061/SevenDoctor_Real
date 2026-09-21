@@ -49,6 +49,9 @@ namespace SevenDoctors.Room
 
             CurrentRoomId = roomId;
 
+            // 같은 곡이면 AudioManager 가 알아서 넘깁니다 — 방을 옮길 때마다 끊기지 않습니다.
+            Game.Audio?.PlayBgm(room.Bgm);
+
             ApplyBackground(room);
             Game.UI.SetRoomLabel(room.DisplayName);
             RebuildHotspots();

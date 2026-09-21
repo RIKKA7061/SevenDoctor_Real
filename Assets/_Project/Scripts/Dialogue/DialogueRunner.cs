@@ -207,6 +207,7 @@ namespace SevenDoctors.Dialogue
             // 타이핑
             int shown = 0;
             float timer = 0f;
+            int sinceVoice = 0;
             while (shown < body.Length)
             {
                 if (_advanceRequested) { shown = body.Length; _advanceRequested = false; break; }
@@ -216,12 +217,16 @@ namespace SevenDoctors.Dialogue
                 {
                     timer -= CharInterval;
                     shown++;
+
+                    if (lipSync && ShouldVoice(body[shown - 1], ref sinceVoice))
+                        Game.Audio?.PlayVoice(body[shown - 1], line.SpeakerId);
                 }
                 Game.UI.Dialogue.SetBodyTyping(body, shown);
                 yield return null;
             }
 
             if (lipSync) Game.UI.Portrait.SetSpeaking(false);
+            Game.Audio?.StopVoice();
 
             Game.UI.Dialogue.SetBody(body);
             Game.UI.Dialogue.SetArrow(true);
@@ -233,6 +238,26 @@ namespace SevenDoctors.Dialogue
             _advanceRequested = false;
 
             Game.UI.Dialogue.SetArrow(false);
+        }
+
+        /// <summary>
+        /// 이 글자에서 말소리를 낼지. 글자마다 전부 내면 기관총처럼 들립니다.
+        ///
+        /// 공백과 문장부호는 건너뜁니다 — 사람은 거기서 소리를 내지 않고,
+        /// 쉼표에서 한 박 쉬는 게 오히려 말처럼 들립니다. 나머지는 두 글자에
+        /// 한 번만 냅니다. 한글은 한 글자가 한 음절이라 이 정도가 맞습니다.
+        /// </summary>
+        static bool ShouldVoice(char c, ref int sinceVoice)
+        {
+            if (char.IsWhiteSpace(c) || char.IsPunctuation(c) || char.IsSymbol(c))
+            {
+                sinceVoice = 1;   // 쉬고 나면 다음 글자에서 바로 소리가 나게
+                return false;
+            }
+
+            if (++sinceVoice < 2) return false;
+            sinceVoice = 0;
+            return true;
         }
 
         // ── 태그 처리 ─────────────────────────────────────────────────────────
@@ -261,12 +286,11 @@ namespace SevenDoctors.Dialogue
                         break;
 
                     case "bgm":
-                        // TODO: AudioManager 연결. 지금은 로그만 — 사운드 리소스가 들어오면 여기만 채우면 됩니다.
-                        Debug.Log($"[BGM] {tag.Value}");
+                        Game.Audio?.PlayBgm(tag.Value);
                         break;
 
                     case "sfx":
-                        Debug.Log($"[SFX] {tag.Value}");
+                        Game.Audio?.PlaySfx(tag.Value);
                         break;
 
                     case "portrait":
