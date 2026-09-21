@@ -64,6 +64,8 @@ namespace SevenDoctors.UI
                 if (BindFrom(instance))
                 {
                     CameFromPrefab = true;
+                    // 프리팹에는 구울 때의 언어로 글자가 박혀 있습니다. 지금 언어로 덮습니다.
+                    RelocalizeChrome();
                     Debug.Log("[UI] UI 프리팹에서 화면을 불러왔습니다. (Hierarchy 에서 수정한 내용이 반영됩니다)");
                     return;
                 }

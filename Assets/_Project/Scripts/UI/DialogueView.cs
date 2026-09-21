@@ -142,6 +142,8 @@ namespace SevenDoctors.UI
         public RectTransform Root { get; private set; }
         RectTransform _list;
 
+        public bool IsVisible => Root != null && Root.gameObject.activeSelf;
+
         ChoiceView() { }
 
         public static ChoiceView Create(RectTransform parent)

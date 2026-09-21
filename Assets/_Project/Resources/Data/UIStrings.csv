@@ -4,7 +4,7 @@ ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The 
 ui.title.start,시작하기,Start,
 ui.title.language,언어,Language,
 ui.title.quit,종료,Quit,
-ui.topbar.notebook,증거 노트  (Tab),Evidence Notes  (Tab),
+ui.topbar.notebook,증거 노트  (Tab),Notes  (Tab),상단바 버튼 폭 244px — 길면 넘칩니다
 ui.topbar.evidence_count,증거 {0},Evidence {0},
 ui.notebook.title,증거 노트,Evidence Notes,
 ui.notebook.close,닫기,Close,

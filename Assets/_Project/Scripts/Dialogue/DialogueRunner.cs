@@ -40,6 +40,35 @@ namespace SevenDoctors.Dialogue
 
         void OnDialogueClicked() => _advanceRequested = true;
 
+        /// <summary>
+        /// 스페이스/엔터도 대화창 클릭과 똑같이 칩니다. 한 손으로 계속 넘기게 됩니다.
+        ///
+        /// 노트나 퍼즐이 떠 있을 때는 받지 않습니다 — 스페이스는 버튼을 누르는
+        /// 키이기도 해서, 그대로 두면 노트에서 스페이스를 눌렀을 때 뒤에서
+        /// 대사까지 같이 넘어갑니다. 선택지가 떠 있을 때도 마찬가지로 빠집니다:
+        /// 어느 쪽을 고를지 정하지 않은 채 넘겨 버리면 안 됩니다.
+        /// </summary>
+        void Update()
+        {
+            if (!IsPlaying || !WasAdvanceKeyPressed()) return;
+            if (Game.State == GameState.InPuzzle) return;
+            if (Game.UI == null) return;
+            if (Game.UI.Notebook != null && Game.UI.Notebook.IsVisible) return;
+            if (Game.UI.Choices != null && Game.UI.Choices.IsVisible) return;
+
+            _advanceRequested = true;
+        }
+
+        static bool WasAdvanceKeyPressed()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            return kb != null && (kb.spaceKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame);
+#else
+            return Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
+#endif
+        }
+
         // ── 진입점 ────────────────────────────────────────────────────────────
 
         public void Play(string dialogueId, Action onComplete = null)
