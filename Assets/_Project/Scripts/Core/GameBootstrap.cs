@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SevenDoctors.Data;
 using SevenDoctors.UI;
@@ -29,6 +30,9 @@ namespace SevenDoctors.Core
         [Tooltip("글자가 찍히는 속도(초/글자)")]
         public float CharInterval = 0.022f;
 
+        [Tooltip("끄면 시작 화면 없이 바로 게임에 들어갑니다. 대사를 손볼 때 편합니다.")]
+        public bool ShowTitleOnStart = true;
+
         void Awake()
         {
             // 방 전환 시에도 살아남아야 하므로 (씬은 하나지만, 타이틀/엔딩 씬을 붙일 때를 대비)
@@ -38,6 +42,9 @@ namespace SevenDoctors.Core
         IEnumerator Start()
         {
             Game.Reset();
+
+            // 0) 언어 — 데이터보다 먼저. 시트를 읽는 순간부터 표시명이 언어를 봅니다.
+            Loc.LoadSetting();
 
             // 1) 데이터
             var db = GameDatabase.Load();
@@ -85,7 +92,7 @@ namespace SevenDoctors.Core
 
             yield return null; // DialogueRunner.Awake 가 돌 기회를 줍니다
 
-            // 6) 시작
+            // 6) 시작 화면
             string startRoom = ResolveStartRoom(db);
             if (string.IsNullOrEmpty(startRoom))
             {
@@ -93,10 +100,61 @@ namespace SevenDoctors.Core
                 yield break;
             }
 
+            Loc.Changed += OnLanguageChanged;
+
+            if (ShowTitleOnStart && ui.Title != null)
+            {
+                Game.State = GameState.Title;
+                ui.Title.Show();
+
+                bool started = false;
+                Action onStart = () => started = true;
+                ui.Title.StartRequested += onStart;
+                while (!started) yield return null;
+                ui.Title.StartRequested -= onStart;
+
+                ui.Title.Hide();
+            }
+
+            EnterGame(startRoom, db);
+        }
+
+        void EnterGame(string startRoom, GameDatabase db)
+        {
             Game.Room.Enter(startRoom);
 
             if (!string.IsNullOrEmpty(StartDialogueId) && db.GetDialogue(StartDialogueId) != null)
                 Game.Dialogue.Play(StartDialogueId);
+        }
+
+        void OnDestroy()
+        {
+            Loc.Changed -= OnLanguageChanged;
+        }
+
+        /// <summary>
+        /// 언어가 바뀌면 이미 그려 둔 글자는 그대로 남습니다. 화면에 보이는 것들을
+        /// 다시 그려야 합니다. 시트에서 오는 말은 행 객체가 알아서 바뀌므로,
+        /// 여기서는 '다시 그리라'고만 시키면 됩니다.
+        /// </summary>
+        void OnLanguageChanged()
+        {
+            var ui = Game.UI;
+            if (ui == null) return;
+
+            ui.Title?.Refresh();
+            ui.RelocalizeChrome();
+            ui.RefreshEvidenceCount();
+
+            if (Game.Room != null && !string.IsNullOrEmpty(Game.Room.CurrentRoomId))
+            {
+                if (Game.Db.Rooms.TryGetValue(Game.Room.CurrentRoomId, out var room))
+                    ui.SetRoomLabel(room.DisplayName);
+                Game.Room.RebuildHotspots();
+            }
+
+            // 노트가 열려 있으면 목록째로 다시 그립니다.
+            if (ui.Notebook != null && ui.Notebook.IsVisible) ui.Notebook.Show();
         }
 
         string ResolveStartRoom(GameDatabase db)
@@ -148,7 +206,7 @@ namespace SevenDoctors.Core
             if (topic == null || !Game.Flags.Check(topic.RequiredFlag))
             {
                 string evName = Game.Db.Evidences.TryGetValue(evidenceId, out var ev) ? ev.DisplayName : evidenceId;
-                Game.UI.Toast($"{character.DisplayName}은(는) {evName}에 별 반응이 없다.");
+                Game.UI.Toast(Loc.T("ui.ask.no_reaction", character.DisplayName, evName));
                 return;
             }
 

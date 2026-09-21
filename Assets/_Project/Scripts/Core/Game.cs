@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SevenDoctors.Core
 {
-    public enum GameState { Boot, Exploring, InDialogue, InPuzzle }
+    public enum GameState { Boot, Title, Exploring, InDialogue, InPuzzle }
 
     /// <summary>
     /// 전역 접근점. 싱글톤 10개 대신 이거 하나만 씁니다.

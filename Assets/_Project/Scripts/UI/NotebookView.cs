@@ -46,11 +46,11 @@ namespace SevenDoctors.UI
             UIFactory.Anchor(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                              new Vector2(-760, -440), new Vector2(760, 440));
 
-            var title = UIFactory.Label("Title", panel.transform, "증거 노트", 36, TextAnchor.UpperLeft, UIFactory.Accent);
+            var title = UIFactory.Label("Title", panel.transform, Loc.T("ui.notebook.title"), 36, TextAnchor.UpperLeft, UIFactory.Accent);
             UIFactory.Anchor(title.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
                              new Vector2(40, -84), new Vector2(-40, -28));
 
-            v._closeButton = UIFactory.Btn("Close", panel.transform, "닫기", 24,
+            v._closeButton = UIFactory.Btn("Close", panel.transform, Loc.T("ui.notebook.close"), 24,
                                            new Color(0.16f, 0.17f, 0.23f), UIFactory.Ink);
             UIFactory.Anchor(v._closeButton.GetComponent<RectTransform>(), new Vector2(1, 1), new Vector2(1, 1),
                              new Vector2(-160, -84), new Vector2(-32, -28));
@@ -63,7 +63,7 @@ namespace SevenDoctors.UI
             v._grid = UIFactory.Rect("Grid", left);
             UIFactory.Grid(v._grid, new Vector2(240, 96), new Vector2(16, 16), 3);
 
-            v._emptyLabel = UIFactory.Label("Empty", left, "아직 모은 증거가 없습니다.\n방을 둘러보세요.",
+            v._emptyLabel = UIFactory.Label("Empty", left, Loc.T("ui.notebook.empty"),
                                             26, TextAnchor.UpperLeft, UIFactory.InkDim);
 
             // 오른쪽: 상세
@@ -237,14 +237,14 @@ namespace SevenDoctors.UI
             _detailName.text = row.DisplayName;
             _detailBody.text = string.IsNullOrEmpty(row.Category)
                 ? row.Description
-                : $"<color=#8C93A5>[{row.Category}]</color>\n\n{row.Description}";
+                : $"<color=#8C93A5>[{Loc.Category(row.Category)}]</color>\n\n{row.Description}";
 
             // 현재 방에 인물이 있을 때만 '보여주기'가 열립니다.
             var character = Game.Room != null ? Game.Db.FindCharacterInRoom(Game.Room.CurrentRoomId) : null;
             bool canAsk = character != null && Game.State == GameState.Exploring;
 
             _askButton.gameObject.SetActive(canAsk);
-            if (canAsk) _askLabel.text = $"{character.DisplayName}에게 보여주기";
+            if (canAsk) _askLabel.text = Loc.T("ui.notebook.show_to", character.DisplayName);
         }
     }
 }

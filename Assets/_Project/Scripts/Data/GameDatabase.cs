@@ -59,6 +59,15 @@ namespace SevenDoctors.Data
             LoadTable("DeductionSlots", r => { var x = DeductionSlotRow.FromRow(r); if (Valid(x.PuzzleId, "DeductionSlots")) DeductionSlots.Add(x); });
             LoadTable("Endings",        r => { var x = EndingRow.FromRow(r);        if (Valid(x.Id, "Endings"))             Endings.Add(x); });
 
+            // UI 문구는 게임 데이터가 아니라 화면에 박혀 있던 말들이라 Loc 이 직접 들고 갑니다.
+            Core.Loc.ClearUiStrings();
+            LoadTable("UIStrings", r =>
+            {
+                var key = CsvParser.Str(r, "string_id");
+                if (!Valid(key, "UIStrings")) return;
+                Core.Loc.RegisterUiString(key, CsvParser.Str(r, "ko"), CsvParser.Str(r, "en"));
+            });
+
             BuildIndices();
         }
 

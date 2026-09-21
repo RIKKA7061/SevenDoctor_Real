@@ -30,6 +30,7 @@ namespace SevenDoctors.EditorTools
         {
             "Characters", "Rooms", "Hotspots", "Dialogues", "Choices",
             "Evidence", "AskTopics", "Puzzles", "DeductionSlots", "Flags", "Endings",
+            "UIStrings",   // 화면에 박혀 있던 UI 문구. string_id / ko / en
         };
 
         string _sheetId = "";

@@ -1,3 +1,3 @@
-﻿choice_id,dialogue_id,line_no,선택지텍스트,이동대화,조건플래그,설정플래그,비고
-cho_front_a,dlg_front_sloth,6,왜 갇혀 있는 거지?,dlg_front_why,,,
-cho_front_b,dlg_front_sloth,6,타임머신을 다시 만들면 되잖아.,dlg_front_rebuild,,,
+﻿choice_id,dialogue_id,line_no,선택지텍스트,선택지텍스트_en,이동대화,조건플래그,설정플래그,비고
+cho_front_a,dlg_front_sloth,6,왜 갇혀 있는 거지?,Why are we locked in here?,dlg_front_why,,,
+cho_front_b,dlg_front_sloth,6,타임머신을 다시 만들면 되잖아.,Can't we just build the machine again?,dlg_front_rebuild,,,

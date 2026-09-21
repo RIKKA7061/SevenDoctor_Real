@@ -1,22 +1,32 @@
 using System;
 using System.Collections.Generic;
+using SevenDoctors.Core;
 
 namespace SevenDoctors.Data
 {
     /// <summary>
     /// 구글 시트 각 탭에 1:1로 대응하는 행 클래스들.
     /// 시트에 컬럼을 추가하면 여기 필드를 추가하고 FromRow 에 한 줄만 더하면 됩니다.
+    ///
+    /// 화면에 보이는 칸은 '_en' 컬럼을 짝으로 두고, 원래 이름은 프로퍼티로
+    /// 남겨 뒀습니다 (DisplayName → DisplayNameKo/En 중 하나). 그래서 부르는
+    /// 쪽은 언어를 전혀 몰라도 되고, 언어를 바꾸면 다음 접근부터 바로 바뀝니다.
+    /// 번역이 비어 있으면 한국어로 돌아갑니다.
     /// </summary>
 
     [Serializable]
     public class CharacterRow
     {
-        public string Id, DisplayName, Emotion, HomeRoom, DefaultFace, PortraitKey, Note;
+        public string Id, Emotion, HomeRoom, DefaultFace, PortraitKey, Note;
+        public string DisplayNameKo, DisplayNameEn;
+
+        public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
 
         public static CharacterRow FromRow(Dictionary<string, string> r) => new CharacterRow
         {
-            Id          = CsvParser.Str(r, "character_id"),
-            DisplayName = CsvParser.Str(r, "표시명"),
+            Id            = CsvParser.Str(r, "character_id"),
+            DisplayNameKo = CsvParser.Str(r, "표시명"),
+            DisplayNameEn = CsvParser.Str(r, "표시명_en"),
             Emotion     = CsvParser.Str(r, "감정속성"),
             HomeRoom    = CsvParser.Str(r, "상주방"),
             DefaultFace = CsvParser.Str(r, "기본표정", "normal"),
@@ -28,12 +38,16 @@ namespace SevenDoctors.Data
     [Serializable]
     public class RoomRow
     {
-        public string Id, DisplayName, BackgroundKey, RequiredFlag, Bgm, Note;
+        public string Id, BackgroundKey, RequiredFlag, Bgm, Note;
+        public string DisplayNameKo, DisplayNameEn;
+
+        public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
 
         public static RoomRow FromRow(Dictionary<string, string> r) => new RoomRow
         {
             Id            = CsvParser.Str(r, "room_id"),
-            DisplayName   = CsvParser.Str(r, "표시명"),
+            DisplayNameKo = CsvParser.Str(r, "표시명"),
+            DisplayNameEn = CsvParser.Str(r, "표시명_en"),
             BackgroundKey = CsvParser.Str(r, "배경키"),
             RequiredFlag  = CsvParser.Str(r, "해금조건플래그"),
             Bgm           = CsvParser.Str(r, "BGM"),
@@ -44,8 +58,11 @@ namespace SevenDoctors.Data
     [Serializable]
     public class HotspotRow
     {
-        public string Id, RoomId, DisplayName, Type, Target, RequiredFlag, Note;
+        public string Id, RoomId, Type, Target, RequiredFlag, Note;
+        public string DisplayNameKo, DisplayNameEn;
         public bool Once;
+
+        public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
         /// <summary>정규화 좌표(0~1). 넷 다 0이면 자동 배치 모드로 동작합니다.</summary>
         public float X, Y, W, H;
 
@@ -55,7 +72,8 @@ namespace SevenDoctors.Data
         {
             Id           = CsvParser.Str(r, "hotspot_id"),
             RoomId       = CsvParser.Str(r, "room_id"),
-            DisplayName  = CsvParser.Str(r, "표시명"),
+            DisplayNameKo = CsvParser.Str(r, "표시명"),
+            DisplayNameEn = CsvParser.Str(r, "표시명_en"),
             Type         = CsvParser.Str(r, "타입", "look").ToLowerInvariant(),
             Target       = CsvParser.Str(r, "연결대화"),
             RequiredFlag = CsvParser.Str(r, "필요플래그"),
@@ -71,8 +89,11 @@ namespace SevenDoctors.Data
     [Serializable]
     public class DialogueRow
     {
-        public string DialogueId, SpeakerId, Face, Text, Tags, RequiredFlag, NextDialogue, Note;
+        public string DialogueId, SpeakerId, Face, Tags, RequiredFlag, NextDialogue, Note;
+        public string TextKo, TextEn;
         public int LineNo;
+
+        public string Text => Loc.Pick(TextKo, TextEn);
 
         public static DialogueRow FromRow(Dictionary<string, string> r) => new DialogueRow
         {
@@ -80,7 +101,8 @@ namespace SevenDoctors.Data
             LineNo       = CsvParser.Int(r, "line_no"),
             SpeakerId    = CsvParser.Str(r, "speaker_id"),
             Face         = CsvParser.Str(r, "표정"),
-            Text         = CsvParser.Str(r, "대사"),
+            TextKo       = CsvParser.Str(r, "대사"),
+            TextEn       = CsvParser.Str(r, "대사_en"),
             Tags         = CsvParser.Str(r, "연출태그"),
             RequiredFlag = CsvParser.Str(r, "조건플래그"),
             NextDialogue = CsvParser.Str(r, "다음대화"),
@@ -91,15 +113,19 @@ namespace SevenDoctors.Data
     [Serializable]
     public class ChoiceRow
     {
-        public string Id, DialogueId, Text, NextDialogue, RequiredFlag, SetFlag, Note;
+        public string Id, DialogueId, NextDialogue, RequiredFlag, SetFlag, Note;
+        public string TextKo, TextEn;
         public int LineNo;
+
+        public string Text => Loc.Pick(TextKo, TextEn);
 
         public static ChoiceRow FromRow(Dictionary<string, string> r) => new ChoiceRow
         {
             Id           = CsvParser.Str(r, "choice_id"),
             DialogueId   = CsvParser.Str(r, "dialogue_id"),
             LineNo       = CsvParser.Int(r, "line_no"),
-            Text         = CsvParser.Str(r, "선택지텍스트"),
+            TextKo       = CsvParser.Str(r, "선택지텍스트"),
+            TextEn       = CsvParser.Str(r, "선택지텍스트_en"),
             NextDialogue = CsvParser.Str(r, "이동대화"),
             RequiredFlag = CsvParser.Str(r, "조건플래그"),
             SetFlag      = CsvParser.Str(r, "설정플래그"),
@@ -110,14 +136,21 @@ namespace SevenDoctors.Data
     [Serializable]
     public class EvidenceRow
     {
-        public string Id, DisplayName, Category, Description, IconKey, Source, Note;
+        public string Id, Category, IconKey, Source, Note;
+        public string DisplayNameKo, DisplayNameEn, DescriptionKo, DescriptionEn;
 
+        public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
+        public string Description => Loc.Pick(DescriptionKo, DescriptionEn);
+
+        /// <summary>카테고리는 ID 라 번역하지 않습니다. 화면에 보일 때만 Loc.Category 로 바꿉니다.</summary>
         public static EvidenceRow FromRow(Dictionary<string, string> r) => new EvidenceRow
         {
-            Id          = CsvParser.Str(r, "evidence_id"),
-            DisplayName = CsvParser.Str(r, "이름"),
-            Category    = CsvParser.Str(r, "카테고리"),
-            Description = CsvParser.Str(r, "설명"),
+            Id            = CsvParser.Str(r, "evidence_id"),
+            DisplayNameKo = CsvParser.Str(r, "이름"),
+            DisplayNameEn = CsvParser.Str(r, "이름_en"),
+            Category      = CsvParser.Str(r, "카테고리"),
+            DescriptionKo = CsvParser.Str(r, "설명"),
+            DescriptionEn = CsvParser.Str(r, "설명_en"),
             IconKey     = CsvParser.Str(r, "아이콘키"),
             Source      = CsvParser.Str(r, "획득처"),
             Note        = CsvParser.Str(r, "비고"),
@@ -145,21 +178,27 @@ namespace SevenDoctors.Data
     [Serializable]
     public class PuzzleRow
     {
-        public string Id, Type, Title, RoomId, StartDialogue, Answer,
-                      SuccessFlag, SuccessDialogue, FailDialogue, Hint, Note;
+        public string Id, Type, RoomId, StartDialogue, Answer,
+                      SuccessFlag, SuccessDialogue, FailDialogue, Note;
+        public string TitleKo, TitleEn, HintKo, HintEn;
+
+        public string Title => Loc.Pick(TitleKo, TitleEn);
+        public string Hint  => Loc.Pick(HintKo, HintEn);
 
         public static PuzzleRow FromRow(Dictionary<string, string> r) => new PuzzleRow
         {
             Id              = CsvParser.Str(r, "puzzle_id"),
             Type            = CsvParser.Str(r, "타입", "Code"),
-            Title           = CsvParser.Str(r, "제목"),
+            TitleKo         = CsvParser.Str(r, "제목"),
+            TitleEn         = CsvParser.Str(r, "제목_en"),
             RoomId          = CsvParser.Str(r, "발생방"),
             StartDialogue   = CsvParser.Str(r, "발동대화"),
             Answer          = CsvParser.Str(r, "정답"),
             SuccessFlag     = CsvParser.Str(r, "성공플래그"),
             SuccessDialogue = CsvParser.Str(r, "성공대화"),
             FailDialogue    = CsvParser.Str(r, "실패대화"),
-            Hint            = CsvParser.Str(r, "힌트텍스트"),
+            HintKo          = CsvParser.Str(r, "힌트텍스트"),
+            HintEn          = CsvParser.Str(r, "힌트텍스트_en"),
             Note            = CsvParser.Str(r, "비고"),
         };
     }
@@ -167,15 +206,21 @@ namespace SevenDoctors.Data
     [Serializable]
     public class DeductionSlotRow
     {
-        public string PuzzleId, TextBefore, TextAfter, AnswerEvidence, Category, WrongDialogue, Note;
+        public string PuzzleId, AnswerEvidence, Category, WrongDialogue, Note;
+        public string TextBeforeKo, TextBeforeEn, TextAfterKo, TextAfterEn;
         public int SlotNo;
+
+        public string TextBefore => Loc.Pick(TextBeforeKo, TextBeforeEn);
+        public string TextAfter  => Loc.Pick(TextAfterKo, TextAfterEn);
 
         public static DeductionSlotRow FromRow(Dictionary<string, string> r) => new DeductionSlotRow
         {
             PuzzleId       = CsvParser.Str(r, "puzzle_id"),
             SlotNo         = CsvParser.Int(r, "slot_no"),
-            TextBefore     = CsvParser.Str(r, "앞문장"),
-            TextAfter      = CsvParser.Str(r, "뒷문장"),
+            TextBeforeKo   = CsvParser.Str(r, "앞문장"),
+            TextBeforeEn   = CsvParser.Str(r, "앞문장_en"),
+            TextAfterKo    = CsvParser.Str(r, "뒷문장"),
+            TextAfterEn    = CsvParser.Str(r, "뒷문장_en"),
             AnswerEvidence = CsvParser.Str(r, "정답evidence"),
             Category       = CsvParser.Str(r, "후보카테고리"),
             WrongDialogue  = CsvParser.Str(r, "오답반응대화"),
@@ -202,14 +247,20 @@ namespace SevenDoctors.Data
     [Serializable]
     public class EndingRow
     {
-        public string Id, DisplayName, ChoiceText, RequiredFlag, DialogueId, Note;
+        public string Id, RequiredFlag, DialogueId, Note;
+        public string DisplayNameKo, DisplayNameEn, ChoiceTextKo, ChoiceTextEn;
         public int Priority;
+
+        public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
+        public string ChoiceText  => Loc.Pick(ChoiceTextKo, ChoiceTextEn);
 
         public static EndingRow FromRow(Dictionary<string, string> r) => new EndingRow
         {
-            Id           = CsvParser.Str(r, "ending_id"),
-            DisplayName  = CsvParser.Str(r, "엔딩명"),
-            ChoiceText   = CsvParser.Str(r, "선택지텍스트"),
+            Id            = CsvParser.Str(r, "ending_id"),
+            DisplayNameKo = CsvParser.Str(r, "엔딩명"),
+            DisplayNameEn = CsvParser.Str(r, "엔딩명_en"),
+            ChoiceTextKo  = CsvParser.Str(r, "선택지텍스트"),
+            ChoiceTextEn  = CsvParser.Str(r, "선택지텍스트_en"),
             RequiredFlag = CsvParser.Str(r, "조건플래그"),
             DialogueId   = CsvParser.Str(r, "연출대화"),
             Priority     = CsvParser.Int(r, "우선순위"),

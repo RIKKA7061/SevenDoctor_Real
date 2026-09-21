@@ -54,7 +54,8 @@ namespace SevenDoctors.Dev
         void Open()
         {
             // 퍼즐이 도는 중에 또 열면 퍼즐 위에 목록이 겹쳐서 클릭이 엉킵니다.
-            if (IsRunningPuzzle || Game.State == GameState.InPuzzle) return;
+            // 시작 화면에서도 막습니다 — 아직 방에 들어가지도 않았습니다.
+            if (IsRunningPuzzle || Game.State == GameState.InPuzzle || Game.State == GameState.Title) return;
             if (Game.Db.Puzzles.Count == 0)
             {
                 Game.UI.Toast("Puzzles 시트가 비어 있습니다.");

@@ -90,7 +90,7 @@ namespace SevenDoctors.Puzzle
 
             if (!string.IsNullOrEmpty(puzzle.Hint))
             {
-                var hint = UIFactory.Label("Hint", panel.transform, $"힌트 — {puzzle.Hint}", 24,
+                var hint = UIFactory.Label("Hint", panel.transform, Loc.T("ui.puzzle.hint", puzzle.Hint), 24,
                                            TextAnchor.UpperLeft, UIFactory.InkDim);
                 UIFactory.Anchor(hint.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
                                  new Vector2(48, -140), new Vector2(-48, -96));
@@ -151,42 +151,60 @@ namespace SevenDoctors.Puzzle
                              new Vector2(-330, 0), new Vector2(330, -152));
             UIFactory.Grid(pad, new Vector2(200, 92), new Vector2(16, 14), 3);
 
-            string[] keys = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "지우기", "0", "확인" };
+            // 키패드는 0~9 와 지우기/확인. 어떤 키인지를 화면 글자로 구분하면
+            // 번역하는 순간 분기가 깨지므로, 종류를 따로 들고 다닙니다.
+            const int KeyDigit = 0, KeyClear = 1, KeyEnter = 2;
+            var keys = new (int Kind, string Digit)[]
+            {
+                (KeyDigit, "1"), (KeyDigit, "2"), (KeyDigit, "3"),
+                (KeyDigit, "4"), (KeyDigit, "5"), (KeyDigit, "6"),
+                (KeyDigit, "7"), (KeyDigit, "8"), (KeyDigit, "9"),
+                (KeyClear, null), (KeyDigit, "0"), (KeyEnter, null),
+            };
+
             foreach (var key in keys)
             {
-                var captured = key;
-                bool isAction = captured == "지우기" || captured == "확인";
+                int kind = key.Kind;
+                string digit = key.Digit;
+                bool isAction = kind != KeyDigit;
 
-                var btn = UIFactory.Btn($"Key_{captured}", pad, captured, isAction ? 26 : 38,
-                                        captured == "확인" ? new Color(0.20f, 0.17f, 0.10f)
-                                                          : new Color(0.13f, 0.14f, 0.19f),
-                                        captured == "확인" ? UIFactory.Accent : UIFactory.Ink);
+                string caption = kind == KeyClear ? Loc.T("ui.puzzle.clear")
+                               : kind == KeyEnter ? Loc.T("ui.puzzle.confirm")
+                               : digit;
+                string name = kind == KeyClear ? "Key_Clear"
+                            : kind == KeyEnter ? "Key_Enter"
+                            : $"Key_{digit}";
+
+                var btn = UIFactory.Btn(name, pad, caption, isAction ? 26 : 38,
+                                        kind == KeyEnter ? new Color(0.20f, 0.17f, 0.10f)
+                                                         : new Color(0.13f, 0.14f, 0.19f),
+                                        kind == KeyEnter ? UIFactory.Accent : UIFactory.Ink);
 
                 btn.onClick.AddListener(() =>
                 {
                     feedback.text = "";
 
-                    if (captured == "지우기")
+                    if (kind == KeyClear)
                     {
                         if (input.Length > 0) input = input.Substring(0, input.Length - 1);
                     }
-                    else if (captured == "확인")
+                    else if (kind == KeyEnter)
                     {
                         if (input == answer) { solved = true; return; }
 
-                        feedback.text = "…맞지 않는다.";
+                        feedback.text = Loc.T("ui.puzzle.wrong_code");
                         input = "";
                     }
                     else if (input.Length < answer.Length)
                     {
-                        input += captured;
+                        input += digit;
                     }
 
                     Redraw();
                 });
             }
 
-            var back = UIFactory.Btn("Back", body, "나중에 다시", 24,
+            var back = UIFactory.Btn("Back", body, Loc.T("ui.puzzle.back_later"), 24,
                                      new Color(0.13f, 0.14f, 0.19f), UIFactory.InkDim);
             UIFactory.Anchor(back.GetComponent<RectTransform>(), new Vector2(1, 0), new Vector2(1, 0),
                              new Vector2(-260, 0), new Vector2(0, 68));
@@ -293,7 +311,7 @@ namespace SevenDoctors.Puzzle
                 if (candidates.Count == 0)
                 {
                     var none = UIFactory.Label("None", cards,
-                        $"'{category}' 종류의 증거를 아직 갖고 있지 않습니다.", 24,
+                        Loc.T("ui.puzzle.no_evidence", Loc.Category(category)), 24,
                         TextAnchor.MiddleCenter, UIFactory.InkDim);
                     UIFactory.Height(none.gameObject, 84);
                     return;
@@ -328,7 +346,7 @@ namespace SevenDoctors.Puzzle
                 slotButtons[i].onClick.AddListener(RebuildCards);
 
             // 확인 / 나가기
-            var submit = UIFactory.Btn("Submit", body, "이걸로 결론짓는다", 27,
+            var submit = UIFactory.Btn("Submit", body, Loc.T("ui.puzzle.submit"), 27,
                                        new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Anchor(submit.GetComponent<RectTransform>(), new Vector2(0.5f, 0), new Vector2(0.5f, 0),
                              new Vector2(-300, 0), new Vector2(60, 64));
@@ -339,7 +357,7 @@ namespace SevenDoctors.Puzzle
                 {
                     if (string.IsNullOrEmpty(filled[i]))
                     {
-                        feedback.text = "아직 비어 있는 칸이 있다.";
+                        feedback.text = Loc.T("ui.puzzle.empty_slot");
                         return;
                     }
                 }
@@ -350,7 +368,7 @@ namespace SevenDoctors.Puzzle
                     {
                         // 오답 페널티 없음. 대신 그 슬롯 전용 반응 대사를 틉니다.
                         wrongDialogue = slots[i].WrongDialogue;
-                        feedback.text = "…아니다. 뭔가 어긋난다.";
+                        feedback.text = Loc.T("ui.puzzle.wrong_deduction");
                         filled[i] = null;
                         activeSlot = i;
                         RefreshSlots();
@@ -362,7 +380,7 @@ namespace SevenDoctors.Puzzle
                 solved = true;
             });
 
-            var back = UIFactory.Btn("Back", body, "조금 더 생각해본다", 24,
+            var back = UIFactory.Btn("Back", body, Loc.T("ui.puzzle.think_more"), 24,
                                      new Color(0.13f, 0.14f, 0.19f), UIFactory.InkDim);
             UIFactory.Anchor(back.GetComponent<RectTransform>(), new Vector2(0.5f, 0), new Vector2(0.5f, 0),
                              new Vector2(80, 0), new Vector2(300, 64));

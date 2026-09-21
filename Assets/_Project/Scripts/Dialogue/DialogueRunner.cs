@@ -294,7 +294,7 @@ namespace SevenDoctors.Dialogue
                         {
                             string label = Game.Db.Evidences.TryGetValue(tag.Value, out var ev)
                                 ? ev.DisplayName : tag.Value;
-                            Game.UI.Toast($"증거 획득 — {label}");
+                            Game.UI.Toast(Loc.T("ui.evidence.gained", label));
                             Game.UI.RefreshEvidenceCount();
                         }
                         break;

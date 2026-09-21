@@ -43,7 +43,7 @@ namespace SevenDoctors.Room
 
             if (!Game.Flags.Check(room.RequiredFlag))
             {
-                Game.UI.Toast("아직 갈 수 없는 곳입니다.");
+                Game.UI.Toast(Loc.T("ui.room.locked"));
                 return;
             }
 
@@ -183,7 +183,7 @@ namespace SevenDoctors.Room
 
             if (string.IsNullOrEmpty(h.Target))
             {
-                Game.UI.Toast("특별한 건 없다.");
+                Game.UI.Toast(Loc.T("ui.room.nothing"));
                 RebuildHotspots();
                 return;
             }

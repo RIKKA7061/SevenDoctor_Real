@@ -1,5 +1,5 @@
-﻿character_id,표시명,감정속성,상주방,기본표정,포트레이트키,비고
-chr_doctor,박사,주인공,,normal,doctor,플레이어 캐릭터
-chr_sloth,나태,나태,room_living,sleepy,sloth,안내역
-chr_greed,탐욕,탐욕,room_storage,normal,greed,
-chr_pride,교만,교만,room_secret,normal,pride,범인. 실제로는 박사의 딸
+﻿character_id,표시명,표시명_en,감정속성,상주방,기본표정,포트레이트키,비고
+chr_doctor,박사,The Doctor,주인공,,normal,doctor,플레이어 캐릭터
+chr_sloth,나태,Sloth,나태,room_living,sleepy,sloth,안내역
+chr_greed,탐욕,Greed,탐욕,room_storage,normal,greed,
+chr_pride,교만,Pride,교만,room_secret,normal,pride,범인. 실제로는 박사의 딸

@@ -1,0 +1,31 @@
+﻿string_id,ko,en,비고
+ui.title.name,일곱 박사,Seven Doctors,타이틀
+ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The same face.,
+ui.title.start,시작하기,Start,
+ui.title.language,언어,Language,
+ui.title.quit,종료,Quit,
+ui.topbar.notebook,증거 노트  (Tab),Evidence Notes  (Tab),
+ui.topbar.evidence_count,증거 {0},Evidence {0},
+ui.notebook.title,증거 노트,Evidence Notes,
+ui.notebook.close,닫기,Close,
+ui.notebook.empty,"아직 모은 증거가 없습니다.
+방을 둘러보세요.","You haven't found anything yet.
+Look around the room.",줄바꿈 포함
+ui.notebook.show_to,{0}에게 보여주기,Show to {0},
+ui.evidence.gained,증거 획득 — {0},Evidence found — {0},
+ui.ask.no_reaction,{0}은(는) {1}에 별 반응이 없다.,{0} has no reaction to {1}.,
+ui.room.locked,아직 갈 수 없는 곳입니다.,You can't go there yet.,
+ui.room.nothing,특별한 건 없다.,Nothing out of the ordinary.,
+ui.puzzle.hint,힌트 — {0},Hint — {0},
+ui.puzzle.clear,지우기,Clear,코드 자물쇠 키패드
+ui.puzzle.confirm,확인,Enter,코드 자물쇠 키패드
+ui.puzzle.wrong_code,…맞지 않는다.,...That isn't it.,
+ui.puzzle.back_later,나중에 다시,Come back later,
+ui.puzzle.no_evidence,'{0}' 종류의 증거를 아직 갖고 있지 않습니다.,You don't have any {0} evidence yet.,
+ui.puzzle.submit,이걸로 결론짓는다,Settle on this,
+ui.puzzle.empty_slot,아직 비어 있는 칸이 있다.,There's still a blank to fill.,
+ui.puzzle.wrong_deduction,…아니다. 뭔가 어긋난다.,...No. Something doesn't line up.,
+ui.puzzle.think_more,조금 더 생각해본다,Think it over,
+ui.category.인물,인물,person,추리 후보 카테고리 표시용
+ui.category.물건,물건,object,
+ui.category.기록,기록,record,

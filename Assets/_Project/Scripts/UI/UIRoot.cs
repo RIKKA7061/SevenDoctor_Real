@@ -38,6 +38,7 @@ namespace SevenDoctors.UI
         public ChoiceView Choices { get; private set; }
         public NotebookView Notebook { get; private set; }
         public PortraitView Portrait { get; private set; }
+        public TitleView Title { get; private set; }
         public RectTransform PuzzleLayer { get; private set; }
 
         /// <summary>프리팹에서 되살렸는지 여부. 콘솔 로그용.</summary>
@@ -113,6 +114,7 @@ namespace SevenDoctors.UI
             if (!ok) return false;
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
+            Title = TitleView.Create(Screen);
 
             NotebookButton.onClick.RemoveAllListeners(); // 프리팹에 남아 있을 수 있는 리스너 정리
             PuzzleLayer.gameObject.SetActive(false);
@@ -153,6 +155,7 @@ namespace SevenDoctors.UI
             PuzzleLayer.gameObject.SetActive(false);
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
+            Title = TitleView.Create(Screen);
 
             BuildToast();
             BuildFade();
@@ -194,7 +197,7 @@ namespace SevenDoctors.UI
             UIFactory.Anchor(RoomLabel.rectTransform, new Vector2(0, 0), new Vector2(0.6f, 1),
                              new Vector2(32, 0), new Vector2(0, 0));
 
-            NotebookButton = UIFactory.Btn("NotebookButton", bar.transform, "증거 노트  (Tab)", 24,
+            NotebookButton = UIFactory.Btn("NotebookButton", bar.transform, Loc.T("ui.topbar.notebook"), 24,
                                            new Color(0.16f, 0.17f, 0.23f, 1f), UIFactory.Accent);
             UIFactory.Anchor(NotebookButton.GetComponent<RectTransform>(), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
                              new Vector2(-268, -22), new Vector2(-24, 22));
@@ -227,10 +230,19 @@ namespace SevenDoctors.UI
 
         public void SetRoomLabel(string text) { if (RoomLabel != null) RoomLabel.text = text; }
 
+        /// <summary>언어가 바뀌었을 때, 한 번 찍고 마는 상단바 글자들을 다시 씁니다.</summary>
+        public void RelocalizeChrome()
+        {
+            if (NotebookButton == null) return;
+
+            var label = NotebookButton.GetComponentInChildren<Text>();
+            if (label != null) label.text = Loc.T("ui.topbar.notebook");
+        }
+
         public void RefreshEvidenceCount()
         {
             if (EvidenceCountLabel == null || Game.Evidence == null) return;
-            EvidenceCountLabel.text = Game.Evidence.Count > 0 ? $"증거 {Game.Evidence.Count}" : "";
+            EvidenceCountLabel.text = Game.Evidence.Count > 0 ? Loc.T("ui.topbar.evidence_count", Game.Evidence.Count) : "";
         }
 
         public void Toast(string message)
