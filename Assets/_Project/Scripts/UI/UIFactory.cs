@@ -114,15 +114,38 @@ namespace SevenDoctors.UI
             colors.fadeDuration     = 0.08f;
             btn.colors = colors;
 
-            if (!string.IsNullOrEmpty(caption))
+            // 캡션이 비어 있어도 글자 자식은 답니다. 예전엔 건너뛰었는데, 그러면
+            // 나중에 채워 넣으려고 GetComponentInChildren<Text>() 로 잡는 쪽이
+            // 전부 null 을 받아 갑니다 — 버튼을 빈 채로 만들었다가 텍스트만
+            // 나중에 넣는 게 흔한 패턴이라 사고가 반복됩니다.
             {
-                var label = Label("Label", img.transform, caption, size, TextAnchor.MiddleCenter, fg ?? Ink);
+                var label = Label("Label", img.transform, caption ?? string.Empty, size,
+                                  TextAnchor.MiddleCenter, fg ?? Ink);
                 var lrt = label.rectTransform;
                 lrt.offsetMin = new Vector2(16, 8);
                 lrt.offsetMax = new Vector2(-16, -8);
             }
 
             return btn;
+        }
+
+        /// <summary>
+        /// 버튼의 글자를 가져옵니다. 없으면 만들어서 답니다.
+        ///
+        /// 예전에 구운 UI 프리팹에는 캡션 없이 만든 버튼에 글자 자식이 없습니다.
+        /// 프리팹을 다시 굽지 않아도 돌아가도록, 붙일 때 이걸로 메웁니다.
+        /// </summary>
+        public static Text EnsureLabel(Button btn, int size, Color? fg = null)
+        {
+            if (btn == null) return null;
+
+            var existing = btn.GetComponentInChildren<Text>(true);
+            if (existing != null) return existing;
+
+            var label = Label("Label", btn.transform, string.Empty, size, TextAnchor.MiddleCenter, fg ?? Ink);
+            label.rectTransform.offsetMin = new Vector2(16, 8);
+            label.rectTransform.offsetMax = new Vector2(-16, -8);
+            return label;
         }
 
         /// <summary>앵커/피벗/오프셋을 한 번에 지정합니다.</summary>

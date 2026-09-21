@@ -153,8 +153,12 @@ namespace SevenDoctors.Core
                 Game.Room.RebuildHotspots();
             }
 
-            // 노트가 열려 있으면 목록째로 다시 그립니다.
-            if (ui.Notebook != null && ui.Notebook.IsVisible) ui.Notebook.Show();
+            if (ui.Notebook != null)
+            {
+                ui.Notebook.Relocalize();
+                // 열려 있으면 증거 목록째로 다시 그립니다.
+                if (ui.Notebook.IsVisible) ui.Notebook.Show();
+            }
         }
 
         string ResolveStartRoom(GameDatabase db)

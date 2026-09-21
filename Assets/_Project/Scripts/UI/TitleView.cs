@@ -51,19 +51,21 @@ namespace SevenDoctors.UI
                              new Vector2(-220, -270), new Vector2(220, -30));
             UIFactory.VLayout(menu, 16, new RectOffset(0, 0, 0, 0), TextAnchor.UpperCenter);
 
-            var start = UIFactory.Btn("Start", menu, "", 30,
+            // 캡션을 비워서 만들면 UIFactory.Btn 이 글자 자식을 아예 안 답니다.
+            // 그러면 잡을 Text 가 없으니, 처음부터 지금 언어의 문구로 만듭니다.
+            var start = UIFactory.Btn("Start", menu, Loc.T("ui.title.start"), 30,
                                       new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Height(start.gameObject, 72);
             v._startLabel = start.GetComponentInChildren<Text>();
             start.onClick.AddListener(() => v.StartRequested?.Invoke());
 
-            var language = UIFactory.Btn("Language", menu, "", 26,
+            var language = UIFactory.Btn("Language", menu, v.LanguageCaption(), 26,
                                          new Color(0.13f, 0.14f, 0.19f), UIFactory.Ink);
             UIFactory.Height(language.gameObject, 64);
             v._languageLabel = language.GetComponentInChildren<Text>();
             language.onClick.AddListener(() => Loc.Toggle());
 
-            var quit = UIFactory.Btn("Quit", menu, "", 24,
+            var quit = UIFactory.Btn("Quit", menu, Loc.T("ui.title.quit"), 24,
                                      new Color(0.13f, 0.14f, 0.19f), UIFactory.InkDim);
             UIFactory.Height(quit.gameObject, 60);
             v._quitLabel = quit.GetComponentInChildren<Text>();
@@ -73,22 +75,28 @@ namespace SevenDoctors.UI
             return v;
         }
 
+        /// <summary>
+        /// 두 언어를 늘 같이 보여주고, 지금 언어에 표시를 답니다.
+        /// 지금 언어로만 적어 두면 영어를 못 읽는 사람이 되돌아올 길이 없어집니다.
+        /// </summary>
+        string LanguageCaption()
+        {
+            string ko = Loc.NameOf(Language.Korean);
+            string en = Loc.NameOf(Language.English);
+            return Loc.IsEnglish
+                ? $"{Loc.T("ui.title.language")} :  {ko}  /  <b>{en}</b>"
+                : $"{Loc.T("ui.title.language")} :  <b>{ko}</b>  /  {en}";
+        }
+
         /// <summary>언어가 바뀌면 다시 불립니다.</summary>
         public void Refresh()
         {
-            if (_title == null) return;
+            if (_title != null)   _title.text   = Loc.T("ui.title.name");
+            if (_tagline != null) _tagline.text = Loc.T("ui.title.tagline");
 
-            _title.text   = Loc.T("ui.title.name");
-            _tagline.text = Loc.T("ui.title.tagline");
-            _startLabel.text = Loc.T("ui.title.start");
-            _quitLabel.text  = Loc.T("ui.title.quit");
-
-            // 두 언어를 같이 보여주고, 지금 언어에 표시를 답니다.
-            string ko = Loc.NameOf(Language.Korean);
-            string en = Loc.NameOf(Language.English);
-            _languageLabel.text = Loc.IsEnglish
-                ? $"{Loc.T("ui.title.language")} :  {ko}  /  <b>{en}</b>"
-                : $"{Loc.T("ui.title.language")} :  <b>{ko}</b>  /  {en}";
+            if (_startLabel != null)    _startLabel.text    = Loc.T("ui.title.start");
+            if (_quitLabel != null)     _quitLabel.text     = Loc.T("ui.title.quit");
+            if (_languageLabel != null) _languageLabel.text = LanguageCaption();
         }
 
         public void Show()

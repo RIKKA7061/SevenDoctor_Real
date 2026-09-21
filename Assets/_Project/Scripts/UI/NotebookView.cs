@@ -19,6 +19,7 @@ namespace SevenDoctors.UI
         Button _askButton;
         Text _askLabel;
         Text _emptyLabel;
+        Text _titleLabel, _closeLabel;
         Button _closeButton;
         Image _detailIcon;
         RectTransform _detailPanel;
@@ -46,12 +47,13 @@ namespace SevenDoctors.UI
             UIFactory.Anchor(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                              new Vector2(-760, -440), new Vector2(760, 440));
 
-            var title = UIFactory.Label("Title", panel.transform, Loc.T("ui.notebook.title"), 36, TextAnchor.UpperLeft, UIFactory.Accent);
-            UIFactory.Anchor(title.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
+            v._titleLabel = UIFactory.Label("Title", panel.transform, Loc.T("ui.notebook.title"), 36, TextAnchor.UpperLeft, UIFactory.Accent);
+            UIFactory.Anchor(v._titleLabel.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
                              new Vector2(40, -84), new Vector2(-40, -28));
 
             v._closeButton = UIFactory.Btn("Close", panel.transform, Loc.T("ui.notebook.close"), 24,
                                            new Color(0.16f, 0.17f, 0.23f), UIFactory.Ink);
+            v._closeLabel = UIFactory.EnsureLabel(v._closeButton, 24, UIFactory.Ink);
             UIFactory.Anchor(v._closeButton.GetComponent<RectTransform>(), new Vector2(1, 1), new Vector2(1, 1),
                              new Vector2(-160, -84), new Vector2(-32, -28));
 
@@ -92,7 +94,7 @@ namespace SevenDoctors.UI
                                          new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Anchor(v._askButton.GetComponent<RectTransform>(), new Vector2(0, 0), new Vector2(1, 0),
                              new Vector2(28, 28), new Vector2(-28, 100));
-            v._askLabel = v._askButton.GetComponentInChildren<Text>();
+            v._askLabel = UIFactory.EnsureLabel(v._askButton, 26, UIFactory.Accent);
 
             v.Wire();
             v.Root.gameObject.SetActive(false);
@@ -118,7 +120,10 @@ namespace SevenDoctors.UI
             };
 
             if (v._grid == null || v._askButton == null || v._closeButton == null) return null;
-            v._askLabel = v._askButton.GetComponentInChildren<Text>(true);
+            v._askLabel   = UIFactory.EnsureLabel(v._askButton, 26, UIFactory.Accent);
+            v._closeLabel = UIFactory.EnsureLabel(v._closeButton, 24, UIFactory.Ink);
+            v._titleLabel = UIFactory.Find<Text>(root, "Panel/Title");
+            v.Relocalize();
 
             v._detailPanel = UIFactory.FindRect(root, "Panel/Detail");
             v._detailIcon = root.Find("Panel/Detail/Icon")?.GetComponent<Image>();
@@ -151,6 +156,17 @@ namespace SevenDoctors.UI
         }
 
         // ── 동작 ──────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// 언어가 바뀌었을 때. 증거 목록은 Rebuild 가 시트에서 다시 읽어 오지만,
+        /// 한 번 찍고 마는 제목·닫기·빈 목록 문구는 여기서 다시 씁니다.
+        /// </summary>
+        public void Relocalize()
+        {
+            if (_titleLabel != null) _titleLabel.text = Loc.T("ui.notebook.title");
+            if (_closeLabel != null) _closeLabel.text = Loc.T("ui.notebook.close");
+            if (_emptyLabel != null) _emptyLabel.text = Loc.T("ui.notebook.empty");
+        }
 
         public void Toggle() { if (IsVisible) Hide(); else Show(); }
 
