@@ -1,4 +1,4 @@
-ending_id,엔딩명,선택지텍스트,조건플래그,연출대화,우선순위,비고
+﻿ending_id,엔딩명,선택지텍스트,조건플래그,연출대화,우선순위,비고
 end_persuade,설득 — 함께 돌아가다,딸에게 사과한다,flg_ch2_clear,,1,4장 구현 시 연출대화 채우기
 end_confront,대적 — 혼자 돌아가다,교만을 막는다,flg_ch2_clear,,2,
 end_stay,잔류 — 이곳에 남다,타임머신을 버린다,flg_ch2_clear,,3,

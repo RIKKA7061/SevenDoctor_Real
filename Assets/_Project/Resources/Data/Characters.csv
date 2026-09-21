@@ -1,4 +1,4 @@
-character_id,표시명,감정속성,상주방,기본표정,포트레이트키,비고
+﻿character_id,표시명,감정속성,상주방,기본표정,포트레이트키,비고
 chr_doctor,박사,주인공,,normal,doctor,플레이어 캐릭터
 chr_sloth,나태,나태,room_living,sleepy,sloth,안내역
 chr_greed,탐욕,탐욕,room_storage,normal,greed,

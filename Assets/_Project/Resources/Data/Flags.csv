@@ -1,4 +1,4 @@
-flag_id,설명,초기값,챕터,비고
+﻿flag_id,설명,초기값,챕터,비고
 flg_prologue_end,프롤로그 종료 — 저택 앞 해금,FALSE,P,
 flg_met_sloth,나태와 첫 대화 완료 — 거실 해금,FALSE,P,
 flg_ch1_start,1장 시작 — 복도/창고 해금,FALSE,1,

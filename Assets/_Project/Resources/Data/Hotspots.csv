@@ -1,4 +1,4 @@
-hotspot_id,room_id,표시명,타입,연결대화,필요플래그,1회성,x,y,w,h,비고
+﻿hotspot_id,room_id,표시명,타입,연결대화,필요플래그,1회성,x,y,w,h,비고
 hs_lab_machine,room_lab,타임머신,look,dlg_lab_machine,,FALSE,,,,,
 hs_lab_notes,room_lab,실험 노트,look,dlg_lab_notes,,FALSE,,,,,
 hs_lab_start,room_lab,기동 레버를 당긴다,look,dlg_lab_start,!flg_prologue_end,TRUE,,,,,프롤로그 진행

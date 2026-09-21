@@ -1,4 +1,4 @@
-dialogue_id,line_no,speaker_id,표정,대사,연출태그,조건플래그,다음대화,비고
+﻿dialogue_id,line_no,speaker_id,표정,대사,연출태그,조건플래그,다음대화,비고
 dlg_prologue_01,1,chr_doctor,normal,드디어… 완성이다.,[bgm:bgm_lab],,,
 dlg_prologue_01,2,chr_doctor,normal,십이 년. 아무도 믿어주지 않았던 십이 년이었어.,,,,
 dlg_prologue_01,3,chr_doctor,normal,이제 이 레버만 당기면 돼.,,,,

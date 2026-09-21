@@ -1,4 +1,4 @@
-ask_id,character_id,evidence_id,연결대화,필요플래그,1회성,비고
+﻿ask_id,character_id,evidence_id,연결대화,필요플래그,1회성,비고
 ask_sloth_gear,chr_sloth,ev_broken_gear,dlg_ask_sloth_gear,,FALSE,인물 카드를 여기서 얻습니다
 ask_sloth_drawing,chr_sloth,ev_child_drawing,dlg_ask_sloth_drawing,,FALSE,
 ask_greed_ledger,chr_greed,ev_greed_ledger,dlg_ask_greed_ledger,,FALSE,

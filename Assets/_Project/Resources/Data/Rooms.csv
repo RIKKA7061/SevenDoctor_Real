@@ -1,4 +1,4 @@
-room_id,표시명,배경키,해금조건플래그,BGM,비고
+﻿room_id,표시명,배경키,해금조건플래그,BGM,비고
 room_lab,연구실,bg_lab,,bgm_lab,프롤로그 전용
 room_front,저택 앞,bg_front,flg_prologue_end,bgm_mansion,
 room_living,거실,bg_living,flg_met_sloth,bgm_mansion,튜토리얼

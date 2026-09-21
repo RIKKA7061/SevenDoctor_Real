@@ -111,7 +111,7 @@ namespace SevenDoctors.EditorTools
                             continue;
                         }
 
-                        File.WriteAllText(Path.Combine(DataFolder, tab + ".csv"), csv, new UTF8Encoding(false));
+                        File.WriteAllText(Path.Combine(DataFolder, tab + ".csv"), csv, new UTF8Encoding(true));
                         int rows = Mathf.Max(0, CsvParser.Parse(csv).Count);
                         log.AppendLine($"✓ {tab} — {rows}행");
                         ok++;

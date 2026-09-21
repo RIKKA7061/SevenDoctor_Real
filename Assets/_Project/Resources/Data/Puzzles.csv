@@ -1,3 +1,3 @@
-puzzle_id,타입,제목,발생방,발동대화,정답,성공플래그,성공대화,실패대화,힌트텍스트,비고
+﻿puzzle_id,타입,제목,발생방,발동대화,정답,성공플래그,성공대화,실패대화,힌트텍스트,비고
 pzl_ch1_lock,Code,창고 자물쇠,room_storage,dlg_storage_lock,1207,flg_storage_open,dlg_storage_open,dlg_storage_fail,장부에서 유일하게 비어 있던 칸. 그 앞뒤 숫자를 떠올려봐. (샘플 정답: 1207),
 pzl_ch1_deduce,Deduction,어긋난 증언,room_hall,dlg_hall_deduce,,flg_ch2_clear,dlg_ch1_truth,,아무도 이름을 말하지 않은 사람이 있다.,정답은 DeductionSlots 탭
