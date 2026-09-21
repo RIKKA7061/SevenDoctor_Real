@@ -118,6 +118,20 @@ namespace SevenDoctors.UI
         }
 
         public void SetBody(string body) => _bodyLabel.text = body;
+
+        /// <summary>
+        /// 타이핑 중 본문. 아직 안 찍힌 부분도 투명하게 같이 넣습니다 — 안 그러면
+        /// 글자가 늘 때마다 줄바꿈 위치가 바뀌어서, 이미 찍힌 문장이 덜그럭거립니다.
+        /// </summary>
+        public void SetBodyTyping(string full, int shown)
+        {
+            if (string.IsNullOrEmpty(full)) { _bodyLabel.text = string.Empty; return; }
+
+            shown = Mathf.Clamp(shown, 0, full.Length);
+            _bodyLabel.text = shown >= full.Length
+                ? full
+                : full.Substring(0, shown) + "<color=#00000000>" + full.Substring(shown) + "</color>";
+        }
         public void SetArrow(bool visible) => _nextArrow.gameObject.SetActive(visible);
         public void Hide() => Root.gameObject.SetActive(false);
     }

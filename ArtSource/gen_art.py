@@ -8,13 +8,15 @@ SevenDoctors 플레이스홀더 아트 생성기.
 출력:
   Backgrounds/*.png   1920x1080   (Rooms 탭 '배경키'와 파일명이 일치)
   Characters/*.png     700x1200   (Characters 탭 '포트레이트키'와 일치) — 몸
-  Faces/*.png          700x1200   (Dialogues 탭 '표정'과 일치) — 표정 오버레이
+  Faces/*.png          700x1200   (Dialogues 탭 '표정'과 일치) — 표정 합본 (폴백)
+  Faces/{표정}/*.png                부위별 레이어 — 눈 깜빡임·시선·립싱크용
+  Faces/faceparts.json              부위가 캔버스 어디에 있었는지 기록
   Evidence/*.png       512x512    (Evidence 탭 '아이콘키'와 일치)
 
 표정을 몸과 분리한 이유: 일곱 박사는 전부 같은 얼굴이라는 게 설정이라서,
 얼굴 한 세트를 전원이 공유하는 게 구조적으로도 맞고 리소스도 1/8 로 줄어듭니다.
 """
-import math, os, random
+import json, math, os, random
 from PIL import Image, ImageDraw, ImageFilter
 
 random.seed(7)
@@ -528,48 +530,112 @@ def character(accent, prop=None, shadow_face=False):
 
     return img
 
-def face(kind):
-    """표정 오버레이. 몸과 같은 캔버스라 그대로 겹치면 맞습니다."""
-    img = canvas(CW, CH)
+
+# ── 표정 ─────────────────────────────────────────────────────────────────────
+# Live2D 느낌은 "부위가 각자 움직인다"에서 나옵니다. 그래서 표정을 한 장으로
+# 합치지 않고 눈썹/눈/동공/입/기타를 따로 뽑습니다. 각 PNG는 내용에 맞게 잘라
+# 내고, 원래 700x1200 캔버스 어디에 있었는지를 faceparts.json 에 적어 둡니다.
+# 런타임(PortraitView)은 그 좌표로 부위를 제자리에 놓고 따로 움직입니다.
+#
+#   eyes   — 흰자. 세로로 눌러서 깜빡입니다.
+#   pupils — 동공. 눈 안에서 미세하게 흔들려 시선을 만듭니다.
+#   mouth / mouth_open — 대사 출력 중 번갈아 찍어 입을 움직입니다.
+#   brows, extra(코·눈물·그늘) — 표정 전환 반응 모션에만 실립니다.
+FACE_PARTS = ("extra", "brows", "eyes", "pupils", "mouth", "mouth_open")
+
+# 눈이 이미 선으로 감겨 있는 표정은 깜빡여 봐야 티가 안 나서 건너뜁니다.
+NO_BLINK = ("sleepy",)
+
+
+def face_layers(kind):
+    """표정 하나를 부위별 레이어로 그립니다. 전부 같은 CWxCH 캔버스."""
     ex, ey, dx = HEAD_CX, HEAD_CY + 10, 52
     ink = (38, 32, 40)
+    L = {p: canvas(CW, CH) for p in FACE_PARTS}
 
+    def eye_white(cx, h=22, w=26):
+        ellipse(L["eyes"], (cx - w, ey - h, cx + w, ey + h), (250, 248, 246))
+    def pupil(cx, r=12):
+        ellipse(L["pupils"], (cx - r, ey - r, cx + r, ey + r), ink)
     def eye_open(cx, h=22, w=26):
-        ellipse(img, (cx - w, ey - h, cx + w, ey + h), (250, 248, 246))
-        ellipse(img, (cx - 12, ey - 12, cx + 12, ey + 12), ink)
+        eye_white(cx, h, w); pupil(cx)
     def eye_line(cx, w=28):
-        line(img, [(cx - w, ey), (cx + w, ey)], 7, ink)
+        line(L["eyes"], [(cx - w, ey), (cx + w, ey)], 7, ink)
     def brow(cx, y, tilt, w=34):
-        line(img, [(cx - w, y - tilt), (cx + w, y + tilt)], 8, ink)
+        line(L["brows"], [(cx - w, y - tilt), (cx + w, y + tilt)], 8, ink)
+    def mouth(pts, width=7):
+        line(L["mouth"], pts, width, ink)
+    def mouth_open(cy, w=20, h=22):
+        ellipse(L["mouth_open"], (ex - w, cy - h, ex + w, cy + h), ink)
 
     if kind == "normal":
         eye_open(ex - dx); eye_open(ex + dx)
         brow(ex - dx, ey - 52, 0); brow(ex + dx, ey - 52, 0)
-        line(img, [(ex - 24, ey + 78), (ex + 24, ey + 78)], 7, ink)
+        mouth([(ex - 24, ey + 78), (ex + 24, ey + 78)])
+        mouth_open(ey + 84, 18, 20)
     elif kind == "surprised":
         eye_open(ex - dx, 30, 30); eye_open(ex + dx, 30, 30)
         brow(ex - dx, ey - 64, 0); brow(ex + dx, ey - 64, 0)
-        ellipse(img, (ex - 20, ey + 62, ex + 20, ey + 106), ink)
+        ellipse(L["mouth"], (ex - 20, ey + 62, ex + 20, ey + 106), ink)
+        mouth_open(ey + 84, 24, 30)
     elif kind == "angry":
         eye_open(ex - dx, 20); eye_open(ex + dx, 20)
         brow(ex - dx, ey - 48, 16); brow(ex + dx, ey - 48, -16)
-        line(img, [(ex - 28, ey + 86), (ex, ey + 74), (ex + 28, ey + 86)], 7, ink)
+        mouth([(ex - 28, ey + 86), (ex, ey + 74), (ex + 28, ey + 86)])
+        mouth_open(ey + 84, 22, 24)
     elif kind == "sad":
         eye_open(ex - dx, 18); eye_open(ex + dx, 18)
         brow(ex - dx, ey - 50, -14); brow(ex + dx, ey - 50, 14)
-        line(img, [(ex - 26, ey + 88), (ex, ey + 74), (ex + 26, ey + 88)], 7, ink)
-        ellipse(img, (ex - dx - 34, ey + 18, ex - dx - 14, ey + 56), (140, 190, 220), 210)
+        mouth([(ex - 26, ey + 88), (ex, ey + 74), (ex + 26, ey + 88)])
+        mouth_open(ey + 86, 16, 18)
+        ellipse(L["extra"], (ex - dx - 34, ey + 18, ex - dx - 14, ey + 56), (140, 190, 220), 210)
     elif kind == "sleepy":
         eye_line(ex - dx); eye_line(ex + dx)
         brow(ex - dx, ey - 54, -6); brow(ex + dx, ey - 54, 6)
-        line(img, [(ex - 20, ey + 80), (ex + 20, ey + 80)], 7, ink)
+        mouth([(ex - 20, ey + 80), (ex + 20, ey + 80)])
+        mouth_open(ey + 86, 16, 20)
         # 눈 밑 그늘
-        line(img, [(ex - dx - 22, ey + 22), (ex - dx + 22, ey + 22)], 5, (150, 130, 140), 180)
-        line(img, [(ex + dx - 22, ey + 22), (ex + dx + 22, ey + 22)], 5, (150, 130, 140), 180)
+        line(L["extra"], [(ex - dx - 22, ey + 22), (ex - dx + 22, ey + 22)], 5, (150, 130, 140), 180)
+        line(L["extra"], [(ex + dx - 22, ey + 22), (ex + dx + 22, ey + 22)], 5, (150, 130, 140), 180)
 
-    # 코
-    line(img, [(ex, ey + 28), (ex - 8, ey + 48)], 5, (196, 160, 146), 200)
+    # 코 — 어느 표정에서나 같습니다.
+    line(L["extra"], [(ex, ey + 28), (ex - 8, ey + 48)], 5, (196, 160, 146), 200)
+    return L
+
+
+def face(kind):
+    """부위를 전부 겹친 한 장. 부위 PNG 를 못 읽는 환경을 위한 폴백입니다."""
+    img = canvas(CW, CH)
+    L = face_layers(kind)
+    for p in FACE_PARTS:
+        if p == "mouth_open":
+            continue  # 기본 상태는 다문 입
+        img = Image.alpha_composite(img, L[p])
     return img
+
+
+def save_face_parts(kind, manifest):
+    """부위를 내용 경계로 잘라 저장하고, 원래 캔버스 위치를 manifest 에 남깁니다."""
+    entry = {"key": kind, "canBlink": kind not in NO_BLINK, "parts": []}
+    folder = os.path.join(OUT, "Faces", kind)
+    os.makedirs(folder, exist_ok=True)
+
+    L = face_layers(kind)
+    for name in FACE_PARTS:
+        img = finish(L[name], CW, CH)
+        box = img.getbbox()
+        if box is None:
+            continue  # 이 표정엔 없는 부위 (예: normal 의 눈물)
+        # LANCZOS 축소로 가장자리 알파가 깎이므로 1px 여유를 둡니다.
+        x0, y0, x1, y1 = box
+        x0 = max(0, x0 - 1); y0 = max(0, y0 - 1)
+        x1 = min(CW, x1 + 1); y1 = min(CH, y1 + 1)
+
+        img.crop((x0, y0, x1, y1)).save(os.path.join(folder, name + ".png"))
+        entry["parts"].append({"name": name, "x": x0, "y": y0, "w": x1 - x0, "h": y1 - y0})
+        print(f"  Faces/{kind}/{name}.png")
+
+    manifest["faces"].append(entry)
 
 
 # ── 증거 아이콘 ──────────────────────────────────────────────────────────────
@@ -656,8 +722,14 @@ if __name__ == "__main__":
              "Characters", key, CW, CH)
 
     print("표정:")
+    face_manifest = {"canvasW": CW, "canvasH": CH, "faces": []}
     for k in ("normal", "surprised", "angry", "sad", "sleepy"):
-        save(face(k), "Faces", k, CW, CH)
+        save(face(k), "Faces", k, CW, CH)   # 합본 (폴백용)
+        save_face_parts(k, face_manifest)   # 부위별 (애니메이션용)
+
+    with open(os.path.join(OUT, "Faces", "faceparts.json"), "w", encoding="utf-8") as f:
+        json.dump(face_manifest, f, ensure_ascii=False, indent=1)
+    print("  Faces/faceparts.json")
 
     print("증거:")
     save(ic_gear(),    "Evidence", "ic_gear", IW, IW)

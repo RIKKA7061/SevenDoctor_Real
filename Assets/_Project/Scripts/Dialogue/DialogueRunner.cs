@@ -170,6 +170,11 @@ namespace SevenDoctors.Dialogue
             Game.UI.Dialogue.Show(speaker, string.Empty, false);
             _advanceRequested = false;
 
+            // 글자가 찍히는 동안만 입이 움직입니다. 지문(화자 없음)이면 포트레이트가
+            // 숨겨져 있으니 그대로 둡니다.
+            bool lipSync = !string.IsNullOrEmpty(line.SpeakerId) && Game.UI.Portrait != null;
+            if (lipSync) Game.UI.Portrait.SetSpeaking(true);
+
             // 타이핑
             int shown = 0;
             float timer = 0f;
@@ -183,9 +188,11 @@ namespace SevenDoctors.Dialogue
                     timer -= CharInterval;
                     shown++;
                 }
-                Game.UI.Dialogue.SetBody(body.Substring(0, shown));
+                Game.UI.Dialogue.SetBodyTyping(body, shown);
                 yield return null;
             }
+
+            if (lipSync) Game.UI.Portrait.SetSpeaking(false);
 
             Game.UI.Dialogue.SetBody(body);
             Game.UI.Dialogue.SetArrow(true);
