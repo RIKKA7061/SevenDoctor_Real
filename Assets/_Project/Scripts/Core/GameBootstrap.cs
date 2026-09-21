@@ -190,14 +190,25 @@ namespace SevenDoctors.Core
 
         static void EnsureCamera()
         {
-            if (Camera.main != null) return;
+            var cam = Camera.main;
+            if (cam == null)
+            {
+                var go = new GameObject("Main Camera");
+                go.tag = "MainCamera";
+                cam = go.AddComponent<Camera>();
+                cam.orthographic = true;
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.04f, 0.04f, 0.06f);
+            }
 
-            var go = new GameObject("Main Camera");
-            go.tag = "MainCamera";
-            var cam = go.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = new Color(0.04f, 0.04f, 0.06f);
+            // 씬 카메라에 AudioListener 가 빠져 있는 경우가 있습니다. 하나도 없으면
+            // 어떤 소리도 나지 않는데, 콘솔에는 아무 말도 안 나와서 원인을 찾느라
+            // 한참 헤매게 됩니다. 그래서 여기서 확인하고 없으면 붙입니다.
+            if (UnityEngine.Object.FindFirstObjectByType<AudioListener>() == null)
+            {
+                cam.gameObject.AddComponent<AudioListener>();
+                Debug.Log("[Boot] 씬에 AudioListener 가 없어 카메라에 붙였습니다.");
+            }
         }
 
         /// <summary>노트북에서 증거를 골라 방 안 인물에게 들이댔을 때.</summary>
