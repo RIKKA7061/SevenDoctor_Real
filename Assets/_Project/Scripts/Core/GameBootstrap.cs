@@ -33,6 +33,18 @@ namespace SevenDoctors.Core
         [Tooltip("끄면 시작 화면 없이 바로 게임에 들어갑니다. 대사를 손볼 때 편합니다.")]
         public bool ShowTitleOnStart = true;
 
+        // AudioManager 는 실행할 때 코드로 붙이기 때문에, 재생 전에는 인스펙터에
+        // 뜨지 않습니다. 여기 있으면 껐다 켜지 않고도 미리 맞춰 둘 수 있습니다.
+        [Header("소리 크기")]
+        [Tooltip("배경음")]
+        [Range(0f, 1f)] public float BgmVolume = 0.50f;
+
+        [Tooltip("효과음")]
+        [Range(0f, 1f)] public float SfxVolume = 0.55f;
+
+        [Tooltip("말할 때 나는 소리")]
+        [Range(0f, 1f)] public float VoiceVolume = 0.40f;
+
         void Awake()
         {
             // 방 전환 시에도 살아남아야 하므로 (씬은 하나지만, 타이틀/엔딩 씬을 붙일 때를 대비)
@@ -76,7 +88,11 @@ namespace SevenDoctors.Core
 
             Game.Room = managers.AddComponent<SevenDoctors.Room.RoomController>();
             Game.Puzzle = managers.AddComponent<SevenDoctors.Puzzle.PuzzleDirector>();
-            Game.Audio = managers.AddComponent<SevenDoctors.Audio.AudioManager>();
+            var audio = managers.AddComponent<SevenDoctors.Audio.AudioManager>();
+            audio.BgmVolume   = BgmVolume;
+            audio.SfxVolume   = SfxVolume;
+            audio.VoiceVolume = VoiceVolume;
+            Game.Audio = audio;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // F1 — 퍼즐 미리보기. 정식 빌드에는 클래스 자체가 없습니다.

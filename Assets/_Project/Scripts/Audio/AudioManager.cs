@@ -17,14 +17,14 @@ namespace SevenDoctors.Audio
     /// </summary>
     public class AudioManager : MonoBehaviour
     {
-        [Range(0f, 1f)] public float BgmVolume   = 0.28f;
+        [Range(0f, 1f)] public float BgmVolume   = 0.50f;
         [Range(0f, 1f)] public float SfxVolume   = 0.55f;
         [Range(0f, 1f)] public float VoiceVolume = 0.40f;
 
         public float CrossfadeSeconds = 1.1f;
 
         AudioSource _bgm, _sfx, _voice;
-        AudioClip _blip;
+        AudioClip[] _vowels;
         Coroutine _fade;
 
         string _bgmKey;
@@ -43,7 +43,23 @@ namespace SevenDoctors.Audio
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
 
-            _blip = AudioSynth.VoiceBlip("voice_blip");
+            // 모음별로 하나씩 미리 만들어 둡니다. 다섯 개뿐이라 순식간이고,
+            // 말하는 도중에 만들면 그 프레임이 눈에 띄게 튑니다.
+            _vowels = new AudioClip[AudioSynth.Vowels.Length];
+            for (int i = 0; i < _vowels.Length; i++)
+            {
+                var v = AudioSynth.Vowels[i];
+                _vowels[i] = AudioSynth.VoiceBlip($"voice_{v.Name}", v);
+            }
+        }
+
+        void Update()
+        {
+            // 인스펙터에서 값을 돌려 가며 맞출 수 있게 합니다. 크로스페이드가
+            // 도는 중에는 건드리지 않습니다 — 서로 볼륨을 덮어써서 뚝뚝 끊깁니다.
+            if (_fade == null && _bgm != null && _bgm.isPlaying &&
+                !Mathf.Approximately(_bgm.volume, BgmVolume))
+                _bgm.volume = BgmVolume;
         }
 
         // ── BGM ───────────────────────────────────────────────────────────────
@@ -120,15 +136,27 @@ namespace SevenDoctors.Audio
         /// </summary>
         public void PlayVoice(char c, string speakerId)
         {
-            if (_blip == null) return;
+            if (_vowels == null || _vowels.Length == 0) return;
+
+            // 글자마다 다른 모음을 고릅니다. 같은 모음만 이어지면 말이 아니라
+            // 신호음처럼 들립니다.
+            var clip = _vowels[Mathf.Abs(c) % _vowels.Length];
+            if (clip == null) return;
 
             float basePitch = SpeakerPitch(speakerId);
-            float wobble = 1f + ((c % 7) - 3) * 0.045f;   // 글자에 따라 ±13% 남짓
+            float wobble = 1f + ((c % 5) - 2) * 0.035f;   // 글자에 따라 ±7% 남짓
 
-            _voice.pitch = Mathf.Clamp(basePitch * wobble, 0.5f, 2.6f);
-            _voice.PlayOneShot(_blip, VoiceVolume);
+            _voice.pitch = Mathf.Clamp(basePitch * wobble, 0.6f, 2.2f);
+            _voice.PlayOneShot(clip, VoiceVolume);
         }
 
+        /// <summary>
+        /// 인물마다 목소리 높이를 다르게. ID 해시에서 뽑는 건, 시트에 인물이
+        /// 늘어도 아무 설정 없이 저마다 다른 목소리를 갖게 하려는 것입니다.
+        ///
+        /// 폭을 넓게 잡으면 포먼트까지 같이 밀려서 사람이 아니라 다람쥐가 됩니다.
+        /// 모음이 이미 사람 소리를 만들어 주므로 높이는 좁게만 흔듭니다.
+        /// </summary>
         static float SpeakerPitch(string speakerId)
         {
             if (string.IsNullOrEmpty(speakerId)) return 1f;
@@ -137,7 +165,7 @@ namespace SevenDoctors.Audio
             foreach (char ch in speakerId) h = h * 31 + ch;
             h = Mathf.Abs(h);
 
-            return 0.82f + (h % 100) / 100f * 0.75f;   // 0.82 ~ 1.57
+            return 0.88f + (h % 100) / 100f * 0.42f;   // 0.88 ~ 1.30
         }
 
         /// <summary>말소리가 이어지는 도중에 화면이 닫히면 남은 소리를 끊습니다.</summary>

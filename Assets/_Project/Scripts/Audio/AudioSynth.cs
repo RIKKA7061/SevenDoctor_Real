@@ -159,36 +159,98 @@ namespace SevenDoctors.Audio
         // ── 목소리 ────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// 글자 하나가 찍힐 때 나는 짧은 소리. 재생할 때 pitch 만 바꿔서
-        /// 글자마다·인물마다 다르게 들리게 합니다 — 동물의 숲이 쓰는 수법입니다.
-        ///
-        /// 사인만 쓰면 '삐' 소리라 기계 같습니다. 배음을 얹고 포먼트처럼 한쪽을
-        /// 키워야 사람이 웅얼거리는 느낌이 납니다.
+        /// 모음 하나. 앞의 두 수(F1, F2)가 어느 모음으로 들리는지를 거의 다 정합니다.
+        /// 남성 성인 기준값입니다 — 재생할 때 pitch 를 올리면 여성·아이 쪽으로 갑니다.
         /// </summary>
-        public static AudioClip VoiceBlip(string name, float baseHz = 440f, float seconds = 0.085f)
+        public struct Vowel
         {
-            var data = new float[Mathf.RoundToInt(SampleRate * seconds)];
+            public string Name;
+            public float F1, F2, F3;
+            public Vowel(string name, float f1, float f2, float f3) { Name = name; F1 = f1; F2 = f2; F3 = f3; }
+        }
 
-            for (int i = 0; i < data.Length; i++)
+        public static readonly Vowel[] Vowels =
+        {
+            new Vowel("a", 730f, 1090f, 2440f),
+            new Vowel("e", 530f, 1840f, 2480f),
+            new Vowel("i", 270f, 2290f, 3010f),
+            new Vowel("o", 570f,  840f, 2410f),
+            new Vowel("u", 300f,  870f, 2240f),
+        };
+
+        /// <summary>
+        /// 글자 하나가 찍힐 때 나는 짧은 소리.
+        ///
+        /// 사람 목소리는 배음을 쌓는다고 나오지 않습니다. 성대가 내는 톱니 같은
+        /// 파형을 목과 입이 공명으로 걸러 내는 구조라, 그 공명점(포먼트)을 흉내내야
+        /// 비로소 '아/에/오' 로 들립니다. 사인만 더하면 아무리 쌓아도 삐 소리입니다.
+        ///
+        /// 그래서 톱니파를 만든 뒤 2극 공명기 세 개에 통과시킵니다. F1·F2 가 모음을
+        /// 정하고 F3 는 사람 목소리다운 윤기만 얹습니다.
+        ///
+        /// 글자마다 다른 모음을 고르고 인물마다 pitch 를 달리하면, 짧은 소리 몇 개로
+        /// 웅얼거리는 말처럼 들립니다 — 동물의 숲이 쓰는 수법입니다.
+        /// </summary>
+        public static AudioClip VoiceBlip(string name, Vowel vowel, float f0 = 138f, float seconds = 0.10f)
+        {
+            int n = Mathf.RoundToInt(SampleRate * seconds);
+            var source = new float[n];
+
+            // 성대 파형 — 톱니. 말끝이 살짝 내려가게 기본 주파수를 떨어뜨립니다.
+            float phase = 0f;
+            for (int i = 0; i < n; i++)
+            {
+                float u = (float)i / n;
+                float hz = f0 * Mathf.Lerp(1.06f, 0.94f, u);
+
+                phase += hz / SampleRate;
+                if (phase >= 1f) phase -= 1f;
+
+                // 톱니를 그대로 쓰면 지나치게 쨍합니다. 살짝 둥글려서 성대에 가깝게.
+                float saw = 2f * phase - 1f;
+                source[i] = saw - 0.35f * saw * saw * saw;
+            }
+
+            var data = new float[n];
+            AddFormant(data, source, vowel.F1,  80f, 1.00f);
+            AddFormant(data, source, vowel.F2, 110f, 0.50f);
+            AddFormant(data, source, vowel.F3, 160f, 0.20f);
+
+            // 빠르게 열고 천천히 닫습니다. 닫는 쪽이 급하면 딱딱 끊겨 들립니다.
+            for (int i = 0; i < n; i++)
             {
                 float t = (float)i / SampleRate;
-
-                // 살짝 떨어지는 피치 — 말끝이 내려가는 느낌을 줍니다.
-                float hz = baseHz * Mathf.Lerp(1.08f, 0.92f, t / seconds);
-
-                float s  = Mathf.Sin(2f * Mathf.PI * hz * t)             * 1.00f;
-                s       += Mathf.Sin(2f * Mathf.PI * hz * 2f * t)        * 0.45f;
-                s       += Mathf.Sin(2f * Mathf.PI * hz * 3f * t)        * 0.22f;
-                s       += Mathf.Sin(2f * Mathf.PI * hz * 4.7f * t)      * 0.12f;  // 비정수배 — 목소리처럼 탁해집니다
-
-                // 빠르게 열고 천천히 닫습니다.
-                float attack = Mathf.Clamp01(t / 0.006f);
-                float decay  = Mathf.Exp(-26f * t);
-                data[i] = s * attack * decay;
+                float attack = Mathf.Clamp01(t / 0.008f);
+                float decay  = Mathf.Exp(-22f * t);
+                data[i] *= attack * decay;
             }
 
             Normalize(data);
             return Make(name, data);
+        }
+
+        /// <summary>
+        /// 2극 공명기. 입과 목이 특정 높이만 키워 주는 걸 흉내냅니다.
+        /// bandwidth 가 좁을수록 그 높이가 뚜렷해지고, 목소리는 더 또렷해집니다.
+        /// </summary>
+        static void AddFormant(float[] dst, float[] source, float freq, float bandwidth, float gain)
+        {
+            float r = Mathf.Exp(-Mathf.PI * bandwidth / SampleRate);
+            float theta = 2f * Mathf.PI * freq / SampleRate;
+            float c = 2f * r * Mathf.Cos(theta);
+            float rr = r * r;
+
+            // 공명기는 그냥 두면 이득이 폭주합니다. 입력 쪽에서 미리 줄여 둡니다.
+            float norm = (1f - r) * Mathf.Sqrt(1f - 2f * r * Mathf.Cos(2f * theta) + rr);
+
+            float y1 = 0f, y2 = 0f;
+            for (int i = 0; i < source.Length; i++)
+            {
+                float y = source[i] * norm + c * y1 - rr * y2;
+                y2 = y1;
+                y1 = y;
+                dst[i] += y * gain;
+            }
         }
     }
 }
