@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using SevenDoctors.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -39,6 +39,7 @@ namespace SevenDoctors.UI
         public NotebookView Notebook { get; private set; }
         public PortraitView Portrait { get; private set; }
         public TitleView Title { get; private set; }
+        public HelperBotView Bot { get; private set; }
         public RectTransform PuzzleLayer { get; private set; }
 
         /// <summary>프리팹에서 되살렸는지 여부. 콘솔 로그용.</summary>
@@ -117,6 +118,7 @@ namespace SevenDoctors.UI
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
             Title = TitleView.Create(Screen);
+            Bot = HelperBotView.Create(Screen);
 
             NotebookButton.onClick.RemoveAllListeners(); // 프리팹에 남아 있을 수 있는 리스너 정리
             PuzzleLayer.gameObject.SetActive(false);
@@ -158,6 +160,7 @@ namespace SevenDoctors.UI
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
             Title = TitleView.Create(Screen);
+            Bot = HelperBotView.Create(Screen);
 
             BuildToast();
             BuildFade();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SevenDoctors.Data;
 using UnityEngine;
@@ -21,6 +21,7 @@ namespace SevenDoctors.Core
         public static SevenDoctors.Puzzle.PuzzleDirector Puzzle { get; internal set; }
         public static SevenDoctors.UI.UIRoot UI { get; internal set; }
         public static SevenDoctors.Audio.AudioManager Audio { get; internal set; }
+        public static SevenDoctors.Hint.HintDirector Hints { get; internal set; }
 
         public static bool IsReady => Db != null && Flags != null;
 
@@ -50,7 +51,7 @@ namespace SevenDoctors.Core
         internal static void Reset()
         {
             Db = null; Flags = null; Evidence = null;
-            Dialogue = null; Room = null; Puzzle = null; UI = null; Audio = null;
+            Dialogue = null; Room = null; Puzzle = null; UI = null; Audio = null; Hints = null;
             _state = GameState.Boot;
             StateChanged = null;
         }

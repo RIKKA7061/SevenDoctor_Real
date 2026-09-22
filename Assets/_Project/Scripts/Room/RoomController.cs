@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using SevenDoctors.Core;
 using SevenDoctors.Data;
@@ -20,6 +21,12 @@ namespace SevenDoctors.Room
     public class RoomController : MonoBehaviour
     {
         public string CurrentRoomId { get; private set; }
+
+        /// <summary>
+        /// 핫스팟을 누를 때마다 울립니다. 도우미 로봇이 '뭔가 누르긴 하는데
+        /// 이야기가 안 나아간다' 를 판단하는 근거입니다.
+        /// </summary>
+        public event Action<HotspotRow> Interacted;
 
         readonly HashSet<string> _consumed = new HashSet<string>();
 
@@ -175,6 +182,8 @@ namespace SevenDoctors.Room
         void OnHotspotClicked(HotspotRow h)
         {
             if (!Game.CanInteract) return;
+
+            Interacted?.Invoke(h);
 
             if (h.Once) _consumed.Add(h.Id);
 

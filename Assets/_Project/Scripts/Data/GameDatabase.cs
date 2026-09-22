@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -28,6 +28,7 @@ namespace SevenDoctors.Data
         public readonly List<AskTopicRow>      AskTopics      = new();
         public readonly List<DeductionSlotRow> DeductionSlots = new();
         public readonly List<EndingRow>        Endings        = new();
+        public readonly List<HintRow>          Hints          = new();
 
         // 조회 성능용 인덱스
         readonly Dictionary<string, List<DialogueRow>> _dialogueById = new();
@@ -58,6 +59,7 @@ namespace SevenDoctors.Data
             LoadTable("AskTopics",      r => { var x = AskTopicRow.FromRow(r);      if (Valid(x.Id, "AskTopics"))           AskTopics.Add(x); });
             LoadTable("DeductionSlots", r => { var x = DeductionSlotRow.FromRow(r); if (Valid(x.PuzzleId, "DeductionSlots")) DeductionSlots.Add(x); });
             LoadTable("Endings",        r => { var x = EndingRow.FromRow(r);        if (Valid(x.Id, "Endings"))             Endings.Add(x); });
+            LoadTable("Hints",          r => { var x = HintRow.FromRow(r);          if (Valid(x.Id, "Hints"))               Hints.Add(x); });
 
             // UI 문구는 게임 데이터가 아니라 화면에 박혀 있던 말들이라 Loc 이 직접 들고 갑니다.
             Core.Loc.ClearUiStrings();
@@ -167,6 +169,56 @@ namespace SevenDoctors.Data
         /// 시트끼리 ID 참조가 깨진 곳을 찾아냅니다.
         /// 오타 하나로 게임이 조용히 멈추는 걸 막아주는, 이 프로젝트에서 가장 값싼 보험입니다.
         /// </summary>
+
+        /// <summary>
+        /// 지금 상황에 맞는 힌트를 고릅니다.
+        ///
+        /// puzzleId 가 있으면 그 퍼즐에 달린 힌트만, 없으면 진행 힌트만 봅니다.
+        /// 진행 힌트는 조건플래그가 맞는 것 중 시트에서 제일 위에 있는 상황을 씁니다 —
+        /// 그래서 시트를 이야기 순서대로 적어 두면 저절로 지금 챕터가 뽑힙니다.
+        ///
+        /// step 은 '몇 번째로 묻는가' 입니다. 그 단계가 없으면 있는 것 중 가장 자세한
+        /// 줄을 줍니다. 계속 눌러도 마지막 힌트가 반복될 뿐 비어 있지는 않습니다.
+        /// </summary>
+        public HintRow FindHint(string puzzleId, int step, Core.FlagManager flags)
+        {
+            bool wantPuzzle = !string.IsNullOrEmpty(puzzleId);
+            string situation = null;
+
+            HintRow atOrBelow = null;   // 요청한 단계 이하 중 가장 자세한 줄
+            HintRow shallowest = null;  // 그것도 없을 때 쓸, 가장 얕은 줄
+
+            foreach (var h in Hints)
+            {
+                if (wantPuzzle)
+                {
+                    if (h.PuzzleId != puzzleId) continue;
+                }
+                else
+                {
+                    if (!h.IsProgressHint) continue;
+
+                    // 처음 맞은 상황의 조건식을 물고, 다른 상황의 줄은 무시합니다.
+                    // 조건이 겹쳐서 두 챕터의 힌트가 섞여 나오는 걸 막습니다.
+                    if (situation == null) situation = h.RequiredFlag;
+                    if (h.RequiredFlag != situation) continue;
+                }
+
+                if (flags != null && !flags.Check(h.RequiredFlag))
+                {
+                    // 진행 힌트에서 조건이 안 맞으면 아직 그 상황이 아닙니다.
+                    // 물어 둔 상황을 풀고 다음 줄부터 다시 찾습니다.
+                    if (!wantPuzzle) situation = null;
+                    continue;
+                }
+
+                if (h.Step <= step && (atOrBelow == null || h.Step > atOrBelow.Step)) atOrBelow = h;
+                if (shallowest == null || h.Step < shallowest.Step) shallowest = h;
+            }
+
+            return atOrBelow ?? shallowest;
+        }
+
         public List<string> Validate()
         {
             var errors = new List<string>(LoadWarnings);

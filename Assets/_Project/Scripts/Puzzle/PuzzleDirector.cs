@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using SevenDoctors.Core;
 using SevenDoctors.Data;
@@ -23,9 +23,17 @@ namespace SevenDoctors.Puzzle
     {
         public bool LastResultSuccess { get; private set; }
 
+        /// <summary>지금 떠 있는 퍼즐. 없으면 null. 도우미 로봇이 어떤 힌트를 줄지 고를 때 봅니다.</summary>
+        public string CurrentPuzzleId { get; private set; }
+
+        /// <summary>이번 퍼즐에서 틀린 횟수. 퍼즐이 시작될 때마다 0 으로 돌아갑니다.</summary>
+        public int WrongAttempts { get; private set; }
+
         public IEnumerator RunRoutine(string puzzleId)
         {
             LastResultSuccess = false;
+            CurrentPuzzleId = puzzleId;
+            WrongAttempts = 0;
 
             if (Game.Db == null || !Game.Db.Puzzles.TryGetValue(puzzleId, out var puzzle))
             {
@@ -59,6 +67,7 @@ namespace SevenDoctors.Puzzle
             UIFactory.Clear(Game.UI.PuzzleLayer);
             Game.UI.PuzzleLayer.gameObject.SetActive(false);
             Game.State = previousState;
+            CurrentPuzzleId = null;
 
             if (LastResultSuccess)
             {
@@ -192,6 +201,7 @@ namespace SevenDoctors.Puzzle
                     {
                         if (input == answer) { solved = true; return; }
 
+                        WrongAttempts++;
                         feedback.text = Loc.T("ui.puzzle.wrong_code");
                         input = "";
                     }
@@ -368,6 +378,7 @@ namespace SevenDoctors.Puzzle
                     {
                         // 오답 페널티 없음. 대신 그 슬롯 전용 반응 대사를 틉니다.
                         wrongDialogue = slots[i].WrongDialogue;
+                        WrongAttempts++;
                         feedback.text = Loc.T("ui.puzzle.wrong_deduction");
                         filled[i] = null;
                         activeSlot = i;

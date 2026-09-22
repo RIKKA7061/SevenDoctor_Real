@@ -707,6 +707,135 @@ def ic_person(accent, shadow=False):
 
 
 # ── 실행 ─────────────────────────────────────────────────────────────────────
+# ── 도우미 로봇 ───────────────────────────────────────────────────────────────
+# 컨셉 시트를 도형으로 옮긴 것입니다. 사람 캐릭터와 달리 얼굴이 '검은 판 위의
+# 빛나는 눈' 이라서, 눈만 갈아끼우면 표정이 전부 나옵니다. 그래서 몸통 한 장과
+# 표정 여섯 장으로 끝납니다.
+#
+# 몸통과 표정은 같은 캔버스라 그냥 겹치면 자리가 맞습니다.
+# 런타임(HelperBotView)이 Art/Bot/bot_body 위에 Art/Bot/bot_face_{표정} 을 올립니다.
+
+BOTW, BOTH = 420, 500
+
+BOT_SHELL   = (236, 234, 228)   # 흰 외장
+BOT_SHADE   = (198, 196, 190)   # 외장 그늘
+BOT_DARK    = (72, 74, 82)      # 관절·손
+BOT_LINE    = (38, 42, 50)      # 외곽선
+BOT_PLATE   = (34, 36, 44)      # 얼굴판
+BOT_GLOW    = (150, 200, 242)   # 눈·표시등
+BOT_BLUE    = (108, 166, 222)   # 테두리 강조
+BOT_BLUSH   = (214, 168, 158)
+
+
+def _outlined_rrect(img, box, radius, color, width=5):
+    """외곽선을 먼저 깔고 그 위에 채웁니다. 손그림 느낌의 굵은 선을 흉내냅니다."""
+    x0, y0, x1, y1 = box
+    rrect(img, (x0 - width, y0 - width, x1 + width, y1 + width), radius + width, BOT_LINE)
+    rrect(img, box, radius, color)
+
+
+def _outlined_ellipse(img, box, color, width=5):
+    x0, y0, x1, y1 = box
+    ellipse(img, (x0 - width, y0 - width, x1 + width, y1 + width), BOT_LINE)
+    ellipse(img, box, color)
+
+
+def bot_body():
+    """표정이 없는 몸통 한 장. 얼굴판은 비워 두지 않고 어둡게 깔아 둡니다 —
+    표정 PNG 를 못 읽는 환경에서도 얼굴이 뚫려 보이지 않게 하려는 것입니다."""
+    img = canvas(BOTW, BOTH)
+
+    # 그리는 순서가 곧 앞뒤입니다. 뒤에 있는 것부터 그려 올라갑니다.
+
+    # 바닥 그림자 — 닿아 있지 않고 떠 있다는 걸 보여 줍니다.
+    ellipse(img, (152, 454, 268, 482), (0, 0, 0), 55)
+
+    # 부유 유닛 — 아래쪽 반구. 빛으로 작동 상태를 표시합니다.
+    img = glow(img, 210, 434, 74, BOT_GLOW, 0.5)
+    _outlined_ellipse(img, (158, 380, 262, 446), BOT_DARK)
+    ellipse(img, (174, 418, 246, 442), BOT_GLOW, 195)
+
+    # 몸통 — 머리보다 좁게. 머리를 나중에 그려서 위쪽을 덮습니다.
+    _outlined_rrect(img, (136, 264, 284, 402), 42, BOT_SHELL)
+    rrect(img, (136, 358, 284, 402), 42, BOT_SHADE, 95)
+
+    # 가슴 표시등
+    ring(img, (191, 314, 229, 352), 5, BOT_BLUE)
+    ellipse(img, (198, 321, 222, 345), BOT_GLOW, 150)
+
+    # 팔 — 몸통보다 앞. 어깨는 몸통에 묻히고 손만 바깥으로 나옵니다.
+    for sx in (-1, 1):
+        cx = 210 + sx * 104
+        _outlined_rrect(img, (cx - 19, 288, cx + 19, 350), 19, BOT_SHELL)
+        _outlined_ellipse(img, (cx - 24, 344, cx + 24, 390), BOT_DARK)
+        line(img, [(cx - 9, 380), (cx - 14, 400)], 8, BOT_DARK)
+        line(img, [(cx + 9, 380), (cx + 14, 400)], 8, BOT_DARK)
+
+    # 귀 — 양옆 원반. 머리보다 먼저 그려 뒤로 보냅니다.
+    for sx in (-1, 1):
+        cx = 210 + sx * 116
+        _outlined_ellipse(img, (cx - 30, 166, cx + 30, 226), BOT_DARK)
+        ring(img, (cx - 22, 174, cx + 22, 218), 5, BOT_BLUE)
+
+    # 머리 — 둥근 돔. 몸통 위에 그대로 얹힙니다.
+    _outlined_rrect(img, (96, 82, 324, 286), 108, BOT_SHELL)
+
+    # 볼 — 얼굴판 바깥 양쪽
+    ellipse(img, (110, 216, 146, 240), BOT_BLUSH, 175)
+    ellipse(img, (274, 216, 310, 240), BOT_BLUSH, 175)
+
+    # 안테나 — 머리를 그린 뒤라 대가 머리에 묻히지 않습니다.
+    line(img, [(210, 98), (210, 62)], 9, BOT_LINE)
+    _outlined_ellipse(img, (152, 40, 268, 72), BOT_BLUE, 4)
+    ellipse(img, (163, 46, 257, 65), BOT_GLOW, 210)
+
+    # 얼굴판 — 표정 PNG 가 이 자리에 그대로 겹칩니다.
+    _outlined_rrect(img, (132, 130, 288, 244), 52, BOT_PLATE, 4)
+
+    return img
+
+
+def bot_face(kind):
+    """표정 한 장. 얼굴판까지 같이 그려서 몸통 위에 그냥 덮으면 되게 합니다."""
+    img = canvas(BOTW, BOTH)
+    _outlined_rrect(img, (132, 130, 288, 244), 52, BOT_PLATE, 4)
+
+    lx, rx, cy = 180, 240, 187   # 두 눈 중심
+
+    if kind in ("normal", "hint"):
+        # 세로로 긴 알약 눈. 힌트일 때는 더 크게 — 눈이 커지면 '알았다!' 로 읽힙니다.
+        h, w = (30, 14) if kind == "normal" else (35, 17)
+        for cx in (lx, rx):
+            rrect(img, (cx - w, cy - h, cx + w, cy + h), w, BOT_GLOW)
+        if kind == "hint":
+            # 관자놀이 옆 전구 빛 — 아이디어가 떠올랐다는 표시.
+            img = glow(img, 310, 102, 44, (250, 214, 130), 0.95)
+
+    elif kind == "happy":
+        # 위로 휜 활. 눈웃음입니다.
+        for cx in (lx, rx):
+            line(img, [(cx - 19, cy + 8), (cx - 6, cy - 10), (cx + 6, cy - 10), (cx + 19, cy + 8)],
+                 10, BOT_GLOW)
+
+    elif kind == "curious":
+        # 한쪽만 작게. 갸웃한 느낌이 납니다.
+        rrect(img, (lx - 14, cy - 30, lx + 14, cy + 30), 14, BOT_GLOW)
+        rrect(img, (rx - 11, cy - 19, rx + 11, cy + 19), 11, BOT_GLOW)
+
+    elif kind == "sleepy":
+        # 감은 눈 — 가로선 두 개.
+        for cx in (lx, rx):
+            line(img, [(cx - 19, cy), (cx + 19, cy)], 10, BOT_GLOW, 215)
+
+    elif kind == "panic":
+        # 작고 동그란 눈 + 땀. 당황한 얼굴입니다.
+        for cx in (lx, rx):
+            ellipse(img, (cx - 11, cy - 11, cx + 11, cy + 11), BOT_GLOW)
+        ellipse(img, (266, 146, 284, 172), (150, 196, 236), 225)
+
+    return img
+
+
 if __name__ == "__main__":
     print("배경:")
     for name, fn in [("bg_lab", bg_lab), ("bg_front", bg_front), ("bg_living", bg_living),
@@ -730,6 +859,11 @@ if __name__ == "__main__":
     with open(os.path.join(OUT, "Faces", "faceparts.json"), "w", encoding="utf-8") as f:
         json.dump(face_manifest, f, ensure_ascii=False, indent=1)
     print("  Faces/faceparts.json")
+
+    print("도우미 로봇:")
+    save(bot_body(), "Bot", "bot_body", BOTW, BOTH)
+    for k in ("normal", "happy", "curious", "hint", "sleepy", "panic"):
+        save(bot_face(k), "Bot", "bot_face_" + k, BOTW, BOTH)
 
     print("증거:")
     save(ic_gear(),    "Evidence", "ic_gear", IW, IW)

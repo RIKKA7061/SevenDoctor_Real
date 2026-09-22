@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SevenDoctors.Core;
+using UnityEngine;
 
 namespace SevenDoctors.Data
 {
@@ -264,6 +265,42 @@ namespace SevenDoctors.Data
             RequiredFlag = CsvParser.Str(r, "조건플래그"),
             DialogueId   = CsvParser.Str(r, "연출대화"),
             Priority     = CsvParser.Int(r, "우선순위"),
+            Note         = CsvParser.Str(r, "비고"),
+        };
+    }
+
+    /// <summary>
+    /// 도우미 로봇이 읽어 주는 힌트 한 줄.
+    ///
+    /// 대상퍼즐 칸이 비어 있으면 '진행 힌트' 입니다 — 탐색 중에 막혔을 때 씁니다.
+    /// 조건플래그가 맞는 줄 중 시트에서 제일 위에 있는 것이 뽑히므로,
+    /// 시트는 이야기 순서대로 적어 두어야 합니다.
+    ///
+    /// 대상퍼즐 칸이 채워져 있으면 그 퍼즐이 떠 있을 때만 뽑힙니다.
+    ///
+    /// 단계는 같은 상황에서 다시 물었을 때 얼마나 더 알려 줄지입니다.
+    /// 1 은 방향만, 숫자가 커질수록 답에 가깝게 적으세요.
+    /// </summary>
+    [Serializable]
+    public class HintRow
+    {
+        public string Id, PuzzleId, RequiredFlag, Note;
+        public string TextKo, TextEn;
+        public int Step;
+
+        public string Text => Loc.Pick(TextKo, TextEn);
+
+        /// <summary>퍼즐 칸이 비어 있으면 탐색 중에 쓰는 진행 힌트입니다.</summary>
+        public bool IsProgressHint => string.IsNullOrEmpty(PuzzleId);
+
+        public static HintRow FromRow(Dictionary<string, string> r) => new HintRow
+        {
+            Id           = CsvParser.Str(r, "hint_id"),
+            PuzzleId     = CsvParser.Str(r, "대상퍼즐"),
+            RequiredFlag = CsvParser.Str(r, "조건플래그"),
+            Step         = Mathf.Max(1, CsvParser.Int(r, "단계", 1)),
+            TextKo       = CsvParser.Str(r, "힌트"),
+            TextEn       = CsvParser.Str(r, "힌트_en"),
             Note         = CsvParser.Str(r, "비고"),
         };
     }

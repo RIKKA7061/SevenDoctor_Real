@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using SevenDoctors.Data;
 using SevenDoctors.UI;
@@ -94,6 +94,10 @@ namespace SevenDoctors.Core
             audio.VoiceVolume = VoiceVolume;
             Game.Audio = audio;
 
+            // 힌트 담당은 Room/Puzzle 이 만들어진 뒤에 붙입니다 — OnEnable 에서
+            // 그 둘의 이벤트를 구독하기 때문입니다.
+            Game.Hints = managers.AddComponent<SevenDoctors.Hint.HintDirector>();
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // F1 — 퍼즐 미리보기. 정식 빌드에는 클래스 자체가 없습니다.
             managers.AddComponent<SevenDoctors.Dev.DevPuzzleMenu>();
@@ -106,6 +110,12 @@ namespace SevenDoctors.Core
             });
             ui.Notebook.AskRequested += OnAskRequested;
             ui.RefreshEvidenceCount();
+
+            if (ui.Bot != null)
+            {
+                ui.Bot.AskRequested += OnHintRequested;
+                Game.Hints.StuckChanged += ui.Bot.SetStuck;
+            }
 
             yield return null; // DialogueRunner.Awake 가 돌 기회를 줍니다
 
@@ -138,6 +148,9 @@ namespace SevenDoctors.Core
 
         void EnterGame(string startRoom, GameDatabase db)
         {
+            // 타이틀 화면 위에 로봇이 떠 있으면 안 되므로 여기서 켭니다.
+            Game.UI.Bot?.Show();
+
             Game.Room.Enter(startRoom);
 
             if (!string.IsNullOrEmpty(StartDialogueId) && db.GetDialogue(StartDialogueId) != null)
@@ -147,6 +160,17 @@ namespace SevenDoctors.Core
         void OnDestroy()
         {
             Loc.Changed -= OnLanguageChanged;
+
+            if (Game.UI != null && Game.UI.Bot != null) Game.UI.Bot.AskRequested -= OnHintRequested;
+            if (Game.Hints != null && Game.UI != null && Game.UI.Bot != null)
+                Game.Hints.StuckChanged -= Game.UI.Bot.SetStuck;
+        }
+
+        /// <summary>도우미 로봇을 눌렀을 때. 지금 상황에 맞는 힌트를 받아 말풍선에 띄웁니다.</summary>
+        void OnHintRequested()
+        {
+            if (Game.Hints == null || Game.UI == null || Game.UI.Bot == null) return;
+            Game.UI.Bot.Say(Game.Hints.Ask());
         }
 
         /// <summary>
@@ -160,6 +184,7 @@ namespace SevenDoctors.Core
             if (ui == null) return;
 
             ui.Title?.Refresh();
+            ui.Bot?.HideBubble();
             ui.RelocalizeChrome();
             ui.RefreshEvidenceCount();
 

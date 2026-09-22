@@ -29,3 +29,4 @@ ui.puzzle.think_more,조금 더 생각해본다,Think it over,
 ui.category.인물,인물,person,추리 후보 카테고리 표시용
 ui.category.물건,물건,object,
 ui.category.기록,기록,record,
+ui.hint.none,"지금은 딱히 드릴 힌트가 없어요. 주변을 한 번 더 둘러볼까요?","I don't have a hint right now. Shall we look around once more?",도우미 로봇

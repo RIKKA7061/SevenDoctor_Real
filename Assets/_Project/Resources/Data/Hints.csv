@@ -1,0 +1,18 @@
+﻿hint_id,대상퍼즐,조건플래그,단계,힌트,힌트_en,비고
+hnt_prologue_1,,!flg_prologue_end,1,"박사님, 아직 연구실에 손대지 않은 게 남아 있어요.","Doctor, there's still something in the lab you haven't touched.",프롤로그
+hnt_prologue_2,,!flg_prologue_end,2,장치부터 만져보는 게 어때요? 이야기는 거기서 시작될 거예요.,Try the device first. That's where this all starts.,프롤로그
+hnt_front_1,,"flg_prologue_end,!flg_met_sloth",1,저택 앞이네요. 문은 열려 있는 것 같은데요?,"We're outside the mansion. The door looks open, doesn't it?",저택 앞
+hnt_front_2,,"flg_prologue_end,!flg_met_sloth",2,안으로 들어가 보세요. 누군가 기다리고 있어요.,Go inside. Someone is waiting for you.,저택 앞
+hnt_living_1,,"flg_met_sloth,!flg_ch1_start",1,나태 씨한테 더 물어볼 게 남아 있는 것 같아요.,I think Sloth still has more to tell you.,거실
+hnt_living_2,,"flg_met_sloth,!flg_ch1_start",2,거실에서 나태 씨와 대화를 끝까지 이어가 보세요.,Talk with Sloth in the living room until the conversation runs out.,거실
+hnt_storage_1,,"flg_ch1_start,!flg_storage_open",1,창고 자물쇠가 걸려 있어요. 숫자는 다른 방에 적혀 있을 거예요.,The storage lock is closed. The numbers are written down somewhere else.,창고
+hnt_storage_2,,"flg_ch1_start,!flg_storage_open",2,복도의 장부를 먼저 보고 오세요. 비어 있는 칸이 있어요.,Read the ledger in the hallway first. One of its rows is blank.,창고
+hnt_deduce_1,,"flg_storage_open,!flg_ch2_clear",1,모은 증거끼리 아귀가 안 맞는 게 있어요. 저택 복도에서 정리해 봐요.,Some of the evidence doesn't line up. Let's sort it out in the hallway.,2장
+hnt_deduce_2,,"flg_storage_open,!flg_ch2_clear",2,증거노트를 열어서 두 사람의 말이 어디서 갈라지는지 보세요.,Open the notebook and find where the two accounts split apart.,2장
+hnt_secret_1,,flg_ch2_clear,1,깊숙한 방이 열렸어요. 이제 거기로 가면 돼요.,The inner room is open now. That's where you go next.,2장 이후
+hnt_lock_1,pzl_ch1_lock,,1,네 자리예요. 날짜처럼 생긴 숫자를 본 적 있지 않나요?,Four digits. Haven't you seen a number that looked like a date?,자물쇠
+hnt_lock_2,pzl_ch1_lock,,2,장부에서 딱 한 줄만 비어 있었어요. 그 위아래 숫자를 떠올려 보세요.,Exactly one row in the ledger was blank. Think about the numbers around it.,자물쇠
+hnt_lock_3,pzl_ch1_lock,,3,12월 7일. 그대로 눌러 보세요.,December seventh. Just key it in.,자물쇠 — 거의 정답
+hnt_deduct_1,pzl_ch1_deduce,,1,한 사람만 다른 이야기를 하고 있어요. 누구일까요?,Only one person is telling a different story. Who is it?,추리
+hnt_deduct_2,pzl_ch1_deduce,,2,시간을 맞춰 보세요. 같은 시각에 두 곳에 있을 수는 없잖아요.,Line up the times. Nobody can be in two places at once.,추리
+hnt_deduct_3,pzl_ch1_deduce,,3,"증거노트에서 '기록' 쪽을 먼저 놓고, 남는 자리에 '인물'을 맞춰 보세요.","Place the records first, then fit the people into what's left.",추리 — 거의 정답
