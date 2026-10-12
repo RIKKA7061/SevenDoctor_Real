@@ -1,7 +1,10 @@
 ﻿room_id,표시명,표시명_en,배경키,해금조건플래그,BGM,비고
-room_lab,연구실,Laboratory,bg_lab,,bgm_lab,프롤로그 전용
+room_lab,연구실,Laboratory,bg_lab,,bgm_lab,프롤로그
 room_front,저택 앞,Outside the Mansion,bg_front,flg_prologue_end,bgm_mansion,
-room_living,거실,Living Room,bg_living,flg_met_sloth,bgm_mansion,튜토리얼
-room_hall,저택 복도,Mansion Hall,bg_hall,flg_ch1_start,bgm_mansion,허브
-room_storage,창고,Storage Room,bg_storage,flg_ch1_start,bgm_mansion,자물쇠 퍼즐
-room_secret,깊숙한 방,The Innermost Room,bg_secret,flg_ch2_clear,bgm_truth,3장 전용
+room_hall,저택 홀,The Grand Hall,bg_hall,flg_met_sloth,bgm_mansion,허브. 교만이 있음. 파트3~5 진행
+room_wrath,분노의 방,Wrath's Room,bg_laundry,flg_ch1_start,bgm_mansion,배경 임시
+room_sorrow,슬픔의 방,Sorrow's Room,bg_bedroom,flg_ch1_start,bgm_mansion,배경 임시
+room_arrogance,오만의 방,Arrogance's Room,bg_guest,flg_ch1_start,bgm_mansion,배경 임시
+room_greed,탐욕의 방,Greed's Room,bg_storage,flg_ch1_start,bgm_mansion,배경 임시
+room_lust,색욕의 방,Lust's Room,bg_bath,flg_ch1_start,bgm_mansion,배경 임시
+room_sloth,나태의 방,Sloth's Room,bg_living,flg_ch1_start,bgm_mansion,배경 임시

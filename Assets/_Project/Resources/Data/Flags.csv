@@ -1,7 +1,15 @@
 ﻿flag_id,설명,초기값,챕터,비고
 flg_prologue_end,프롤로그 종료 — 저택 앞 해금,FALSE,P,
-flg_met_sloth,나태와 첫 대화 완료 — 거실 해금,FALSE,P,
-flg_ch1_start,1장 시작 — 복도/창고 해금,FALSE,1,
-flg_storage_open,창고 자물쇠 해제,FALSE,1,
-flg_saw_drawing,아이의 그림을 발견,FALSE,1,
-flg_ch2_clear,2장 핵심 추리 성공 — 밀실 해금,FALSE,2,
+flg_met_sloth,나태와 첫 대화 — 저택 홀 해금,FALSE,P,
+flg_ch1_start,교만에게 도면을 받음 — 여섯 방 해금,FALSE,1,임시 — 파트1·2 시트 오면 교체
+flg_clue_invitation,찢어진 초대장 발견 (분노의 방),FALSE,2,단서 오브젝트
+flg_clue_candles,다 녹아버린 초 6개 발견 (슬픔의 방),FALSE,2,단서 오브젝트
+flg_clue_trophy,시상식 트로피 축소 모형 발견 (오만의 방),FALSE,2,단서 오브젝트
+flg_clue_gift,안 뜯은 선물상자 발견 (탐욕의 방),FALSE,2,단서 오브젝트
+flg_clue_watch,멈춘 손목시계 발견 (색욕의 방),FALSE,2,단서 오브젝트
+flg_clue_calendar,낡은 캘린더 발견 (나태의 방),FALSE,2,단서 오브젝트
+flg_part3_done,파트3 의심 끝 — 지목 가능,FALSE,3,
+flg_accused,교만 지목 성공 — 파트4·5,FALSE,4,
+flg_end_together,엔딩 A 함께 고친다,FALSE,5,
+flg_end_stay,엔딩 B 남는다,FALSE,5,
+flg_end_leave,엔딩 C 혼자 떠난다,FALSE,5,

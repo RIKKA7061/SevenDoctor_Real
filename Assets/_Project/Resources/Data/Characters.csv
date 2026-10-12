@@ -1,5 +1,9 @@
 ﻿character_id,표시명,표시명_en,감정속성,상주방,기본표정,포트레이트키,비고
-chr_doctor,박사,The Doctor,주인공,,normal,doctor,플레이어 캐릭터
-chr_sloth,나태,Sloth,나태,room_living,sleepy,sloth,안내역
-chr_greed,탐욕,Greed,탐욕,room_storage,normal,greed,
-chr_pride,교만,Pride,교만,room_secret,normal,pride,범인. 실제로는 박사의 딸
+chr_doctor,박사,The Doctor,주인공,,normal,doctor,플레이어. 교만(딸)의 엄마
+chr_wrath,분노,Wrath,분노,room_wrath,angry,wrath,
+chr_sorrow,슬픔,Sorrow,슬픔,room_sorrow,sad,sorrow,손그림 있음. 그림 없는 인물은 이 그림을 빌려 씀
+chr_arrogance,오만,Arrogance,오만,room_arrogance,normal,arrogance,
+chr_greed,탐욕,Greed,탐욕,room_greed,normal,greed,
+chr_lust,색욕,Lust,색욕,room_lust,normal,lust,
+chr_sloth,나태,Sloth,나태,room_sloth,sleepy,sloth,안내역
+chr_pride,교만,Pride,교만,room_hall,normal,pride,범인. 평행세계의 박사가 아니라 박사의 딸

@@ -21,8 +21,13 @@ namespace SevenDoctors.UI
         Text _emptyLabel;
         Text _titleLabel, _closeLabel;
         Button _closeButton;
-        Image _detailIcon;
+        Image _detailIcon;           // 상세 칸의 큰 그림. 누르면 EvidenceZoomView 로 크게 봅니다
+        Button _detailZoom;
+        Text _zoomHint;
         RectTransform _detailPanel;
+
+        const float DetailImageHeight = 300f;
+        const float DetailTop = 96f;       // 이름 아래부터
 
         string _selected;
 
@@ -75,20 +80,11 @@ namespace SevenDoctors.UI
             right.raycastTarget = false;
 
             v._detailPanel = right.rectTransform;
-            v._detailIcon = UIFactory.Box("Icon", right.transform, Color.white);
-            UIFactory.Anchor(v._detailIcon.rectTransform, new Vector2(1, 1), new Vector2(1, 1),
-                             new Vector2(-148, -156), new Vector2(-28, -36));
-            v._detailIcon.preserveAspect = true;
-            v._detailIcon.raycastTarget = false;
 
             v._detailName = UIFactory.Label("Name", right.transform, "", 30, TextAnchor.UpperLeft, UIFactory.Accent);
-            UIFactory.Anchor(v._detailName.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
-                             new Vector2(28, -84), new Vector2(-160, -28));
-
             v._detailBody = UIFactory.Label("Body", right.transform, "", 25, TextAnchor.UpperLeft, UIFactory.Ink);
-            UIFactory.Anchor(v._detailBody.rectTransform, new Vector2(0, 0), new Vector2(1, 1),
-                             new Vector2(28, 120), new Vector2(-28, -96));
             v._detailBody.lineSpacing = 1.3f;
+            v.BuildDetailImage();
 
             v._askButton = UIFactory.Btn("Ask", right.transform, "", 26,
                                          new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
@@ -126,19 +122,54 @@ namespace SevenDoctors.UI
             v.Relocalize();
 
             v._detailPanel = UIFactory.FindRect(root, "Panel/Detail");
-            v._detailIcon = root.Find("Panel/Detail/Icon")?.GetComponent<Image>();
-            if (v._detailIcon == null && v._detailPanel != null)
+            if (v._detailPanel != null)
             {
-                v._detailIcon = UIFactory.Box("Icon", v._detailPanel, Color.white);
-                UIFactory.Anchor(v._detailIcon.rectTransform, new Vector2(1, 1), new Vector2(1, 1),
-                                 new Vector2(-148, -156), new Vector2(-28, -36));
-                v._detailIcon.preserveAspect = true;
-                v._detailIcon.raycastTarget = false;
+                // 예전 프리팹의 작은 아이콘은 치우고 큰 그림 칸으로 바꿉니다.
+                var oldIcon = v._detailPanel.Find("Icon");
+                if (oldIcon != null) UnityEngine.Object.Destroy(oldIcon.gameObject);
+                v.BuildDetailImage();
             }
 
             v.Wire();
             v.Root.gameObject.SetActive(false);
             return v;
+        }
+
+        /// <summary>
+        /// 상세 칸 위쪽의 큰 그림. 누르면 화면 가득 확대됩니다 — 작은 단서는 그림 안에만
+        /// 있어서 여기서 들여다보는 게 추리의 일부입니다. 이름·설명 자리도 여기서 맞춥니다.
+        /// </summary>
+        void BuildDetailImage()
+        {
+            UIFactory.Anchor(_detailName.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
+                             new Vector2(28, -84), new Vector2(-28, -28));
+            UIFactory.Anchor(_detailBody.rectTransform, new Vector2(0, 0), new Vector2(1, 1),
+                             new Vector2(28, 120), new Vector2(-28, -DetailTop));
+
+            _detailZoom = UIFactory.Btn("Image", _detailPanel, string.Empty, 1,
+                                        new Color(0.11f, 0.12f, 0.16f, 1f), UIFactory.Ink);
+            UIFactory.Anchor(_detailZoom.GetComponent<RectTransform>(), new Vector2(0, 1), new Vector2(1, 1),
+                             new Vector2(28, -DetailTop - DetailImageHeight), new Vector2(-28, -DetailTop));
+            var blank = _detailZoom.GetComponentInChildren<Text>();
+            if (blank != null) blank.gameObject.SetActive(false);
+
+            _detailIcon = UIFactory.Box("Picture", _detailZoom.transform, Color.white);
+            UIFactory.Anchor(_detailIcon.rectTransform, Vector2.zero, Vector2.one,
+                             new Vector2(8, 8), new Vector2(-8, -8));
+            _detailIcon.preserveAspect = true;
+            _detailIcon.raycastTarget = false;
+
+            _zoomHint = UIFactory.Label("ZoomHint", _detailZoom.transform, Loc.T("ui.notebook.zoom_hint"), 20,
+                                        TextAnchor.LowerRight, UIFactory.InkDim);
+            UIFactory.Anchor(_zoomHint.rectTransform, Vector2.zero, new Vector2(1, 0),
+                             new Vector2(12, 8), new Vector2(-14, 40));
+            _zoomHint.raycastTarget = false;
+
+            _detailZoom.onClick.AddListener(() =>
+            {
+                if (!string.IsNullOrEmpty(_selected)) EvidenceZoomView.Open(_selected);
+            });
+            _detailZoom.gameObject.SetActive(false);
         }
 
         void Wire()
@@ -166,6 +197,7 @@ namespace SevenDoctors.UI
             if (_titleLabel != null) _titleLabel.text = Loc.T("ui.notebook.title");
             if (_closeLabel != null) _closeLabel.text = Loc.T("ui.notebook.close");
             if (_emptyLabel != null) _emptyLabel.text = Loc.T("ui.notebook.empty");
+            if (_zoomHint != null) _zoomHint.text = Loc.T("ui.notebook.zoom_hint");
         }
 
         public void Toggle() { if (IsVisible) Hide(); else Show(); }
@@ -177,7 +209,11 @@ namespace SevenDoctors.UI
             Rebuild();
         }
 
-        public void Hide() => Root.gameObject.SetActive(false);
+        public void Hide()
+        {
+            EvidenceZoomView.Close();
+            Root.gameObject.SetActive(false);
+        }
 
         void Rebuild()
         {
@@ -238,17 +274,22 @@ namespace SevenDoctors.UI
             {
                 _detailName.text = "";
                 _detailBody.text = "";
-                if (_detailIcon != null) _detailIcon.gameObject.SetActive(false);
+                if (_detailZoom != null) _detailZoom.gameObject.SetActive(false);
                 _askButton.gameObject.SetActive(false);
                 return;
             }
 
-            if (_detailIcon != null)
+            var picture = LoadIcon(row.IconKey);
+            bool hasPicture = picture != null && _detailZoom != null;
+            if (_detailZoom != null)
             {
-                var icon = LoadIcon(row.IconKey);
-                _detailIcon.sprite = icon;
-                _detailIcon.gameObject.SetActive(icon != null);
+                _detailIcon.sprite = picture;
+                _detailZoom.gameObject.SetActive(hasPicture);
             }
+
+            // 그림이 있으면 설명은 그 아래로 내려갑니다.
+            float top = hasPicture ? DetailTop + DetailImageHeight + 20f : DetailTop;
+            _detailBody.rectTransform.offsetMax = new Vector2(-28, -top);
 
             _detailName.text = row.DisplayName;
             _detailBody.text = string.IsNullOrEmpty(row.Category)

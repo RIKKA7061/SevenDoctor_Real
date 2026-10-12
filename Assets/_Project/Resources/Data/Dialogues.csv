@@ -1,6 +1,6 @@
 ﻿dialogue_id,line_no,speaker_id,표정,대사,대사_en,연출태그,조건플래그,다음대화,비고
-dlg_prologue_01,1,chr_doctor,normal,드디어… 완성이다.,At last... it's finished.,[bgm:bgm_lab],,,
-dlg_prologue_01,2,chr_doctor,normal,십이 년. 아무도 믿어주지 않았던 십이 년이었어.,Twelve years. Twelve years with no one who believed me.,,,,
+dlg_prologue_01,1,chr_doctor,normal,드디어… 완성이다.,At last... it's finished.,[bgm:bgm_lab],,,파트1·2 시트 없음 — 기존 프롤로그 유지
+dlg_prologue_01,2,chr_doctor,normal,이십 년. 아무도 믿어주지 않았던 이십 년이었어.,Twenty years. Twenty years with no one who believed me.,,,,
 dlg_prologue_01,3,chr_doctor,normal,이제 이 레버만 당기면 돼.,All that's left is to pull this lever.,,,,
 dlg_lab_machine,1,chr_doctor,normal,내 타임머신. 동력부가 조용히 떨고 있다.,"My time machine. The drive assembly is trembling, very quietly.",,,,
 dlg_lab_notes,1,chr_doctor,normal,"실험 노트. 마지막 장에 딸의 이름으로 시작하는 문장이 적혀 있다가, 줄이 그어져 있다.","My research notes. On the last page, a sentence that starts with my daughter's name — struck through.",,,,
@@ -10,55 +10,117 @@ dlg_lab_start,2,,,기계가 비명을 질렀다.,The machine screamed.,[shake][s
 dlg_lab_start,3,chr_doctor,surprised,"뭐야—! 출력이, 왜 이렇게—","What—! The output, why is it—",,,,
 dlg_lab_start,4,,,시야가 하얗게 찢어졌다.,"The world tore open, white.",[fade_out][wait:0.6],,,
 dlg_lab_start,5,,,…,...,[flag:flg_prologue_end][wait:0.4],,,
-dlg_lab_start,6,,,"정신을 차리자, 눈앞에 낡고 기묘한 저택이 서 있었다.","When I came to, an old and strange mansion stood in front of me.",[fade_in][goto:dlg_arrive],,,
+dlg_lab_start,6,,,"정신을 차리자, 눈앞에 낡고 기묘한 저택이 서 있었다.","When I came to, an old and strange mansion stood in front of me.",[room:room_front][fade_in][goto:dlg_arrive],,,
 dlg_arrive,1,chr_doctor,surprised,여긴… 어디지.,Where... am I.,,,,
-dlg_arrive,2,chr_doctor,normal,"주위를 둘러봐도, 이곳이 어느 시대인지조차 알 수 없다.",I look around and I can't even tell what century this is.,,,,
+dlg_arrive,2,chr_doctor,normal,하늘은 한밤중이다. 저택 시계탑의 바늘이 3시 14분에 멈춰 있다.,It's the dead of night. The hands of the mansion's clock tower are stopped at 3:14.,,,,
 dlg_front_door,1,chr_doctor,normal,"웅장한데, 어딘가 폐허 같다. 문은 잠겨 있지 않다.","Grand, and somehow a ruin. The door isn't locked.",,,,
 dlg_front_sloth,1,,,"어두운 그림자 속에서, 한 사람이 천천히 걸어 나왔다.","Out of the dark, someone walked slowly toward me.",[sfx:step],,,
 dlg_front_sloth,2,chr_sloth,sleepy,드디어 왔네. 너도 사고로 여기 떨어졌지?,"So you finally got here. An accident dropped you in too, didn't it?",,,,
 dlg_front_sloth,3,chr_doctor,surprised,"…당신, 나랑 똑같이 생겼잖아.",...You have my face.,[shake],,,
-dlg_front_sloth,4,chr_sloth,sleepy,그래. 나는 '나태'야.,That's right. I'm Sloth.,,,,
+dlg_front_sloth,4,chr_sloth,sleepy,그래. 나는 '나태'야.,That's right. I'm Sloth.,[get:ev_chr_sloth],,,
 dlg_front_sloth,5,chr_sloth,sleepy,여긴 평행세계의 박사들이 모인— 감옥 같은 곳이고.,"This is where the doctors of parallel worlds end up. A prison, more or less.",,,,
 dlg_front_sloth,6,chr_doctor,normal,감옥…?,A prison...?,[flag:flg_met_sloth],,,여기서 선택지 분기
-dlg_front_why,1,chr_sloth,sleepy,우리 일곱은 각자 타임머신을 만들었어.,All seven of us built a time machine.,,,,
-dlg_front_why,2,chr_sloth,sad,"그런데 그 기계들은 계속, 누군가의 방해로 망가졌지.",And every one of them kept breaking. Someone kept breaking them.,,,,
+dlg_front_why,1,chr_sloth,sleepy,여기 있는 박사들은 전부 타임머신을 만들다가 사고로 떨어졌어. 너처럼.,Every doctor here was building a time machine when an accident dropped her in. Same as you.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_front_why,2,chr_sloth,sad,다시 만들어도 소용없어. 만들 때마다 누가 부숴.,Building another doesn't help. Someone breaks it every time.,,,,
 dlg_front_why,3,chr_doctor,surprised,…일부러 망가뜨리는 사람이 있다는 거야?,...You're saying someone wrecks them on purpose?,,,,
-dlg_front_why,4,chr_sloth,sleepy,들어와. 여기 서서 할 얘긴 아니야.,Come inside. This isn't a conversation for the doorstep.,,,,
-dlg_front_rebuild,1,chr_doctor,normal,우린 천재잖아. 다시 만들면 되지 않아?,We're geniuses. Can't we just build another one?,,,,
+dlg_front_why,4,chr_sloth,sleepy,들어가서 교만한테 도면 받아. 이 집 구조는 걔가 제일 잘 알아.,Go in and get the floor plan from Pride. She knows this house better than anyone.,,,,
+dlg_front_rebuild,1,chr_doctor,normal,우린 천재잖아. 다시 만들면 되지 않아?,We're geniuses. Can't we just build another one?,,,,임시 — 파트1·2 시트 오면 교체
 dlg_front_rebuild,2,chr_sloth,sleepy,…해봤어. 몇 번인지 세는 것도 그만뒀고.,...We tried. I stopped counting how many times.,,,,
-dlg_front_rebuild,3,chr_sloth,sleepy,들어와. 직접 보는 게 빠르겠지.,Come inside. It'll be faster if you see it yourself.,,,,
-dlg_living_sloth,1,chr_sloth,sleepy,여섯 명이 더 있어. 각자 방에 처박혀 있지.,There are six more of us. Each one shut away in his own room.,,,,
-dlg_living_sloth,2,chr_sloth,sleepy,돌아다니면서 직접 물어봐. 나보단 걔들이 말이 많아.,Go around and ask them yourself. They talk more than I do.,[flag:flg_ch1_start],,,
-dlg_living_sofa,1,chr_doctor,normal,"앉은 자국이 깊게 패어 있다. 아주 오래, 자주 앉았던 자리다.","The seat is worn deep. Someone sat here for a very long time, very often.",,,,
-dlg_living_gear,1,chr_doctor,normal,부서진 톱니가 바닥에 떨어져 있다.,A broken gear lies on the floor.,,,,
-dlg_living_gear,2,chr_doctor,surprised,…부서진 방향이 이상한데. 바깥이 아니라 안쪽에서 깨졌어.,"...The break runs the wrong way. It shattered from the inside, not the outside.",[get:ev_broken_gear],,,
-dlg_living_note,1,chr_doctor,normal,탁자 위에 수첩 한 권.,A notebook on the table.,[get:ev_sloth_note],,,
-dlg_ask_sloth_gear,1,chr_sloth,sleepy,"아, 그거. 내 거였어.","Ah. That one. That was mine.",,,,
-dlg_ask_sloth_gear,2,chr_doctor,normal,안쪽에서 부서졌어. 누가 바깥에서 부순 게 아니야.,It broke from the inside. Nobody smashed it from outside.,,,,
-dlg_ask_sloth_gear,3,chr_sloth,normal,…그러네. 왜 그 생각을 못 했지.,...You're right. Why did that never occur to me.,,,,
-dlg_ask_sloth_gear,4,chr_sloth,sad,이상하지. 분명히 내가 부쉈다고 기억하고 있었는데.,It's strange. I distinctly remember breaking it myself.,[get:ev_chr_sloth],,,
-dlg_ask_sloth_drawing,1,chr_sloth,surprised,"……어디서 났어, 그거.",......Where did you get that.,,,,
-dlg_ask_sloth_drawing,2,chr_doctor,normal,창고에서. 이 저택에 아이가 있었어?,The storage room. Was there ever a child in this house?,,,,
-dlg_ask_sloth_drawing,3,chr_sloth,sad,…모르겠어. 기억이 안 나. 그게 제일 무서운 거야.,...I don't know. I can't remember. That's the part that frightens me.,,,,
-dlg_hall_portraits,1,chr_doctor,normal,초상화가 일곱 개 걸려 있다. 전부 내 얼굴이다.,Seven portraits hang here. Every one of them is my face.,,,,
-dlg_hall_portraits,2,chr_doctor,surprised,"…아니, 여섯 개에만 이름표가 붙어 있다. 하나는 비어 있어.","...No — only six have nameplates. One is blank.",,,,
-dlg_hall_deduce,1,chr_doctor,normal,지금까지 모은 걸 정리해보자.,Let me put together what I have so far.,[puzzle:pzl_ch1_deduce],,,
-dlg_ch1_truth,1,chr_doctor,surprised,…그래. 아무도 이름을 말하지 않는 사람이 있어.,...That's it. There's someone whose name nobody says.,,,,
-dlg_ch1_truth,2,chr_doctor,normal,"여섯 명 모두가, 약속한 것처럼 그 이름만 비워두고 있었다.","All six of them left that one name blank, as if they'd agreed on it.",[flag:flg_ch2_clear],,,
-dlg_ch1_wrong_person,1,chr_doctor,normal,…아니야. 이 사람은 자기 기계가 부서진 쪽이야.,...No. This one is among those whose machine was broken.,,,,
-dlg_ch1_wrong_thing,1,chr_doctor,normal,…이건 근거가 못 돼. 더 결정적인 게 필요해.,...This doesn't prove anything. I need something more decisive.,,,,
-dlg_storage_greed,1,chr_greed,normal,손대지 마. 여기 있는 건 전부 내 거야.,Don't touch anything. Everything in here is mine.,,,,
-dlg_storage_greed,2,chr_doctor,normal,부품을 모아두고 있었구나.,So you've been collecting parts.,,,,
-dlg_storage_greed,3,chr_greed,normal,모아둔 게 아니라 지킨 거야. 안 그러면 또 부서지니까.,I haven't been collecting. I've been guarding. Otherwise they break again.,[get:ev_chr_greed],,,
-dlg_storage_lock,1,chr_doctor,normal,네 자리 다이얼 자물쇠가 걸린 캐비닛.,A cabinet with a four-digit dial lock.,,,,
-dlg_storage_lock,2,chr_greed,normal,…열어봐야 소용없어. 번호는 나도 잊었으니까.,...No point trying. I've forgotten the number myself.,[puzzle:pzl_ch1_lock],,,
-dlg_storage_open,1,,,"철컥, 하고 자물쇠가 풀렸다.","With a clack, the lock gave way.",[sfx:unlock],,,
-dlg_storage_open,2,chr_greed,surprised,…어떻게 알았어?,...How did you know?,,,,
-dlg_storage_open,3,chr_doctor,normal,장부 7번째 칸이 비어 있었어. 당신은 빈칸을 못 견디는 사람이잖아.,The seventh row of your ledger was blank. You're not a man who can stand a blank.,,,,
-dlg_storage_fail,1,chr_doctor,normal,…조금 더 단서를 모아야겠다.,...I need to gather a little more first.,,,,
-dlg_storage_inside,1,chr_doctor,normal,"캐비닛 안에는 장부 한 권과, 그리고—","Inside the cabinet: a ledger, and—",[get:ev_greed_ledger],,,
-dlg_storage_inside,2,chr_doctor,surprised,…크레파스로 그린 그림?,...a crayon drawing?,[get:ev_child_drawing][flag:flg_saw_drawing],,,
-dlg_storage_inside,3,chr_doctor,normal,두 사람이 그려져 있다. 그런데 한 명의 얼굴만 까맣게 덧칠돼 있었다.,Two figures. And one of the faces has been scribbled out in black.,[get:ev_chr_pride],,,
-dlg_ask_greed_ledger,1,chr_greed,normal,그건 내가 쓴 거야. 누가 뭘 가져갔는지 전부.,I wrote that. Every single thing anyone took.,,,,
-dlg_ask_greed_ledger,2,chr_doctor,normal,7번째 칸이 비어 있어.,The seventh row is blank.,,,,
-dlg_ask_greed_ledger,3,chr_greed,surprised,…비어 있다고? 내가? 그럴 리가 없는데.,...Blank? Mine? That can't be right.,,,,
+dlg_front_rebuild,3,chr_sloth,sleepy,들어가 봐. 홀에 교만이 있을 거야. 도면은 걔가 갖고 있어.,Go on in. Pride will be in the hall. She's the one with the floor plan.,,,,
+dlg_hall_pride_first,1,,,"홀 한가운데, 누군가 도면을 펼쳐 들고 서 있었다.","In the middle of the hall, someone stood holding an unrolled floor plan.",,,,임시 — 파트1·2 시트 오면 교체
+dlg_hall_pride_first,2,chr_pride,normal,새로 왔구나. 너도 사고로 떨어졌지?,So you're the new one. Fell in by accident too?,,,,
+dlg_hall_pride_first,3,chr_doctor,surprised,너도… 나야?,"Are you... me, too?",,,,
+dlg_hall_pride_first,4,chr_pride,normal,교만. 이 집 구조는 내가 제일 잘 알아.,Pride. I know this house better than anyone.,[get:ev_chr_pride],,,
+dlg_hall_pride_first,5,chr_pride,normal,이거 가져가. 방이 여섯 개야. 다들 자기 방에 틀어박혀 있어.,Take this. There are six rooms. Everyone's shut away in her own.,[get:ev_house_plan][flag:flg_ch1_start],,,
+dlg_hall_pride_first,6,chr_doctor,normal,도면이 손때로 반들반들하다. 아주 오래 들고 다닌 것처럼.,The plan is worn smooth with handling. As if she's carried it for a very long time.,,,,
+dlg_hall_pride,1,chr_pride,normal,여섯 방 다 돌아봐. 다들 뭔가 하나씩 끼고 살아.,Go through all six rooms. Everyone's clinging to something.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_hall_clock,1,chr_doctor,normal,홀의 괘종시계. 바늘이 3시 14분에서 멈춰 있다.,The hall's grandfather clock. The hands are stopped at 3:14.,,,,시트 개요 — 새벽 3시 14분에 멈춘 공간
+dlg_hall_clock,2,chr_doctor,normal,창밖도 그대로다. 이 저택은 새벽 3시 14분에서 한 발짝도 나가지 못하고 있어.,"Nothing moves outside the window, either. This house hasn't taken a single step past 3:14 a.m.",,,,
+dlg_wrath_talk,1,chr_wrath,angry,뭘 봐. 구경났어?,What are you staring at?,,,,임시 — 파트1·2 시트 오면 교체
+dlg_wrath_talk,2,chr_doctor,normal,당신 기계도 부서졌어?,Was your machine broken too?,,,,
+dlg_wrath_talk,3,chr_wrath,angry,동력부째로 날아갔어. 누군지 잡히기만 해 봐.,"The whole drive assembly, gone. Just let me catch whoever did it.",[get:ev_chr_wrath],,,
+dlg_wrath_clue,1,chr_doctor,normal,찢어진 종이 조각들이 흩어져 있다. 아이 글씨다.,"Scraps of torn paper, scattered. A child's handwriting.",,,,찢어진 초대장 — 분노의 방
+dlg_wrath_clue,2,chr_doctor,normal,…맞춰 보면 읽을 수 있겠어.,"...If I piece them together, I should be able to read it.",[puzzle:pzl_invitation],,,여기서 슬라이딩 퍼즐
+dlg_wrath_clue_done,1,chr_doctor,sad,"""엄마, 꼭 6시까지 와줘 — 딸이""","""Mom, please be here by six — your daughter""",[get:ev_invitation],,,퍼즐 성공 대사. 단서 플래그는 퍼즐의 성공플래그가 켭니다
+dlg_wrath_clue_done,2,chr_wrath,angry,그거 내려놔. …왜 화가 나는지 나도 몰라.,Put that down. ...I don't even know why it makes me angry.,,,,분노 반응은 시트에 없음 — 임시
+dlg_wrath_clue_later,1,chr_doctor,normal,…조각이 영 안 맞네. 조금 있다가 다시 해 보자.,...The pieces won't line up. I'll try again in a bit.,,,,퍼즐을 미뤘을 때
+dlg_sorrow_talk,1,chr_sorrow,sad,"…누구세요? 아, 새로 온 박사구나.",...Who's there? Oh — the new doctor.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_sorrow_talk,2,chr_doctor,normal,당신 기계도 부서졌어?,Was your machine broken too?,,,,
+dlg_sorrow_talk,3,chr_sorrow,sad,응. 안쪽부터 깨져 있었어. 이상하게… 그게 별로 억울하지 않았어.,Yes. It broke from the inside. Strangely... I didn't even feel wronged.,[get:ev_chr_sorrow],,,
+dlg_sorrow_clue,1,chr_doctor,normal,케이크 초 모형 여섯 개. 전부 끝까지 녹아 있다.,Six model birthday candles. Every one burnt all the way down.,[get:ev_candles][flag:flg_clue_candles],,,다 녹아버린 초 6개 — 슬픔의 방
+dlg_sorrow_clue,2,chr_sorrow,sad,이거 볼 때마다 이상하게 눈물이 나.,"Every time I look at these, I start crying. I don't know why.",[portrait:chr_sorrow:sad:side_left],,,
+dlg_arrogance_talk,1,chr_arrogance,normal,인사는 됐고. 내가 누군지는 알지? 평행세계 이론의 권위자.,Skip the greetings. You know who I am — the authority on parallel-world theory.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_arrogance_talk,2,chr_doctor,normal,…그건 나도 마찬가지야.,...So am I.,,,,
+dlg_arrogance_talk,3,chr_arrogance,normal,그러니까 더 이상하지. 내 기계가 부서졌다는 게.,Which makes it stranger. That a machine of mine could break.,[get:ev_chr_arrogance],,,
+dlg_arrogance_clue,1,chr_doctor,normal,시상식 트로피를 줄여 만든 모형. 받침에 날짜가 새겨져 있다.,A scaled-down award trophy. There's a date engraved on the base.,[get:ev_trophy][flag:flg_clue_trophy],,,시상식 트로피 축소 모형 — 오만의 방
+dlg_arrogance_clue,2,chr_arrogance,surprised,이거 내가 받은 거 맞지? 근데 왜 여기 있지.,"This is mine, isn't it? Then why is it here?",,,,
+dlg_greed_talk,1,chr_greed,normal,손님이네. 필요한 거 있으면 말해. 이 집 물건은 다 내 손을 거쳐.,A customer. Tell me what you need — everything in this house goes through my hands.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_greed_talk,2,chr_doctor,normal,타임머신 부품도?,Time machine parts too?,,,,
+dlg_greed_talk,3,chr_greed,normal,그게 제일 비싸지. 만들면 부서지니까.,Those are the priciest. Build one and it breaks.,[get:ev_chr_greed],,,
+dlg_greed_clue,1,chr_doctor,normal,포장도 리본도 그대로인 선물상자. 리본에 끼운 카드에 날짜가 적혀 있다.,"A gift box, wrapping and ribbon untouched. The card under the ribbon has a date on it.",[get:ev_gift][flag:flg_clue_gift],,,안 뜯은 선물상자 — 탐욕의 방
+dlg_greed_clue,2,chr_doctor,normal,이건 얼마야?,How much for this one?,,,,
+dlg_greed_clue,3,chr_greed,normal,이건 안 팔아. 이유는 모르겠는데.,That one's not for sale. Don't ask me why.,,,,
+dlg_lust_talk,1,chr_lust,normal,"새 얼굴… 아니, 같은 얼굴이지. 우리 다.","A new face... no, the same face. All of us.",,,,임시 — 파트1·2 시트 오면 교체
+dlg_lust_talk,2,chr_doctor,normal,당신 기계도?,Your machine too?,,,,
+dlg_lust_talk,3,chr_lust,normal,물론. 다들 서로 의심하느라 바빠. 보고 있으면 꽤 재밌어.,Of course. Everyone's busy suspecting everyone else. It's rather fun to watch.,[get:ev_chr_lust],,,
+dlg_lust_clue,1,chr_doctor,normal,멈춘 손목시계. 3시 12분을 가리키고 있다.,A stopped wristwatch. It reads 3:12.,[get:ev_watch][flag:flg_clue_watch],,,멈춘 손목시계 (3:12) — 색욕의 방
+dlg_lust_clue,2,chr_lust,normal,다들 이 시간에 뭔가 있었던 것처럼 굴어.,Everyone acts like something happened at this hour.,,,,
+dlg_sloth_talk,1,chr_sloth,sleepy,…또 왔어? 난 그냥 누워 있을래.,...You again? I'm just going to lie here.,,,,임시 — 파트1·2 시트 오면 교체
+dlg_sloth_talk,2,chr_sloth,sleepy,궁금한 건 교만한테 물어. 걔가 제일 잘 알아.,"If you're curious, ask Pride. She knows best.",,,,
+dlg_sloth_clue,1,chr_doctor,normal,벽에 걸린 낡은 캘린더. 6월 14일에 동그라미가 쳐져 있다.,An old calendar on the wall. June 14 is circled.,[get:ev_calendar][flag:flg_clue_calendar],,,낡은 캘린더 (6/14 동그라미) — 나태의 방
+dlg_sloth_clue,2,chr_sloth,sleepy,"그날짜, 나도 계속 눈이 가더라.",That date... my eyes keep going back to it too.,,,,
+dlg_part3,1,,,홀에 모두를 불러 모았다.,I gathered everyone in the hall.,[fade_out][fade_in],,,연결용 지문
+dlg_part3,2,chr_doctor,normal,파손 기록을 전부 모아봤어. 패턴이 있어.,I've gathered every damage record. There's a pattern.,,,,시트 파트3
+dlg_part3,3,chr_wrath,angry,말해.,Say it.,,,,
+dlg_part3,4,chr_doctor,normal,부서진 건 항상 동력부야. 그리고 시각도 항상 같아. 새벽 3시 12분.,It's always the drive assembly. And always the same time. 3:12 a.m.,,,,
+dlg_part3,5,chr_sorrow,sad,"……그거 익숙한 시간이야. 나도 몰랐는데, 방금 알았어.","......I know that time. I didn't, until just now.",,,,
+dlg_part3,6,chr_doctor,normal,6월 14일. 전부 같은 날짜를 가리켜.,June 14. Everything points to the same date.,,,,
+dlg_part3,7,chr_arrogance,surprised,내 트로피에 새겨진 날짜야. 시상식 날.,That's the date on my trophy. The day of the ceremony.,,,,
+dlg_part3,8,chr_greed,sad,"……내가 안 파는 유일한 상자, 그것도 그날 거야.",......The one box I won't sell. That's from that day too.,,,,
+dlg_part3,9,chr_doctor,normal,이게 우연일 리 없어. 우리 전부한테 같은 기억의 파편이 남아있다는 거잖아.,This can't be a coincidence. It means every one of us carries a fragment of the same memory.,,,,
+dlg_part3,10,chr_lust,normal,우리가 전부 같은 사람이니까. 그날 뭔가 있었어. 다들 잊은 척하고 있을 뿐이야.,Because we're all the same person. Something happened that day. Everyone's just pretending to have forgotten.,,,,
+dlg_part3,11,chr_doctor,surprised,새벽 3시 14분. 그날 내가… 집에 늦게 들어간 날이야.,"3:14 a.m. That day, I... came home late.",,,,
+dlg_part3,12,chr_doctor,sad,(침묵) ……딸 생일이었어.,(silence) ......It was my daughter's birthday.,[flag:flg_part3_done][puzzle:pzl_accuse],,,이 줄을 넘기면 지목 추리 퍼즐
+dlg_accuse_start,1,chr_doctor,normal,매번 기계를 부순 게 누군지… 이제 말할 수 있어.,Who broke the machines every time... I can say it now.,[puzzle:pzl_accuse],,,파트3 끝에서 지목을 미뤘을 때
+dlg_accuse_fail,1,chr_doctor,normal,…아직이야. 조금만 더 생각해 보자.,...Not yet. Let me think a little longer.,,,,
+dlg_accuse_wrong_person,1,chr_doctor,normal,…아니야. 이 사람 기계도 똑같이 부서졌어.,...No. Her machine was broken just the same.,,,,
+dlg_accuse_wrong_thing,1,chr_doctor,normal,이건 그날의 흔적이야. 누가 부쉈는지까지 말해 주진 않아.,This is a trace of that day. It doesn't tell me who did the breaking.,,,,
+dlg_part4,1,chr_doctor,normal,교만. 너는 이 집 구조를 제일 잘 안다고 했지.,Pride. You said you know this house better than anyone.,,,,시트 파트4
+dlg_part4,2,chr_pride,normal,응.,Yes.,[portrait:chr_pride:normal:front],,,
+dlg_part4,3,chr_doctor,normal,근데 이상해. 우리 전부 사고로 떨어졌어. 그런데 너만 처음부터 도면을 갖고 있어.,But it's strange. We all fell in by accident. And yet you alone had the floor plan from the start.,,,,
+dlg_part4,4,chr_arrogance,surprised,"……그러네. 왜 이제야 눈치챘지, 우리.",......She's right. Why are we only noticing now?,,,,
+dlg_part4,5,chr_wrath,angry,6월 14일. 그것도 너였지?,"June 14. That was you too, wasn't it?",,,,
+dlg_part4,6,chr_pride,normal,"(웃음) 다들 그 초를 보고도 몰랐으면서, 이제 와서.","(laughs) You all looked at those candles and still didn't know. And now, suddenly.",,,,
+dlg_part4,7,chr_pride,normal,응. 일곱 번 다 나였어. 새벽 3시 12분에. 동력부만.,"Yes. All seven times, it was me. At 3:12 a.m. Only the drive assemblies.",,,,
+dlg_part4,8,chr_greed,angry,왜! 나갈 수 있었잖아! 전부!,Why?! We could have gotten out! All of us!,,,,
+dlg_part4,9,chr_pride,sad,"그날 이후로, 아무도 나갈 자격 없다고 생각했으니까.","Because after that day, I decided nobody deserved to leave.",[portrait:chr_pride:sad:side_left],,,
+dlg_part4,10,chr_doctor,surprised,"……너, 평행세계의 내가 아니지.","......You're not a parallel version of me, are you.",,,,
+dlg_part4,11,chr_pride,sad,이제야.,Only now.,[portrait:chr_pride:sad:front][goto:dlg_part5],,,
+dlg_part5,1,chr_pride,sad,"그 초, 기억해?",Those candles. Do you remember?,[fade_out][bgm:bgm_truth][wait:0.3][fade_in],,,시트 파트5
+dlg_part5,2,chr_doctor,sad,…….,.......,,,,
+dlg_part5,3,chr_pride,sad,"여섯 개였어. 일곱 개가 아니라 여섯. 하나는 내가 미리 불어서 껐어. ""엄마 오면 같이 켜자""고.","There were six. Not seven — six. I blew one out ahead of time. ""We'll light it together when Mom gets here.""",,,,
+dlg_part5,4,chr_pride,sad,"근데 안 왔잖아. 자정 지나고, 1시 지나고, 3시 지나고.",But you didn't come. Midnight passed. Then one. Then three.,,,,
+dlg_part5,5,chr_pride,sad,3시 14분에 현관문 여는 소리 들었어. 그게 다야. 그게 내 열 살 생일의 전부야.,At 3:14 I heard the front door open. That's all. That's the whole of my tenth birthday.,[portrait:chr_pride:sad:back],,,
+dlg_part5,6,chr_doctor,sad,그날은… 상을 받은 날이었어. 20년 연구가—,That day... was the day I got the award. Twenty years of research—,,,,
+dlg_part5,7,chr_pride,angry,알아. 뉴스에서 봤어. 우리 집 아니고 시상식장에서.,I know. I watched it on the news. Not at home — at the ceremony.,[portrait:chr_pride:angry:back_left],,,
+dlg_part5,8,chr_pride,angry,"""끝나고 바로 갈게""라고 했잖아. 초대장에 그렇게 적어놨잖아, 내가.","You said ""I'll come right after."" I wrote it on the invitation myself.",[portrait:chr_pride:angry:front],,,
+dlg_part5,9,chr_pride,sad,"(초대장을 꺼내 보인다) 이거, 그때 그거야. 반으로 찢어서 버렸는데, 여기 다시 있더라.","(holds up the invitation) This is that one. I tore it in half and threw it away, but here it was again.",,,,
+dlg_part5,10,chr_doctor,sad,……미안해.,......I'm sorry.,,,,
+dlg_part5,11,chr_pride,angry,"사과, 그때 했어야지.",You should have said that back then.,[portrait:chr_pride:angry:side_left],,,
+dlg_part5,12,chr_pride,normal,나 열여섯 살 때 엄마 연구실에서 설계도 훔쳤어. 그리고 평행세계에서 엄마를 일곱 명 데려왔어.,"When I was sixteen, I stole the blueprints from your lab. And I brought seven of you here from parallel worlds.",[portrait:chr_pride:normal:front],,,
+dlg_part5,13,chr_pride,normal,"여기선 상도, 인터뷰도, 시상식도 없어. 그냥… 엄마만 있어. 계속.","Here there are no awards, no interviews, no ceremonies. Just... Mom. Always.",,,,
+dlg_part5,14,chr_doctor,surprised,그래서 매번 타임머신을 부순 거야? 나가면 다시 그때처럼 될까 봐?,So that's why you broke the time machines every time? Afraid it would be like that again if we left?,,,,
+dlg_part5,15,chr_pride,sad,"응. 누구 하나라도 나가면, 다시 그 초 여섯 개짜리 방으로 돌아갈 것 같았어.","Yes. If even one of you left, I felt I'd be back in that room with six candles.",,,,
+dlg_part5,16,chr_sorrow,sad,……그래서 우리도 다 그 밤을 조금씩 기억하고 있었던 거구나.,......So that's why each of us remembered a little of that night.,,,,
+dlg_part5,17,chr_pride,sad,다들 같은 사람이니까. 그 밤도 다 같이 가진 거지.,Because you're all the same person. So you all share that night too.,,,,
+dlg_part5,18,chr_doctor,normal,"촛불, 다시 켜자.",Let's light the candles again.,,,,
+dlg_part5,19,chr_pride,surprised,……지금?,......Now?,,,,
+dlg_part5,20,chr_doctor,normal,"6개 말고, 일곱 개로.",Not six. Seven.,,,,
+dlg_part5,21,chr_pride,sad,…….,.......,,,,
+dlg_part5,22,chr_doctor,sad,늦었지만. 정말 늦었지만.,It's late. I know it's so very late.,,,,여기서 엔딩 선택지
+dlg_end_together,1,chr_doctor,normal,같이 만들자. 이번엔 3시 14분 전에 돌아올게. 약속해.,Let's build it together. This time I'll be home before 3:14. I promise.,,,,엔딩 A
+dlg_end_together,2,chr_pride,normal,"……약속, 이번엔 믿어볼게.","......This time, I'll believe your promise.",[ending:end_together],,,
+dlg_end_stay,1,chr_doctor,sad,이 방에 있을게. 촛불 다 탈 때까지.,I'll stay in this room. Until the candles burn down.,,,,엔딩 B
+dlg_end_stay,2,chr_pride,sad,"(작게) …생일 축하해, 나. 아니 우리.","(quietly) ...Happy birthday, me. No — us.",[portrait:chr_pride:sad:back_right][ending:end_stay],,,
+dlg_end_leave,1,chr_pride,sad,"그럴 줄 알았어. 상 받으러 가야지, 이번에도.","I knew it. You've got an award to go collect, this time too.",[portrait:chr_pride:sad:back],,,엔딩 C
+dlg_end_leave,2,,,(초 여섯 개가 다시 놓인다. 타임머신 가동),(Six candles are set out again. The time machine starts up.),[sfx:lever][shake][ending:end_leave],,,

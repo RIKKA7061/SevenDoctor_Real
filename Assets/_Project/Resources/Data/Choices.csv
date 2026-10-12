@@ -1,3 +1,6 @@
 ﻿choice_id,dialogue_id,line_no,선택지텍스트,선택지텍스트_en,이동대화,조건플래그,설정플래그,비고
 cho_front_a,dlg_front_sloth,6,왜 갇혀 있는 거지?,Why are we locked in here?,dlg_front_why,,,
 cho_front_b,dlg_front_sloth,6,타임머신을 다시 만들면 되잖아.,Can't we just build the machine again?,dlg_front_rebuild,,,
+cho_end_together,dlg_part5,22,함께 고친다,Fix it together,dlg_end_together,,flg_end_together,엔딩 A
+cho_end_stay,dlg_part5,22,남는다,Stay,dlg_end_stay,,flg_end_stay,엔딩 B
+cho_end_leave,dlg_part5,22,혼자 떠난다,Leave alone,dlg_end_leave,,flg_end_leave,엔딩 C

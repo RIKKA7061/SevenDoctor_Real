@@ -14,13 +14,20 @@ namespace SevenDoctors.Room
     /// 씬은 늘리지 않습니다 — 방 8개를 각각 씬으로 만들면 상태 관리가 지옥이 되고,
     /// 씬 로드마다 매니저를 다시 찾아야 합니다. 배경과 핫스팟만 갈아끼웁니다.
     ///
-    /// 핫스팟 좌표는 시트의 x/y/w/h(정규화 0~1)를 씁니다.
+    /// 핫스팟 좌표는 시트의 x/y/w/h(정규화 0~1, 왼쪽 위 기준)를 씁니다. 좌표가 있으면 화면 속
+    /// 물건을 직접 누르고(HotspotView), '이미지' 칸에 적은 소품·인물 그림을 그 자리에 세웁니다.
     /// 비어 있으면 화면 하단에 버튼 목록으로 자동 배치합니다 —
     /// 배경 아트가 아직 없어도 기획자가 동선을 바로 확인할 수 있게 하기 위해서입니다.
     /// </summary>
     public class RoomController : MonoBehaviour
     {
         public string CurrentRoomId { get; private set; }
+
+        /// <summary>
+        /// 켜면 해금 플래그를 안 보고 어느 방이든 들어갑니다. 개발자 방 이동 키(DevPuzzleMenu)만 켭니다.
+        /// 플래그를 건드리지 않고 잠금만 풀기 때문에 진행 상황은 그대로입니다.
+        /// </summary>
+        public bool IgnoreLocks { get; set; }
 
         /// <summary>
         /// 핫스팟을 누를 때마다 울립니다. 도우미 로봇이 '뭔가 누르긴 하는데
@@ -38,7 +45,11 @@ namespace SevenDoctors.Room
             new Color(0.22f, 0.16f, 0.16f), new Color(0.12f, 0.13f, 0.20f),
         };
 
-        public void Enter(string roomId)
+        /// <summary>
+        /// 방에 들어갑니다. keepState 는 대사 도중에 장면만 바꿀 때([room:] 태그) 씁니다 —
+        /// 탐색 상태로 돌려 버리면 대사가 흐르는 중에 핫스팟이 눌립니다.
+        /// </summary>
+        public void Enter(string roomId, bool keepState = false)
         {
             if (Game.Db == null) return;
 
@@ -48,7 +59,7 @@ namespace SevenDoctors.Room
                 return;
             }
 
-            if (!Game.Flags.Check(room.RequiredFlag))
+            if (!IgnoreLocks && !Game.Flags.Check(room.RequiredFlag))
             {
                 Game.UI.Toast(Loc.T("ui.room.locked"));
                 return;
@@ -63,7 +74,7 @@ namespace SevenDoctors.Room
             Game.UI.SetRoomLabel(room.DisplayName);
             RebuildHotspots();
 
-            Game.State = GameState.Exploring;
+            if (!keepState) Game.State = GameState.Exploring;
             Debug.Log($"[Room] 입장: {room.DisplayName} ({roomId})");
         }
 
@@ -125,7 +136,7 @@ namespace SevenDoctors.Room
         {
             bool placed = h.HasRect;
 
-            // 좌표가 있으면 투명한 클릭 영역, 없으면 라벨이 보이는 버튼
+            // 좌표가 있으면 화면 속 물건을 직접 누르는 영역(HotspotView), 없으면 라벨이 보이는 버튼
             var button = UIFactory.Btn(
                 $"HS_{h.Id}",
                 Game.UI.HotspotLayer,
@@ -143,6 +154,9 @@ namespace SevenDoctors.Room
                 rt.anchorMax = new Vector2(h.X + h.W, 1f - h.Y);
                 rt.offsetMin = Vector2.zero;
                 rt.offsetMax = Vector2.zero;
+
+                // 글자도 이름표도 없습니다. 그림(없으면 깜빡이는 점)이 곧 버튼입니다.
+                HotspotView.Attach(button, h);
             }
             else
             {

@@ -117,6 +117,8 @@ namespace SevenDoctors.UI
             if (!ok) return false;
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
+            // 방 안에 세워 둔 소품·인물(핫스팟 그림)이 대화 초상화를 가리면 안 됩니다.
+            PortraitLayer.SetAsLastSibling();
             Title = TitleView.Create(Screen);
             Bot = HelperBotView.Create(Screen);
 
@@ -159,6 +161,8 @@ namespace SevenDoctors.UI
             PuzzleLayer.gameObject.SetActive(false);
 
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
+            // 방 안에 세워 둔 소품·인물(핫스팟 그림)이 대화 초상화를 가리면 안 됩니다.
+            PortraitLayer.SetAsLastSibling();
             Title = TitleView.Create(Screen);
             Bot = HelperBotView.Create(Screen);
 

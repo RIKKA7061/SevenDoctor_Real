@@ -11,15 +11,16 @@ namespace SevenDoctors.Puzzle
     /// <summary>
     /// 퍼즐 실행기.
     ///
-    /// 설계 핵심: 퍼즐은 13개지만 '엔진'은 5개고, 지금 구현한 건 1순위 두 개입니다.
+    /// 설계 핵심: 퍼즐은 13개지만 '엔진'은 5개고, 지금 구현한 건 세 개입니다.
     ///   CodeLock  — 성격 조합 자물쇠 / 추억의 날짜 금고 / 애너그램(변형)
     ///   Deduction — 모순 찾기 / 거짓말쟁이 대화 / 어긋난 증언(2장 메인)
+    ///   Slide     — 그림 조각 밀어 맞추기 (PuzzleDirector.Slide.cs)
     /// 나머지(Assemble / FindOdd / MiniGame)는 여기에 case 를 추가하면 같은 방식으로 붙습니다.
     ///
     /// 실패 페널티는 두지 않습니다. 원스토리 추리게임에서 페널티는 이탈률만 올립니다.
     /// 대신 오답마다 다른 반응 대사를 틀어서, 틀리는 것 자체가 콘텐츠가 되게 합니다.
     /// </summary>
-    public class PuzzleDirector : MonoBehaviour
+    public partial class PuzzleDirector : MonoBehaviour
     {
         public bool LastResultSuccess { get; private set; }
 
@@ -56,6 +57,11 @@ namespace SevenDoctors.Puzzle
 
                 case "deduction":
                     yield return RunDeduction(puzzle);
+                    break;
+
+                case "slide":
+                case "sliding":
+                    yield return RunSlide(puzzle);   // PuzzleDirector.Slide.cs
                     break;
 
                 default:
@@ -309,7 +315,7 @@ namespace SevenDoctors.Puzzle
             var cards = UIFactory.Rect("Cards", body);
             UIFactory.Anchor(cards, new Vector2(0, 0), new Vector2(1, 1),
                              new Vector2(0, 76), new Vector2(0, -268));
-            UIFactory.Grid(cards, new Vector2(240, 84), new Vector2(14, 14), 5);
+            UIFactory.Grid(cards, new Vector2(280, 100), new Vector2(14, 14), 5);
 
             void RebuildCards()
             {
@@ -330,8 +336,9 @@ namespace SevenDoctors.Puzzle
                 foreach (var ev in candidates)
                 {
                     var captured = ev.Id;
-                    var btn = UIFactory.Btn($"Card_{ev.Id}", cards, ev.DisplayName, 23,
+                    var btn = UIFactory.Btn($"Card_{ev.Id}", cards, ev.DisplayName, 21,
                                             new Color(0.13f, 0.14f, 0.19f), UIFactory.Ink);
+                    AddCardPicture(btn, ev);
                     btn.onClick.AddListener(() =>
                     {
                         filled[activeSlot] = captured;
@@ -410,6 +417,38 @@ namespace SevenDoctors.Puzzle
             }
 
             LastResultSuccess = solved;
+        }
+
+        /// <summary>
+        /// 후보 카드에 증거 그림과 '크게 보기' 버튼을 붙입니다. 퍼즐 중에는 노트를 못 여니,
+        /// 그림 속 단서를 여기서 바로 들여다볼 수 있어야 합니다. 그림이 없으면 글자만 둡니다.
+        /// </summary>
+        static void AddCardPicture(Button card, EvidenceRow ev)
+        {
+            var picture = EvidenceZoomView.LoadImage(ev.IconKey);
+            if (picture == null) return;
+
+            var img = UIFactory.Box("Picture", card.transform, Color.white);
+            UIFactory.Anchor(img.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f),
+                             new Vector2(8, -42), new Vector2(92, 42));
+            img.sprite = picture;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+
+            var label = card.transform.Find("Label") as RectTransform;
+            if (label != null)
+            {
+                label.offsetMin = new Vector2(98, label.offsetMin.y);
+                label.offsetMax = new Vector2(-52, label.offsetMax.y);
+            }
+
+            // 카드 안의 작은 버튼 — 카드를 고르지 않고 그림만 크게 봅니다.
+            var zoom = UIFactory.Btn("Zoom", card.transform, "+", 30,
+                                     new Color(0.20f, 0.22f, 0.30f), UIFactory.Accent);
+            UIFactory.Anchor(zoom.GetComponent<RectTransform>(), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+                             new Vector2(-48, -22), new Vector2(-6, 22));
+            string id = ev.Id;
+            zoom.onClick.AddListener(() => EvidenceZoomView.Open(id));
         }
     }
 }

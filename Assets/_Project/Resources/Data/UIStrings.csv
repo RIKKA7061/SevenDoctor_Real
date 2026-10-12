@@ -1,5 +1,5 @@
 ﻿string_id,ko,en,비고
-ui.title.name,일곱 박사,Seven Doctors,타이틀
+ui.title.name,일곱 개의 저택,Seven Houses,타이틀
 ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The same face.,
 ui.title.start,시작하기,Start,
 ui.title.language,언어,Language,
@@ -29,4 +29,16 @@ ui.puzzle.think_more,조금 더 생각해본다,Think it over,
 ui.category.인물,인물,person,추리 후보 카테고리 표시용
 ui.category.물건,물건,object,
 ui.category.기록,기록,record,
-ui.hint.none,"지금은 딱히 드릴 힌트가 없어요. 주변을 한 번 더 둘러볼까요?","I don't have a hint right now. Shall we look around once more?",도우미 로봇
+ui.hint.none,지금은 딱히 드릴 힌트가 없어요. 주변을 한 번 더 둘러볼까요?,I don't have a hint right now. Shall we look around once more?,도우미 로봇
+ui.ending.the_end,— 끝 —,— THE END —,엔딩 카드
+ui.ending.restart,처음으로,Back to the Beginning,엔딩 카드
+ui.notebook.zoom_hint,눌러서 크게 보기,Click to take a closer look,노트 — 증거 그림
+ui.zoom.help,휠 · 클릭: 더 크게  /  드래그: 옮기기  /  Esc · 바깥 클릭: 닫기,Wheel / click: zoom in  /  Drag: pan  /  Esc or click outside: close,증거 크게 보기
+ui.puzzle.slide.goal,완성하면 이런 모양,What it should look like,슬라이딩 퍼즐
+ui.puzzle.slide.how,빈칸 옆의 조각을 누르면 그 자리로 밀려 들어갑니다.,Click a piece next to the gap and it slides in.,슬라이딩 퍼즐
+ui.puzzle.slide.moves,{0}번 움직임,{0} moves,슬라이딩 퍼즐
+ui.puzzle.slide.numbers_on,번호 보기,Show numbers,슬라이딩 퍼즐
+ui.puzzle.slide.numbers_off,번호 숨기기,Hide numbers,슬라이딩 퍼즐
+ui.puzzle.slide.shuffle,다시 섞기,Shuffle again,슬라이딩 퍼즐
+ui.puzzle.slide.autosolve,도우미에게 맡기기,Let the helper do it,슬라이딩 퍼즐 — 많이 움직이면 나타남
+ui.puzzle.slide.done,…맞춰졌다.,...It fits.,슬라이딩 퍼즐

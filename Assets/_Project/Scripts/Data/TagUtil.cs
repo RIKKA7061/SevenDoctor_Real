@@ -16,6 +16,7 @@ namespace SevenDoctors.Data
             public string Key;    // flag, get, goto, puzzle, wait, shake, bgm, sfx, portrait, fade_in, fade_out
             public string Value;  // 첫 번째 인자 (없으면 빈 문자열)
             public string Value2; // 두 번째 인자 (portrait 처럼 인자가 둘인 경우)
+            public string Value3; // 세 번째 인자 (portrait 의 몸 방향)
         }
 
         public static List<Tag> ExtractTags(string raw)
@@ -34,6 +35,7 @@ namespace SevenDoctors.Data
                     Key    = parts[0].Trim().ToLowerInvariant(),
                     Value  = parts.Length > 1 ? parts[1].Trim() : string.Empty,
                     Value2 = parts.Length > 2 ? parts[2].Trim() : string.Empty,
+                    Value3 = parts.Length > 3 ? parts[3].Trim() : string.Empty,
                 });
             }
 

@@ -36,8 +36,9 @@ namespace SevenDoctors.EditorTools
             // 폴더별 해상도 상한 — 배경은 크게, 아이콘은 작게
             if (assetPath.Contains("/Backgrounds/"))      importer.maxTextureSize = 2048;
             else if (assetPath.Contains("/Characters/"))  importer.maxTextureSize = 2048;
+            else if (assetPath.Contains("/Portraits/"))   importer.maxTextureSize = 2048;
             else if (assetPath.Contains("/Faces/"))       importer.maxTextureSize = 2048;
-            else if (assetPath.Contains("/Evidence/"))    importer.maxTextureSize = 512;
+            else if (assetPath.Contains("/Evidence/"))    importer.maxTextureSize = 1024;   // 노트에서 크게 보기 때문에
             else                                          importer.maxTextureSize = 1024;
 
             importer.textureCompression = TextureImporterCompression.CompressedHQ;

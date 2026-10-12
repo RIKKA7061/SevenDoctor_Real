@@ -11,11 +11,11 @@ namespace SevenDoctors.Dialogue
     /// 대사 재생기. 시트의 Dialogues / Choices 를 그대로 먹고 돌립니다.
     ///
     /// 한 줄의 처리 순서:
-    ///   1) 연출 태그 중 '보여주기 전'에 해당하는 것 실행  (bgm, sfx, portrait, fade, shake, wait)
+    ///   1) 연출 태그 중 '보여주기 전'에 해당하는 것 실행  (bgm, sfx, portrait, fade, shake, wait, room)
     ///   2) 타이핑 출력 → 클릭 대기 (클릭하면 즉시 전체 출력, 한 번 더 누르면 다음 줄)
     ///   3) 상태 태그 실행                                (flag, get)
     ///   4) 이 줄에 선택지가 달려 있으면 선택지 표시
-    ///   5) 흐름 태그 실행                                (puzzle, goto)
+    ///   5) 흐름 태그 실행                                (puzzle, goto, ending)
     /// </summary>
     public class DialogueRunner : MonoBehaviour
     {
@@ -84,6 +84,31 @@ namespace SevenDoctors.Dialogue
             _current = StartCoroutine(RunRoutine(dialogueId, onComplete));
         }
 
+        /// <summary>
+        /// 재생 중인 대화를 그 자리에서 끊습니다. 끊긴 대화의 onComplete 는 부르지 않습니다.
+        /// 개발자 미리보기(F1)가 프롤로그 도중에도 끼어들 수 있게 하려는 것이라,
+        /// 본편 흐름에서는 쓰지 마세요 — 뒤쪽 줄의 flag/get 태그가 통째로 빠집니다.
+        /// </summary>
+        public void Stop()
+        {
+            if (_current != null) StopCoroutine(_current);
+            _current = null;
+            if (!IsPlaying) return;
+
+            Game.Audio?.StopVoice();
+            Game.UI.Dialogue.Hide();
+            Game.UI.Choices.Hide();
+            if (Game.UI.Portrait != null)
+            {
+                Game.UI.Portrait.SetSpeaking(false);
+                Game.UI.Portrait.SetPose(UI.PortraitView.PoseFront);
+                Game.UI.Portrait.Hide();
+            }
+
+            IsPlaying = false;
+            Game.State = GameState.Exploring;
+        }
+
         IEnumerator RunRoutine(string startId, Action onComplete)
         {
             IsPlaying = true;
@@ -94,6 +119,8 @@ namespace SevenDoctors.Dialogue
 
             Game.UI.Dialogue.Hide();
             Game.UI.Choices.Hide();
+            // 돌아선 채 끝났어도 다음 대화는 정면에서 시작합니다.
+            Game.UI.Portrait?.SetPose(UI.PortraitView.PoseFront);
             Game.UI.Portrait?.Hide();
             IsPlaying = false;
             _current = null;
@@ -170,6 +197,11 @@ namespace SevenDoctors.Dialogue
                         else if (tag.Key == "goto")
                         {
                             gotoTarget = tag.Value;
+                        }
+                        else if (tag.Key == "ending")
+                        {
+                            // 엔딩 카드에서 '처음으로' 를 누르면 게임이 새로 시작되므로 돌아오지 않습니다.
+                            yield return UI.EndingView.Play(tag.Value);
                         }
                     }
                     if (!string.IsNullOrEmpty(gotoTarget)) { jumpTo = gotoTarget; break; }
@@ -294,7 +326,13 @@ namespace SevenDoctors.Dialogue
                         break;
 
                     case "portrait":
-                        ApplyPortraitTag(tag.Value, tag.Value2);
+                        ApplyPortraitTag(tag.Value, tag.Value2, tag.Value3);
+                        break;
+
+                    case "room":
+                        // 대사 도중 장면 전환. 암전([fade_out]) 뒤에 쓰면 눈을 뜨니 다른 곳입니다.
+                        // 대화 상태는 그대로 둡니다 — 탐색으로 돌리면 대사 중에 핫스팟이 눌립니다.
+                        Game.Room?.Enter(tag.Value, keepState: true);
                         break;
                 }
             }
@@ -316,8 +354,11 @@ namespace SevenDoctors.Dialogue
             Game.UI.Portrait.Show(character.PortraitKey, face);
         }
 
-        /// <summary>[portrait:인물ID:표정] 태그 처리.</summary>
-        void ApplyPortraitTag(string characterId, string faceKey)
+        /// <summary>
+        /// [portrait:인물ID:표정] / [portrait:인물ID:표정:방향] 태그 처리.
+        /// 방향은 front / side_left / side_right / back. 비워 두면 방향은 그대로입니다.
+        /// </summary>
+        void ApplyPortraitTag(string characterId, string faceKey, string pose)
         {
             if (Game.UI == null || Game.UI.Portrait == null) return;
 
@@ -326,6 +367,8 @@ namespace SevenDoctors.Dialogue
                 Game.UI.Portrait.Show(character.PortraitKey, faceKey);
             else
                 Game.UI.Portrait.SetFace(faceKey);
+
+            if (!string.IsNullOrEmpty(pose)) Game.UI.Portrait.SetPose(pose);
         }
 
         void ProcessStateTags(List<TagUtil.Tag> tags)

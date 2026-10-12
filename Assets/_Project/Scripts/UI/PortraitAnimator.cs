@@ -29,7 +29,7 @@ namespace SevenDoctors.UI
             public RectTransform EyeGroup;   // 세로로 눌러서 깜빡입니다
             public RectTransform Pupils;     // 눈 안에서 미세하게 흔들립니다
             public Image Mouth;
-            public Sprite MouthClosed, MouthOpen;
+            public Sprite MouthClosed, MouthOpen;   // MouthClosed 가 없으면 Mouth 를 켜고 끄기만 합니다 (손그림)
             public Vector2 MouthClosedPos, MouthClosedSize;
             public Vector2 MouthOpenPos, MouthOpenSize;
             public bool CanBlink = true;
@@ -304,6 +304,14 @@ namespace SevenDoctors.UI
         {
             _mouthOpenNow = open;
             if (_rig == null || _rig.Mouth == null) return;
+
+            // 손그림은 다문 입이 그림에 이미 있습니다. 벌린 입 덮개를 켜고 끄기만 합니다.
+            if (_rig.MouthClosed == null)
+            {
+                _mouthOpenNow = open && _rig.MouthOpen != null;
+                _rig.Mouth.enabled = _mouthOpenNow;
+                return;
+            }
 
             // 벌린 입과 다문 입은 크기가 달라서 위치까지 같이 옮겨야 합니다.
             var sprite = open ? _rig.MouthOpen : _rig.MouthClosed;

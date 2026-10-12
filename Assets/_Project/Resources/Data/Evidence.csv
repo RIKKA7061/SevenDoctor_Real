@@ -1,8 +1,15 @@
 ﻿evidence_id,이름,이름_en,카테고리,설명,설명_en,아이콘키,획득처,비고
-ev_broken_gear,부서진 톱니,Broken Gear,물건,타임머신 동력부의 일부. 바깥이 아니라 안쪽에서 부서진 흔적이 있다.,Part of a time machine's drive assembly. It broke from the inside out — not the other way around.,ic_gear,거실,
-ev_sloth_note,나태의 기록,Sloth's Notes,기록,'또 부서졌다. 몇 번째인지 세는 것도 그만뒀다.',"'Broken again. I've stopped counting which time this is.'",ic_note,거실,
-ev_child_drawing,아이의 그림,A Child's Drawing,물건,"저택에 있을 리 없는 크레파스 그림. 두 사람이 그려져 있고, 한 명의 얼굴만 까맣게 덧칠돼 있다.","A crayon drawing that has no business being in this house. Two figures — and one of the faces is scribbled over in black.",ic_drawing,창고,3장 복선
-ev_greed_ledger,탐욕의 장부,Greed's Ledger,기록,누가 무엇을 가져갔는지 빼곡히 적혀 있다. 그런데 7번째 칸만 비어 있다.,Every item anyone ever took is logged in a tight hand. Only the seventh row is blank.,ic_ledger,창고,
-ev_chr_sloth,나태,Sloth,인물,"모든 걸 포기한 듯 무기력하지만, 누구보다 상황을 잘 안다.","Listless, as if he gave up on everything — and yet he understands this place better than anyone.",ic_sloth,거실,추리 슬롯용 인물 카드
-ev_chr_greed,탐욕,Greed,인물,모든 기술과 지식을 독점하려 한다.,Hoards every scrap of knowledge and technology for himself.,ic_greed,창고,추리 슬롯용 인물 카드
-ev_chr_pride,교만,Pride,인물,아무도 이름을 입에 올리지 않는 일곱 번째.,The seventh — the one nobody will say out loud.,ic_pride,???,추리 슬롯용 인물 카드
+ev_house_plan,저택 도면,Floor Plan,물건,교만이 건네준 저택 도면. 방 여섯 개와 홀이 빠짐없이 그려져 있다. 손때가 잔뜩 묻어 있다. 곳곳에 뭔가 표시가 있다.,"The floor plan Pride handed you. Six rooms and the hall, nothing left out. Worn smooth with handling — and marked here and there.",ic_house_plan,저택 홀,임시 — 파트1·2 시트 오면 교체 — 파트4 '너만 처음부터 도면을 갖고 있어' 의 근거
+ev_invitation,찢어진 초대장,Torn Invitation,물건,"""엄마, 꼭 6시까지 와줘 — 딸이"" 손글씨. 반으로 찢겨 있다.","""Mom, please be here by six — your daughter,"" in a child's hand. Torn in half.",ic_invitation,분노의 방,단서 오브젝트
+ev_candles,다 녹아버린 초 6개,Six Burnt-Down Candles,물건,케이크 초 모형 여섯 개. 전부 끝까지 녹아 있다.,Six model birthday candles. Every one has burnt all the way down.,ic_candles,슬픔의 방,단서 오브젝트
+ev_trophy,시상식 트로피 축소 모형,Miniature Award Trophy,물건,시상식 트로피를 줄여 만든 모형. 받침의 명판에 글씨가 새겨져 있다.,A scaled-down replica of an award trophy. Something is engraved on the plate at its base.,ic_trophy,오만의 방,단서 오브젝트
+ev_gift,안 뜯은 선물상자,Unopened Gift Box,물건,포장도 리본도 그대로인 선물상자. 리본에 작은 카드가 끼워져 있다.,Wrapping and ribbon untouched. A small card is tucked under the ribbon.,ic_gift,탐욕의 방,단서 오브젝트
+ev_watch,멈춘 손목시계,Stopped Wristwatch,물건,3시 12분에서 멈춘 손목시계.,A wristwatch stopped at 3:12.,ic_watch,색욕의 방,단서 오브젝트
+ev_calendar,낡은 캘린더,Old Calendar,기록,6월 14일에 동그라미가 쳐진 낡은 캘린더. 그 칸에 뭔가 적혀 있다.,An old calendar with June 14 circled. Something is written in that box.,ic_calendar,나태의 방,단서 오브젝트
+ev_chr_wrath,분노,Wrath,인물,평행세계의 나. 늘 무언가에 화가 나 있다.,"Another me, from a parallel world. Always angry at something.",ic_chr_wrath,분노의 방,추리 슬롯용 인물 카드
+ev_chr_sorrow,슬픔,Sorrow,인물,평행세계의 나. 이유 없이 눈물이 난다고 한다.,Another me. Says the tears come for no reason.,ic_chr_sorrow,슬픔의 방,추리 슬롯용 인물 카드
+ev_chr_arrogance,오만,Arrogance,인물,평행세계의 나. 자기가 받은 상 이야기를 좋아한다.,Another me. Likes to talk about her awards.,ic_chr_arrogance,오만의 방,추리 슬롯용 인물 카드
+ev_chr_greed,탐욕,Greed,인물,평행세계의 나. 저택의 물건은 전부 탐욕의 손을 거친다.,Another me. Everything in this house passes through her hands.,ic_chr_greed,탐욕의 방,추리 슬롯용 인물 카드
+ev_chr_lust,색욕,Lust,인물,평행세계의 나. 남의 속을 잘 들여다본다.,Another me. She sees right through people.,ic_chr_lust,색욕의 방,추리 슬롯용 인물 카드
+ev_chr_sloth,나태,Sloth,인물,평행세계의 나. 모든 걸 포기한 듯하지만 이곳을 제일 오래 지켜봤다.,"Another me. Seems to have given up on everything, yet she's watched this place the longest.",ic_chr_sloth,저택 앞,추리 슬롯용 인물 카드
+ev_chr_pride,교만,Pride,인물,이 집 구조를 자기가 제일 잘 안다고 한다. 처음부터 도면을 갖고 있었다.,Says she knows this house better than anyone. Had the floor plan from the very start.,ic_chr_pride,저택 홀,추리 슬롯용 인물 카드. 정답

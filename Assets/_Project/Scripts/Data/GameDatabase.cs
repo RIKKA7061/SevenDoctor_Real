@@ -150,6 +150,13 @@ namespace SevenDoctors.Data
             return result;
         }
 
+        public EndingRow FindEnding(string endingId)
+        {
+            foreach (var e in Endings)
+                if (e.Id == endingId) return e;
+            return null;
+        }
+
         public CharacterRow FindCharacterInRoom(string roomId)
         {
             foreach (var kv in Characters)
@@ -258,6 +265,15 @@ namespace SevenDoctors.Data
                 MustFlag(h.RequiredFlag, $"Hotspots[{h.Id}].필요플래그");
                 if (h.Type == "move") MustRoom(h.Target, $"Hotspots[{h.Id}].연결대화(이동 대상)");
                 else MustDialogue(h.Target, $"Hotspots[{h.Id}].연결대화");
+
+                // 이미지 칸의 chr: / shadow: 는 인물 ID 를 가리킵니다. 소품 PNG 는 여기서 못 봅니다
+                // (없으면 실행 중에 HotspotView 가 한 번 경고하고 클릭 영역만 둡니다).
+                string image = (h.Image ?? "").Trim();
+                int colon = image.IndexOf(':');
+                if (colon > 0 && !Characters.ContainsKey(image.Substring(colon + 1).Trim()))
+                    errors.Add($"Hotspots[{h.Id}].이미지 → 존재하지 않는 인물 '{image}'");
+                if (!string.IsNullOrEmpty(image) && !h.HasRect)
+                    errors.Add($"Hotspots[{h.Id}].이미지 는 좌표(x,y,w,h)가 있어야 보입니다.");
             }
 
             foreach (var d in Dialogues)
@@ -276,6 +292,11 @@ namespace SevenDoctors.Data
                         case "puzzle":
                             if (!Puzzles.ContainsKey(tag.Value))
                                 errors.Add($"Dialogues[{d.DialogueId}:{d.LineNo}] [puzzle:] → 존재하지 않는 퍼즐 '{tag.Value}'");
+                            break;
+                        case "room":   MustRoom(tag.Value, $"Dialogues[{d.DialogueId}:{d.LineNo}] [room:]"); break;
+                        case "ending":
+                            if (FindEnding(tag.Value) == null)
+                                errors.Add($"Dialogues[{d.DialogueId}:{d.LineNo}] [ending:] → 존재하지 않는 엔딩 '{tag.Value}'");
                             break;
                     }
                 }

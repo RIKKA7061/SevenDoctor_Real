@@ -69,6 +69,15 @@ namespace SevenDoctors.Data
 
         public bool HasRect => W > 0.0001f && H > 0.0001f;
 
+        /// <summary>
+        /// 그 자리에 세워 둘 그림. 비워 두면 배경의 그 영역이 그대로 클릭 영역이 됩니다.
+        ///   prop_lever        Resources/Art/Props/prop_lever.png
+        ///   chr:chr_sloth     그 인물의 포트레이트를 작게 세워 둡니다
+        ///   shadow:chr_sloth  같은 그림을 검게 — 아직 정체를 모르는 인물
+        /// 좌표(x,y,w,h)가 있을 때만 쓰입니다.
+        /// </summary>
+        public string Image;
+
         public static HotspotRow FromRow(Dictionary<string, string> r) => new HotspotRow
         {
             Id           = CsvParser.Str(r, "hotspot_id"),
@@ -83,6 +92,7 @@ namespace SevenDoctors.Data
             Y            = CsvParser.Float(r, "y"),
             W            = CsvParser.Float(r, "w"),
             H            = CsvParser.Float(r, "h"),
+            Image        = CsvParser.Str(r, "이미지"),
             Note         = CsvParser.Str(r, "비고"),
         };
     }

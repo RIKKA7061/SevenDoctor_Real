@@ -51,6 +51,20 @@ namespace SevenDoctors.Core
             DontDestroyOnLoad(gameObject);
         }
 
+        /// <summary>
+        /// 처음부터 다시. 엔딩 카드의 '처음으로' 가 부릅니다.
+        /// 이 오브젝트는 DontDestroyOnLoad 라 씬만 다시 불러서는 안 사라집니다 — 먼저
+        /// 부수고 씬을 다시 부르면, 씬에 들어 있는 새 부트스트랩이 전부 새로 만듭니다.
+        /// 플래그·증거·UI 가 전부 이 오브젝트 아래나 Game 에 있어서 흔적이 남지 않습니다.
+        /// </summary>
+        public static void Restart()
+        {
+            var current = FindFirstObjectByType<GameBootstrap>();
+            if (current != null) Destroy(current.gameObject);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+
         IEnumerator Start()
         {
             Game.Reset();

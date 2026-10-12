@@ -22,12 +22,27 @@ namespace SevenDoctors.Dev
     ///   · 끝나면 원래대로 되돌립니다
     /// 그래서 퍼즐을 풀든 말든 진행 중이던 플레이에는 아무 일도 일어나지 않습니다.
     ///
+    /// 목록 맨 위에는 대화 미리보기(DialoguePreviews)가 붙습니다. 새 인물이나
+    /// 포트레이트 연출을 확인하려고 그 방까지 걸어가지 않아도 됩니다. 진행 중인
+    /// 대화가 있으면 끊고 틀기 때문에 프롤로그 도중에도 바로 볼 수 있습니다.
+    ///
+    /// 창을 열지 않고 쓰는 방 바로 가기 키도 여기 있습니다 (HandleRoomKeys):
+    /// 숫자 1~9 는 Rooms 시트 순서대로, PageUp/PageDown 은 이전·다음 방.
+    ///
     /// 빌드에서는 통째로 빠집니다 — 파일 전체가 UNITY_EDITOR || DEVELOPMENT_BUILD
     /// 안에 들어 있어서 정식 빌드에는 클래스 자체가 존재하지 않습니다.
     /// </summary>
     public class DevPuzzleMenu : MonoBehaviour
     {
         const string LayerName = "DevMenuLayer";
+
+        /// <summary>F1 목록에 올릴 대화. 시트에 없는 id 는 조용히 빠집니다.</summary>
+        static readonly (string Id, string Label)[] DialoguePreviews =
+        {
+            ("dlg_part3", "파트 3 — 의심 (끝나면 지목 퍼즐)"),
+            ("dlg_part4", "파트 4 — 지목 → 파트 5"),
+            ("dlg_part5", "파트 5 — 진실 → 엔딩 선택 (엔딩 후 처음부터)"),
+        };
 
         RectTransform _root;
         Coroutine _running;
@@ -41,6 +56,44 @@ namespace SevenDoctors.Dev
 
             if (WasToggleKeyPressed()) Toggle();
             else if (IsOpen && WasCancelKeyPressed()) Close();
+            else if (!IsOpen && !IsRunningPuzzle) HandleRoomKeys();
+        }
+
+        // ── 방 바로 가기 ──────────────────────────────────────────────────────
+        //
+        //   숫자 1~9            Rooms 시트의 위에서부터 차례대로 (지금은 1 연구실 · 2 저택 앞 · 3 홀 ·
+        //                       4 분노 · 5 슬픔 · 6 오만 · 7 탐욕 · 8 색욕 · 9 나태)
+        //   PageUp / PageDown   이전 방 / 다음 방
+        //
+        // 방 하나 보려고 프롤로그부터 다시 걷지 않게 하려는 것입니다. 해금 플래그는 건드리지 않고
+        // 잠금 검사만 끕니다 — 그래서 진행 상황은 그대로고, 한 번 쓰고 나면 화면 속 출구도 막히지 않습니다.
+        // 대신 조건이 안 맞는 핫스팟(예: 홀에서 방으로 가는 초상화)은 여전히 안 보입니다.
+
+        void HandleRoomKeys()
+        {
+            if (Game.Room == null || Game.Db.Rooms.Count == 0) return;
+            // 시작 화면·퍼즐 중에는 받지 않습니다. 퍼즐은 화면이 남고, 시작 화면은 아직 방이 없습니다.
+            if (Game.State == GameState.Title || Game.State == GameState.InPuzzle) return;
+
+            var rooms = new List<RoomRow>(Game.Db.Rooms.Values);
+            int current = rooms.FindIndex(r => r.Id == Game.Room.CurrentRoomId);
+
+            int target = PressedRoomNumber();
+            if (target < 0)
+            {
+                int step = PressedRoomStep();
+                if (step == 0) return;
+                target = ((current < 0 ? 0 : current) + step + rooms.Count) % rooms.Count;
+            }
+            if (target >= rooms.Count || target == current) return;
+
+            // 흐르던 대사와 열려 있던 노트는 접습니다. 방만 바뀌고 대사가 남으면 붕 뜹니다.
+            if (Game.Dialogue != null && Game.Dialogue.IsPlaying) Game.Dialogue.Stop();
+            if (Game.UI.Notebook != null && Game.UI.Notebook.IsVisible) Game.UI.Notebook.Hide();
+
+            Game.Room.IgnoreLocks = true;
+            Game.Room.Enter(rooms[target].Id);
+            Game.UI.Toast($"개발자 이동 [{target + 1}] {rooms[target].DisplayName}");
         }
 
         public void Toggle()
@@ -56,11 +109,6 @@ namespace SevenDoctors.Dev
             // 퍼즐이 도는 중에 또 열면 퍼즐 위에 목록이 겹쳐서 클릭이 엉킵니다.
             // 시작 화면에서도 막습니다 — 아직 방에 들어가지도 않았습니다.
             if (IsRunningPuzzle || Game.State == GameState.InPuzzle || Game.State == GameState.Title) return;
-            if (Game.Db.Puzzles.Count == 0)
-            {
-                Game.UI.Toast("Puzzles 시트가 비어 있습니다.");
-                return;
-            }
 
             _root = UIFactory.Rect(LayerName, Game.UI.Screen);
             UIFactory.Anchor(_root, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -73,21 +121,26 @@ namespace SevenDoctors.Dev
             UIFactory.Anchor(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                              new Vector2(-560, -420), new Vector2(560, 420));
 
-            var title = UIFactory.Label("Title", panel.transform, "개발자 — 퍼즐 미리보기", 34,
+            var title = UIFactory.Label("Title", panel.transform, "개발자 — 대화 · 퍼즐 미리보기", 34,
                                         TextAnchor.UpperLeft, UIFactory.Accent);
             UIFactory.Anchor(title.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
                              new Vector2(40, -84), new Vector2(-40, -28));
 
             var note = UIFactory.Label("Note", panel.transform,
-                "F1 또는 Esc 로 닫기 · 진행 상황(플래그·증거)은 바뀌지 않습니다", 22,
+                "F1 또는 Esc 로 닫기 · 진행 상황(플래그·증거)은 바뀌지 않습니다\n" +
+                "방 바로 가기: 숫자 1~9 · PageUp / PageDown (이 창을 닫고)", 22,
                 TextAnchor.UpperLeft, UIFactory.InkDim);
             UIFactory.Anchor(note.rectTransform, new Vector2(0, 1), new Vector2(1, 1),
-                             new Vector2(40, -118), new Vector2(-40, -84));
+                             new Vector2(40, -150), new Vector2(-40, -84));
 
             var list = UIFactory.Rect("List", panel.transform);
             UIFactory.Anchor(list, new Vector2(0, 0), new Vector2(1, 1),
-                             new Vector2(40, 88), new Vector2(-40, -130));
+                             new Vector2(40, 88), new Vector2(-40, -162));
             UIFactory.VLayout(list, 10, new RectOffset(0, 0, 0, 0), TextAnchor.UpperCenter);
+
+            foreach (var preview in DialoguePreviews)
+                if (Game.Db.GetDialogue(preview.Id) != null)
+                    AddDialogueRow(list, preview.Id, preview.Label);
 
             foreach (var kv in Game.Db.Puzzles)
                 AddRow(list, kv.Value);
@@ -97,6 +150,14 @@ namespace SevenDoctors.Dev
             UIFactory.Anchor(close.GetComponent<RectTransform>(), new Vector2(0.5f, 0), new Vector2(0.5f, 0),
                              new Vector2(-130, 24), new Vector2(130, 76));
             close.onClick.AddListener(Close);
+        }
+
+        void AddDialogueRow(RectTransform list, string dialogueId, string label)
+        {
+            var btn = UIFactory.Btn($"Dlg_{dialogueId}", list, $"[대화] {label}", 26,
+                                    new Color(0.11f, 0.14f, 0.20f), UIFactory.Ink);
+            UIFactory.Height(btn.gameObject, 72);
+            btn.onClick.AddListener(() => LaunchDialogue(dialogueId));
         }
 
         void AddRow(RectTransform list, PuzzleRow puzzle)
@@ -125,7 +186,9 @@ namespace SevenDoctors.Dev
             {
                 case "code":
                 case "codelock":
-                case "deduction": return true;
+                case "deduction":
+                case "slide":
+                case "sliding": return true;
                 default: return false;
             }
         }
@@ -144,6 +207,36 @@ namespace SevenDoctors.Dev
             if (IsRunningPuzzle) return;
             Close();
             _running = StartCoroutine(PreviewRoutine(puzzleId));
+        }
+
+        void LaunchDialogue(string dialogueId)
+        {
+            if (IsRunningPuzzle) return;
+            Close();
+
+            // 프롤로그처럼 이미 돌고 있는 대화가 있으면 끊습니다. 끝날 때까지
+            // 기다리게 하면 '바로 확인' 이 안 됩니다.
+            Game.Dialogue.Stop();
+            _running = StartCoroutine(DialoguePreviewRoutine(dialogueId));
+        }
+
+        /// <summary>대화를 실제로 틀고, 끝나면 플래그·증거를 되돌립니다. 퍼즐 미리보기와 같은 규칙입니다.</summary>
+        IEnumerator DialoguePreviewRoutine(string dialogueId)
+        {
+            var savedFlags = new List<string>(Game.Flags.ActiveFlags);
+            var savedEvidence = new List<string>(Game.Evidence.Owned);
+
+            bool done = false;
+            Game.Dialogue.Play(dialogueId, () => done = true);
+            while (!done) yield return null;
+
+            Game.Flags.RestoreFrom(savedFlags);
+            Game.Evidence.RestoreFrom(savedEvidence);
+            Game.UI.RefreshEvidenceCount();
+            Game.Room?.RebuildHotspots();
+
+            Game.UI.Toast("미리보기: 대화 끝 — 진행 상황은 그대로입니다");
+            _running = null;
         }
 
         /// <summary>
@@ -196,6 +289,42 @@ namespace SevenDoctors.Dev
             return kb != null && kb.f1Key.wasPressedThisFrame;
 #else
             return Input.GetKeyDown(KeyCode.F1);
+#endif
+        }
+
+        /// <summary>이번 프레임에 눌린 숫자 키를 방 번호(0부터)로. 없으면 -1. 숫자패드도 받습니다.</summary>
+        static int PressedRoomNumber()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (kb == null) return -1;
+            var row = new[] { kb.digit1Key, kb.digit2Key, kb.digit3Key, kb.digit4Key, kb.digit5Key,
+                              kb.digit6Key, kb.digit7Key, kb.digit8Key, kb.digit9Key };
+            var pad = new[] { kb.numpad1Key, kb.numpad2Key, kb.numpad3Key, kb.numpad4Key, kb.numpad5Key,
+                              kb.numpad6Key, kb.numpad7Key, kb.numpad8Key, kb.numpad9Key };
+            for (int i = 0; i < 9; i++)
+                if (row[i].wasPressedThisFrame || pad[i].wasPressedThisFrame) return i;
+            return -1;
+#else
+            for (int i = 0; i < 9; i++)
+                if (Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i)) return i;
+            return -1;
+#endif
+        }
+
+        /// <summary>PageDown 은 +1(다음 방), PageUp 은 -1(이전 방), 아니면 0.</summary>
+        static int PressedRoomStep()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (kb == null) return 0;
+            if (kb.pageDownKey.wasPressedThisFrame) return 1;
+            if (kb.pageUpKey.wasPressedThisFrame) return -1;
+            return 0;
+#else
+            if (Input.GetKeyDown(KeyCode.PageDown)) return 1;
+            if (Input.GetKeyDown(KeyCode.PageUp)) return -1;
+            return 0;
 #endif
         }
 
