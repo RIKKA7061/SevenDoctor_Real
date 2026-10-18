@@ -3,12 +3,12 @@ hnt_prologue_1,,!flg_prologue_end,1,"박사님, 아직 연구실에 손대지 �
 hnt_prologue_2,,!flg_prologue_end,2,장치부터 만져보는 게 어때요? 이야기는 거기서 시작될 거예요.,Try the device first. That's where this all starts.,프롤로그
 hnt_front_1,,"flg_prologue_end,!flg_met_sloth",1,저택 앞이네요. 그림자 속에 누가 있는 것 같은데요?,We're outside the mansion. Isn't someone standing in the shadows?,저택 앞
 hnt_front_2,,"flg_prologue_end,!flg_met_sloth",2,그림자 속의 사람에게 말을 걸어 보세요.,Try talking to the person in the shadows.,저택 앞
-hnt_hall_1,,"flg_met_sloth,!flg_ch1_start",1,홀 한가운데 누가 도면을 들고 서 있어요.,Someone's standing in the middle of the hall with a floor plan.,저택 홀
-hnt_hall_2,,"flg_met_sloth,!flg_ch1_start",2,교만 씨한테 말을 걸어 보세요. 이 집 구조를 제일 잘 안대요.,Talk to Pride. She says she knows this house best.,저택 홀
-hnt_records_1,,"flg_clue_invitation,flg_clue_candles,flg_clue_trophy,flg_clue_gift,flg_clue_watch,flg_clue_calendar,!flg_part3_done",1,여섯 방의 물건을 다 모았어요! 홀로 가서 정리해 봐요.,You've found something in all six rooms! Head to the hall and put it together.,단서 다 모음
-hnt_rooms_1,,"flg_ch1_start,!flg_part3_done",1,방이 여섯 개예요. 방마다 주인이 이상하게 아끼는 물건이 하나씩 있어요.,"There are six rooms. In each one, the owner is strangely attached to one thing.",단서 모으기
-hnt_rooms_2,,"flg_ch1_start,!flg_part3_done",2,노트를 열어서 어느 방 물건이 아직 없는지 세어 보세요. 여섯 개를 다 모으면 홀에서 정리할 수 있어요.,"Open the notebook and count which room's item you're still missing. Once you have all six, you can go over them in the hall.",단서 모으기
-hnt_accuse_1,,"flg_part3_done,!flg_accused",1,누가 기계를 부쉈는지 지목할 차례예요. 홀에서 해 봐요.,It's time to name who broke the machines. Do it in the hall.,지목 전
+hnt_hall_1,,"flg_met_sloth,!flg_ch1_start",1,저택 안 1층 로비로 가 보세요. 누가 도면을 들고 기다리고 있어요.,Head into the lobby on the first floor. Someone's waiting there with a floor plan.,저택 홀
+hnt_hall_2,,"flg_met_sloth,!flg_ch1_start",2,로비에 있는 교만 씨한테 말을 걸어 보세요. 이 집 구조를 제일 잘 안대요.,Talk to Pride in the lobby. She says she knows this house best.,저택 홀
+hnt_records_1,,"flg_clue_invitation,flg_clue_candles,flg_clue_trophy,flg_clue_gift,flg_clue_watch,flg_clue_calendar,!flg_part3_done",1,여섯 방의 물건을 다 모았어요! 1층 로비로 가서 정리해 봐요.,You've found something in all six rooms! Head to the lobby and put it together.,단서 다 모음
+hnt_rooms_1,,"flg_ch1_start,!flg_part3_done",1,지도(M)를 열어 층마다 있는 방에 가 보세요. 방마다 주인이 이상하게 아끼는 물건이 하나씩 있어요.,"Open the map (M) and visit the rooms on each floor. In each one, the owner is strangely attached to one thing.",단서 모으기
+hnt_rooms_2,,"flg_ch1_start,!flg_part3_done",2,노트를 열어 어느 방 물건이 아직 없는지 세어 보세요. 여섯 개를 다 모으면 1층 로비에서 정리할 수 있어요.,"Open the notebook and count which room's item you're still missing. Once you have all six, go over them in the lobby.",단서 모으기
+hnt_accuse_1,,"flg_part3_done,!flg_accused",1,누가 기계를 부쉈는지 지목할 차례예요. 5층 교만 씨 방으로 가 봐요.,It's time to name who broke the machines. Go to Pride's room on the fifth floor.,지목 전
 hnt_accuse_p1,pzl_accuse,,1,모두 사고로 떨어졌대요. 그런데 처음부터 준비가 돼 있던 사람이 있지 않았나요?,Everyone says they fell in by accident. But wasn't someone ready from the very start?,지목 퍼즐
 hnt_accuse_p2,pzl_accuse,,2,"교만 씨가 처음에 건네준 도면, 크게 열어 본 적 있어요? 방마다 뭔가 표시돼 있어요.",The floor plan Pride gave you at the start — have you looked at it up close? Every room has a mark on it.,지목 퍼즐
 hnt_accuse_p3,pzl_accuse,,3,"교만, 그리고 저택 도면이에요.",Pride — and the floor plan.,지목 퍼즐 — 거의 정답

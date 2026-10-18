@@ -44,6 +44,23 @@ namespace SevenDoctors.Data
 
         public string DisplayName => Loc.Pick(DisplayNameKo, DisplayNameEn);
 
+        /// <summary>
+        /// 저택 지도(MapView)에서의 자리. 층은 "5" ~ "1", 지하는 "B1". 비워 두면 지도에 안 나옵니다
+        /// (프롤로그의 연구실처럼). 칸은 왼쪽부터 0, 폭은 몇 칸을 차지하는지.
+        /// </summary>
+        public string MapFloor;
+        public int MapColumn, MapSpan;
+
+        /// <summary>지도에 비밀 통로로 이어 그릴 방. 이 방이 열린 뒤에만 빨간 길이 보입니다.</summary>
+        public string MapLink;
+
+        public bool OnMap => !string.IsNullOrEmpty(MapFloor);
+
+        /// <summary>층을 위에서부터 줄 세울 때 쓰는 값. B1 은 -1.</summary>
+        public int MapLevel => MapFloor != null && MapFloor.StartsWith("B")
+            ? -int.Parse(MapFloor.Substring(1))
+            : int.TryParse(MapFloor, out var n) ? n : 0;
+
         public static RoomRow FromRow(Dictionary<string, string> r) => new RoomRow
         {
             Id            = CsvParser.Str(r, "room_id"),
@@ -52,6 +69,10 @@ namespace SevenDoctors.Data
             BackgroundKey = CsvParser.Str(r, "배경키"),
             RequiredFlag  = CsvParser.Str(r, "해금조건플래그"),
             Bgm           = CsvParser.Str(r, "BGM"),
+            MapFloor      = CsvParser.Str(r, "지도층").Trim().ToUpperInvariant(),
+            MapColumn     = CsvParser.Int(r, "지도칸"),
+            MapSpan       = Math.Max(1, CsvParser.Int(r, "지도폭", 1)),
+            MapLink       = CsvParser.Str(r, "지도연결"),
             Note          = CsvParser.Str(r, "비고"),
         };
     }

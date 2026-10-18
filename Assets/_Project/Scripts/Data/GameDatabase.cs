@@ -336,7 +336,13 @@ namespace SevenDoctors.Data
                 MustDialogue(s.WrongDialogue, $"DeductionSlots[{s.PuzzleId}:{s.SlotNo}].오답반응대화");
             }
 
-            foreach (var r in Rooms.Values) MustFlag(r.RequiredFlag, $"Rooms[{r.Id}].해금조건플래그");
+            foreach (var r in Rooms.Values)
+            {
+                MustFlag(r.RequiredFlag, $"Rooms[{r.Id}].해금조건플래그");
+                MustRoom(r.MapLink, $"Rooms[{r.Id}].지도연결");
+                if (r.OnMap && r.MapLevel == 0)
+                    errors.Add($"Rooms[{r.Id}].지도층 '{r.MapFloor}' 을 읽을 수 없습니다. 1~5 또는 B1 처럼 쓰세요.");
+            }
             foreach (var e in Endings) { MustDialogue(e.DialogueId, $"Endings[{e.Id}].연출대화"); MustFlag(e.RequiredFlag, $"Endings[{e.Id}].조건플래그"); }
 
             return errors;

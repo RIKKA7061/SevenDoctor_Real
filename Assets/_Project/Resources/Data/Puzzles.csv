@@ -1,3 +1,3 @@
 ﻿puzzle_id,타입,제목,제목_en,발생방,발동대화,정답,성공플래그,성공대화,실패대화,힌트텍스트,힌트텍스트_en,비고
 pzl_invitation,Slide,찢어진 초대장,The Torn Invitation,room_wrath,dlg_wrath_clue,pz_invitation:3,flg_clue_invitation,dlg_wrath_clue_done,dlg_wrath_clue_later,"풍선은 왼쪽 위, 케이크는 오른쪽 위. 윗줄부터 맞추면 쉽다.","The balloon goes top-left, the cake top-right. Start with the top row.",슬라이딩 퍼즐. 정답 칸 = 그림키:칸수 (Resources/Art/Puzzles)
-pzl_accuse,Deduction,지목,The Accusation,room_hall,dlg_accuse_start,,flg_accused,dlg_part4,dlg_accuse_fail,"모두 사고로 떨어졌다는데, 처음부터 준비된 것처럼 뭔가를 갖고 있던 사람이 있다.",Everyone fell in by accident — yet someone had something ready from the very start.,정답은 DeductionSlots 탭. 파트3→파트4 연결용
+pzl_accuse,Deduction,지목,The Accusation,room_lobby,dlg_accuse_start,,flg_accused,dlg_part4,dlg_accuse_fail,"모두 사고로 떨어졌다는데, 처음부터 준비된 것처럼 뭔가를 갖고 있던 사람이 있다.",Everyone fell in by accident — yet someone had something ready from the very start.,정답은 DeductionSlots 탭. 파트3→파트4 연결용

@@ -1,10 +1,18 @@
-﻿room_id,표시명,표시명_en,배경키,해금조건플래그,BGM,비고
-room_lab,연구실,Laboratory,bg_lab,,bgm_lab,프롤로그
-room_front,저택 앞,Outside the Mansion,bg_front,flg_prologue_end,bgm_mansion,
-room_hall,저택 홀,The Grand Hall,bg_hall,flg_met_sloth,bgm_mansion,허브. 교만이 있음. 파트3~5 진행
-room_wrath,분노의 방,Wrath's Room,bg_laundry,flg_ch1_start,bgm_mansion,배경 임시
-room_sorrow,슬픔의 방,Sorrow's Room,bg_bedroom,flg_ch1_start,bgm_mansion,배경 임시
-room_arrogance,오만의 방,Arrogance's Room,bg_guest,flg_ch1_start,bgm_mansion,배경 임시
-room_greed,탐욕의 방,Greed's Room,bg_storage,flg_ch1_start,bgm_mansion,배경 임시
-room_lust,색욕의 방,Lust's Room,bg_bath,flg_ch1_start,bgm_mansion,배경 임시
-room_sloth,나태의 방,Sloth's Room,bg_living,flg_ch1_start,bgm_mansion,배경 임시
+﻿room_id,표시명,표시명_en,배경키,해금조건플래그,BGM,지도층,지도칸,지도폭,지도연결,비고
+room_lab,연구실,Laboratory,bg_lab,,bgm_lab,,,,,프롤로그 — 지도에 없음
+room_front,앞마당,Front Yard,bg_front,flg_prologue_end,bgm_mansion,1,0,3,,시작 지점
+room_lobby,1층 로비,Lobby,bg_hall,flg_met_sloth,bgm_mansion,1,3,3,,허브. 교만 첫 만남·파트3
+room_sorrow,슬픔의 방,Sorrow's Room,bg_bedroom,flg_ch1_start,bgm_mansion,2,3,1,,배경 임시
+room_sloth,나태의 방,Sloth's Room,bg_living,flg_ch1_start,bgm_mansion,2,5,1,,배경 임시
+room_greed,탐욕의 방,Greed's Room,bg_storage,flg_ch1_start,bgm_mansion,3,5,1,,배경 임시
+room_wrath,분노의 방,Wrath's Room,bg_laundry,flg_ch1_start,bgm_mansion,4,3,1,,배경 임시
+room_arrogance,오만의 방,Arrogance's Room,bg_guest,flg_ch1_start,bgm_mansion,4,5,1,,배경 임시
+room_lust,색욕의 방,Lust's Room,bg_bath,flg_ch1_start,bgm_mansion,5,3,1,,배경 임시
+room_pride,교만의 방,Pride's Room,bg_secret,flg_ch1_start,bgm_mansion,5,5,1,,배경 임시. 벽 뒤로 지하실 비밀 통로
+room_dining,식당,Dining Room,bg_dining,flg_ch1_start,bgm_mansion,1,6,1,,배경 데모
+room_garden,정원,Garden,bg_garden,flg_ch1_start,bgm_mansion,3,2,2,,배경 데모
+room_f2,2층 복도,2F Corridor,bg_corridor_2,flg_ch1_start,bgm_mansion,2,4,1,,배경 데모
+room_f3,3층 복도,3F Corridor,bg_corridor_3,flg_ch1_start,bgm_mansion,3,4,1,,배경 데모
+room_f4,4층 복도,4F Corridor,bg_corridor_4,flg_ch1_start,bgm_mansion,4,4,1,,배경 데모
+room_f5,5층 복도,5F Corridor,bg_corridor_5,flg_ch1_start,bgm_mansion,5,4,1,,배경 데모
+room_basement,지하실,Basement,bg_basement,flg_accused,bgm_truth,B1,3,5,room_pride,엔딩 장소. 지목 뒤에 열림. 지도에서 교만의 방과 빨간 비밀 통로로 이어짐

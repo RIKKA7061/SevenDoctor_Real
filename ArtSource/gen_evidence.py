@@ -167,34 +167,38 @@ def house_plan():
 
     d = ImageDraw.Draw(img)
     white = (236, 242, 250)
-    text(img, (300, 180), "저택 평면도", 40, white, bold=True)
+    text(img, (290, 172), "저택 단면도", 40, white, bold=True)
 
-    # 방 배치 — 위 셋, 아래 셋, 가운데 홀
-    x0, x1, y0, y1 = 170, 854, 240, 800
-    top, bottom = (x0, y0, x1, 410), (x0, 630, x1, y1)
-    line(d, [(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)], white, 6)
-    line(d, [(x0, 410), (x1, 410)], white, 5)
-    line(d, [(x0, 630), (x1, 630)], white, 5)
-    for x in (398, 626):
-        line(d, [(x, y0), (x, 410)], white, 5)
-        line(d, [(x, 630), (x, y1)], white, 5)
-    rooms_top = [("분노", 284), ("슬픔", 512), ("오만", 740)]
-    rooms_bottom = [("탐욕", 284), ("색욕", 512), ("나태", 740)]
-    for name, cx in rooms_top:
-        text(img, (cx, 300), name, 34, white, bold=True)
-        # 문 — 홀 쪽 벽의 틈
-        line(d, [(cx - 30, 410), (cx + 30, 410)], (46, 78, 126), 8)
-    for name, cx in rooms_bottom:
-        text(img, (cx, 740), name, 34, white, bold=True)
-        line(d, [(cx - 30, 630), (cx + 30, 630)], (46, 78, 126), 8)
-    text(img, (512, 520), "홀", 40, white, bold=True)
+    # 지도(Rooms 탭 지도층·지도칸)와 같은 배치 — 도면을 받으면 지도가 열리는 설정이라 둘이 같아야 합니다.
+    # 비밀 통로(교만의 방 → 지하실)는 그리지 않습니다. 교만이 숨긴 것이니까요.
+    unit, x0, top, row = 85.5, 170, 230, 104
+    floors = ["5F", "4F", "3F", "2F", "1F", "B1"]
+    rooms = [  # (층 줄, 칸, 폭, 이름, 동력부 표시)
+        (0, 3, 1, "색욕", True), (0, 4, 1, "5층", False), (0, 5, 1, "교만", False),
+        (1, 3, 1, "분노", True), (1, 4, 1, "4층", False), (1, 5, 1, "오만", True),
+        (2, 2, 2, "정원", False), (2, 4, 1, "3층", False), (2, 5, 1, "탐욕", True),
+        (3, 3, 1, "슬픔", True), (3, 4, 1, "2층", False), (3, 5, 1, "나태", True),
+        (4, 0, 3, "앞마당", False), (4, 3, 3, "로비", False), (4, 6, 1, "식당", False),
+        (5, 3, 5, "지하실", False),
+    ]
+    for i, name in enumerate(floors):
+        text(img, (130, top + i * row + row / 2), name, 20, (170, 190, 220), bold=True)
+    marks = []
+    for r, col, span, name, power in rooms:
+        bx0, by0 = x0 + col * unit, top + r * row
+        bx1, by1 = bx0 + span * unit, by0 + row - 8
+        width = 3 if name == "앞마당" else 5          # 마당은 건물 밖이라 가는 선
+        line(d, [(bx0, by0), (bx1, by0), (bx1, by1), (bx0, by1), (bx0, by0)], white, width)
+        text(img, ((bx0 + bx1) / 2, by0 + 34), name, 24, white, bold=True)
+        if power:
+            marks.append(((bx0 + bx1) / 2, by1 - 30))
 
-    # 숨은 것 1: 동력부 표시
+    # 숨은 것 1: 동력부 표시 — 여섯 박사의 방에만
     red = (222, 74, 62)
-    for cx, cy in ((340, 370), (568, 368), (806, 372), (228, 672), (456, 676), (690, 672)):
-        line(d, [(cx - 13, cy - 13), (cx + 13, cy + 13)], red, 5)
-        line(d, [(cx + 13, cy - 13), (cx - 13, cy + 13)], red, 5)
-        text(img, (cx + (-44 if cx > 600 else 44), cy), "동력부", 15, red, bold=True)
+    for cx, cy in marks:
+        line(d, [(cx - 11, cy - 11), (cx + 11, cy + 11)], red, 5)
+        line(d, [(cx + 11, cy - 11), (cx - 11, cy + 11)], red, 5)
+        text(img, (cx, cy + 20), "동력부", 13, red, bold=True)
 
     # 숨은 것 2: 연필 메모
     pencil = (196, 206, 220)
@@ -532,14 +536,27 @@ def calendar():
 
 CHARACTERS = ["doctor", "wrath", "sorrow", "arrogance", "greed", "lust", "sloth", "pride"]
 FALLBACK = "sorrow"
-FACE_BOX = (100, 120, 500, 520)  # 700x1200 포트레이트에서 얼굴 둘레 (새 슬픔 시트 기준)
+
+# 700x1200 포트레이트에서 얼굴 둘레(정사각형). 인물마다 머리 크기와 자리가 달라서 따로 잡습니다.
+# make_portraits.py 로 그림을 다시 뽑거나 새 인물 그림이 들어오면 여기에 한 줄 더하세요.
+FACE_BOXES = {
+    "sorrow":    (112, 90, 552, 530),
+    "wrath":     (168, 45, 488, 365),
+    "arrogance": (200, 35, 500, 335),
+    "greed":     (240, 55, 530, 345),
+    "lust":      (125, 55, 585, 515),
+    # 아래 셋은 make_standins.py 가 슬픔 그림 색만 바꾼 임시 그림이라 얼굴 자리가 슬픔과 같습니다.
+    "doctor":    (112, 90, 552, 530),
+    "sloth":     (112, 90, 552, 530),
+    "pride":     (112, 90, 552, 530),
+}
 
 
 def character_card(key):
-    path = os.path.join(PORTRAITS, key + ".png")
-    if not os.path.exists(path):
-        path = os.path.join(PORTRAITS, FALLBACK + ".png")
-    face = Image.open(path).convert("RGBA").crop(FACE_BOX).resize((440, 440), Image.LANCZOS)
+    # 자기 그림이 없는 인물은 게임에서도 FALLBACK 그림을 빌려 쓰므로 카드도 그 얼굴입니다.
+    art = key if key in FACE_BOXES and os.path.exists(os.path.join(PORTRAITS, key + ".png")) else FALLBACK
+    face = Image.open(os.path.join(PORTRAITS, art + ".png")).convert("RGBA")
+    face = face.crop(FACE_BOXES[art]).resize((440, 440), Image.LANCZOS)
 
     size = 512
     img = card_background().resize((size, size), Image.LANCZOS)

@@ -14,7 +14,7 @@ Hotspots 탭 '이미지' 칸에 파일 이름(확장자 없이)을 적으면 그
 아트 담당 그림이 오면 같은 이름의 투명 PNG 로 덮어쓰면 됩니다.
 """
 import math, os
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 import gen_evidence as ge
 from gen_evidence import INK, c, pts, poly, ell, rrect, line, text, layer_like
@@ -151,6 +151,39 @@ def exit_arrow():
     return img
 
 
+# ── 지도 위의 박사 말 ────────────────────────────────────────────────────────
+# 지도(MapView)에서 지금 있는 방에 놓이고, 다른 방을 누르면 그쪽으로 걸어갑니다.
+# 박사 포트레이트에서 얼굴을 동그랗게 잘라 냅니다 — 그림이 바뀌면 다시 돌리세요.
+
+def token(key="doctor"):
+    size = 256
+    path = os.path.join(ge.PORTRAITS, key + ".png")
+    if not os.path.exists(path):
+        path = os.path.join(ge.PORTRAITS, ge.FALLBACK + ".png")
+        key = ge.FALLBACK
+    # 카드용 얼굴 둘레보다 조금 좁게 — 동그라미 안에 얼굴만 들어가게 합니다.
+    x0, y0, x1, y1 = ge.FACE_BOXES[key]
+    cx, cy, half = (x0 + x1) / 2, (y0 + y1) / 2 - (y1 - y0) * 0.04, (x1 - x0) * 0.36
+    box = tuple(round(v) for v in (cx - half, cy - half, cx + half, cy + half))
+    face = Image.open(path).convert("RGBA").crop(box).resize((size - 24, size - 24), Image.LANCZOS)
+
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse([4, 8, size - 4, size], fill=(0, 0, 0, 90))                 # 그림자
+    d.ellipse([4, 4, size - 4, size - 4], fill=(236, 226, 206, 255))     # 바탕
+    disc = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    disc.alpha_composite(face, (12, 12))
+    mask = Image.new("L", (size, size), 0)
+    ImageDraw.Draw(mask).ellipse([12, 12, size - 12, size - 12], fill=255)
+    disc.putalpha(ImageChops.multiply(disc.getchannel("A"), mask))
+    img.alpha_composite(disc)
+    d.ellipse([8, 8, size - 8, size - 8], outline=(216, 178, 96, 255), width=10)   # 금색 테
+    d.ellipse([4, 4, size - 4, size - 4], outline=INK + (255,), width=5)
+    os.makedirs(OUT, exist_ok=True)
+    img.save(os.path.join(OUT, "prop_token_doctor.png"))
+    print("  Props/prop_token_doctor.png  256x256")
+
+
 # ── 클릭 영역 표시 점 ────────────────────────────────────────────────────────
 
 def marker():
@@ -178,3 +211,4 @@ if __name__ == "__main__":
     save(records(), "prop_records")
     save(exit_arrow(), "prop_exit", max_side=256)
     marker()
+    token()

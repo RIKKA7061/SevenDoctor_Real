@@ -32,11 +32,13 @@ namespace SevenDoctors.UI
 
         public Text RoomLabel { get; private set; }
         public Button NotebookButton { get; private set; }
+        public Button MapButton { get; private set; }
         public Text EvidenceCountLabel { get; private set; }
 
         public DialogueView Dialogue { get; private set; }
         public ChoiceView Choices { get; private set; }
         public NotebookView Notebook { get; private set; }
+        public MapView Map { get; private set; }
         public PortraitView Portrait { get; private set; }
         public TitleView Title { get; private set; }
         public HelperBotView Bot { get; private set; }
@@ -119,6 +121,8 @@ namespace SevenDoctors.UI
             Portrait = PortraitView.CreateOrBind(PortraitLayer);
             // 방 안에 세워 둔 소품·인물(핫스팟 그림)이 대화 초상화를 가리면 안 됩니다.
             PortraitLayer.SetAsLastSibling();
+            Map = MapView.Create(Screen);
+            EnsureMapButton(NotebookButton.transform.parent);
             Title = TitleView.Create(Screen);
             Bot = HelperBotView.Create(Screen);
 
@@ -156,6 +160,7 @@ namespace SevenDoctors.UI
             Dialogue = DialogueView.Create(Screen);
             Choices  = ChoiceView.Create(Screen);
             Notebook = NotebookView.Create(Screen);
+            Map = MapView.Create(Screen);
 
             PuzzleLayer = UIFactory.Rect("PuzzleLayer", Screen);
             PuzzleLayer.gameObject.SetActive(false);
@@ -212,8 +217,28 @@ namespace SevenDoctors.UI
                              new Vector2(-268, -22), new Vector2(-24, 22));
 
             EvidenceCountLabel = UIFactory.Label("EvidenceCount", bar.transform, "", 22, TextAnchor.MiddleRight, UIFactory.InkDim);
-            UIFactory.Anchor(EvidenceCountLabel.rectTransform, new Vector2(1, 0), new Vector2(1, 1),
-                             new Vector2(-460, 0), new Vector2(-284, 0));
+            EnsureMapButton(bar.transform);
+        }
+
+        /// <summary>
+        /// 상단바의 '지도' 버튼. 노트 버튼 왼쪽에 둡니다. 예전에 구운 UI 프리팹에는 없으므로
+        /// 없으면 만들고, 증거 개수 글자를 그만큼 왼쪽으로 비켜 놓습니다.
+        /// </summary>
+        void EnsureMapButton(Transform bar)
+        {
+            MapButton = bar.Find("MapButton")?.GetComponent<Button>();
+            if (MapButton == null)
+            {
+                MapButton = UIFactory.Btn("MapButton", bar, Loc.T("ui.topbar.map"), 24,
+                                          new Color(0.16f, 0.17f, 0.23f, 1f), UIFactory.Accent);
+                UIFactory.Anchor(MapButton.GetComponent<RectTransform>(), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+                                 new Vector2(-452, -22), new Vector2(-284, 22));
+            }
+            MapButton.onClick.RemoveAllListeners();
+
+            if (EvidenceCountLabel != null)
+                UIFactory.Anchor(EvidenceCountLabel.rectTransform, new Vector2(1, 0), new Vector2(1, 1),
+                                 new Vector2(-640, 0), new Vector2(-468, 0));
         }
 
         void BuildToast()
@@ -246,6 +271,10 @@ namespace SevenDoctors.UI
 
             var label = NotebookButton.GetComponentInChildren<Text>();
             if (label != null) label.text = Loc.T("ui.topbar.notebook");
+
+            var mapLabel = MapButton != null ? MapButton.GetComponentInChildren<Text>() : null;
+            if (mapLabel != null) mapLabel.text = Loc.T("ui.topbar.map");
+            Map?.Relocalize();
         }
 
         public void RefreshEvidenceCount()

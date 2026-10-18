@@ -122,6 +122,7 @@ namespace SevenDoctors.Core
             {
                 if (Game.State == GameState.Exploring || ui.Notebook.IsVisible) ui.Notebook.Toggle();
             });
+            ui.MapButton.onClick.AddListener(ToggleMap);
             ui.Notebook.AskRequested += OnAskRequested;
             ui.RefreshEvidenceCount();
 
@@ -292,6 +293,37 @@ namespace SevenDoctors.Core
                 if (Game.State == GameState.Exploring || Game.UI.Notebook.IsVisible)
                     Game.UI.Notebook.Toggle();
             }
+            else if (WasMapKeyPressed()) ToggleMap();
+            else if (Game.UI.Map != null && Game.UI.Map.IsVisible && WasEscapePressed()) Game.UI.Map.Hide();
+        }
+
+        /// <summary>지도는 탐색 중에만 엽니다. 대사·퍼즐 도중에 방을 옮기면 장면이 붕 뜹니다.</summary>
+        static void ToggleMap()
+        {
+            var map = Game.UI != null ? Game.UI.Map : null;
+            if (map == null) return;
+            if (map.IsVisible) { map.Hide(); return; }
+            if (Game.State == GameState.Exploring) map.Show();
+        }
+
+        static bool WasMapKeyPressed()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            return kb != null && kb.mKey.wasPressedThisFrame;
+#else
+            return Input.GetKeyDown(KeyCode.M);
+#endif
+        }
+
+        static bool WasEscapePressed()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            return kb != null && kb.escapeKey.wasPressedThisFrame;
+#else
+            return Input.GetKeyDown(KeyCode.Escape);
+#endif
         }
 
         static bool WasNotebookKeyPressed()

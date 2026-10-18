@@ -42,3 +42,8 @@ ui.puzzle.slide.numbers_off,번호 숨기기,Hide numbers,슬라이딩 퍼즐
 ui.puzzle.slide.shuffle,다시 섞기,Shuffle again,슬라이딩 퍼즐
 ui.puzzle.slide.autosolve,도우미에게 맡기기,Let the helper do it,슬라이딩 퍼즐 — 많이 움직이면 나타남
 ui.puzzle.slide.done,…맞춰졌다.,...It fits.,슬라이딩 퍼즐
+ui.topbar.map,지도  (M),Map  (M),상단바 버튼 폭 168px
+ui.map.title,저택 지도,Mansion Map,지도
+ui.map.close,닫기  (M),Close  (M),지도
+ui.map.help,가고 싶은 방을 누르세요. 어두운 방은 아직 갈 수 없습니다.,Click a room to go there. Dark rooms aren't open yet.,지도
+ui.map.locked,잠김,Locked,지도 — 잠긴 방 아래 작은 글씨

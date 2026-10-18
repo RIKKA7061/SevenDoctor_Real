@@ -3,34 +3,24 @@ hs_lab_machine,room_lab,타임머신,The time machine,look,dlg_lab_machine,,FALS
 hs_lab_notes,room_lab,실험 노트,Research notes,look,dlg_lab_notes,,FALSE,0.0729,0.4815,0.1979,0.1111,,배경의 책상
 hs_lab_start,room_lab,기동 레버를 당긴다,Pull the ignition lever,look,dlg_lab_start,!flg_prologue_end,TRUE,0.7865,0.4074,0.0885,0.3056,prop_lever,당기면 대사 끝에 저택 앞으로 넘어감 ([room:] 태그)
 hs_front_door,room_front,저택 문,The mansion door,look,dlg_front_door,!flg_met_sloth,FALSE,0.5260,0.5648,0.0729,0.1852,,배경의 현관문
-hs_front_to_hall,room_front,안으로 들어간다,Go inside,move,room_hall,flg_met_sloth,FALSE,0.5260,0.5648,0.0729,0.1852,,배경의 현관문
 hs_front_sloth,room_front,그림자 속의 누군가,Someone in the shadows,talk,dlg_front_sloth,,TRUE,0.6927,0.4352,0.1250,0.3796,shadow:chr_sloth,
-hs_hall_pride_first,room_hall,도면을 펼쳐 든 누군가,Someone holding a floor plan,talk,dlg_hall_pride_first,!flg_ch1_start,TRUE,0.4323,0.4352,0.1354,0.4130,chr:chr_pride,임시 — 파트1·2 시트 오면 교체
-hs_hall_pride,room_hall,교만,Pride,talk,dlg_hall_pride,"flg_ch1_start,!flg_part3_done",FALSE,0.4323,0.4352,0.1354,0.4130,chr:chr_pride,
-hs_hall_accuse,room_hall,누가 부쉈는지 지목한다,Name who broke the machines,look,dlg_accuse_start,"flg_part3_done,!flg_accused",FALSE,0.4323,0.4352,0.1354,0.4130,chr:chr_pride,파트3 끝에 지목을 미뤘을 때 다시 하는 곳
-hs_hall_clock,room_hall,멈춘 괘종시계,The stopped grandfather clock,look,dlg_hall_clock,,FALSE,0.3229,0.2778,0.0625,0.3241,prop_clock,
-hs_hall_records,room_hall,파손 기록을 정리한다,Go over the damage records,look,dlg_part3,"flg_clue_invitation,flg_clue_candles,flg_clue_trophy,flg_clue_gift,flg_clue_watch,flg_clue_calendar,!flg_part3_done",FALSE,0.1562,0.7037,0.1354,0.1574,prop_records,단서 6종을 다 모으면 나타남 → 파트3
-hs_hall_to_wrath,room_hall,분노의 방으로,To Wrath's room,move,room_wrath,flg_ch1_start,FALSE,0.0208,0.2185,0.0833,0.1852,,배경의 초상화
-hs_hall_to_sorrow,room_hall,슬픔의 방으로,To Sorrow's room,move,room_sorrow,flg_ch1_start,FALSE,0.1229,0.2352,0.0771,0.1685,,배경의 초상화
-hs_hall_to_arrogance,room_hall,오만의 방으로,To Arrogance's room,move,room_arrogance,flg_ch1_start,FALSE,0.2240,0.2500,0.0729,0.1556,,배경의 초상화
-hs_hall_to_greed,room_hall,탐욕의 방으로,To Greed's room,move,room_greed,flg_ch1_start,FALSE,0.6073,0.2648,0.0667,0.1407,,배경의 초상화
-hs_hall_to_lust,room_hall,색욕의 방으로,To Lust's room,move,room_lust,flg_ch1_start,FALSE,0.7031,0.2500,0.0729,0.1556,,배경의 초상화
-hs_hall_to_sloth,room_hall,나태의 방으로,To Sloth's room,move,room_sloth,flg_ch1_start,FALSE,0.8958,0.2185,0.0833,0.1852,,배경의 초상화
+hs_lobby_pride_first,room_lobby,도면을 펼쳐 든 누군가,Someone holding a floor plan,talk,dlg_hall_pride_first,!flg_ch1_start,TRUE,0.4323,0.4352,0.1354,0.4130,chr:chr_pride,임시 — 파트1·2 시트 오면 교체
+hs_pride_pride,room_pride,교만,Pride,talk,dlg_hall_pride,"flg_ch1_start,!flg_part3_done",FALSE,0.3333,0.3981,0.1354,0.4167,chr:chr_pride,
+hs_pride_accuse,room_pride,누가 부쉈는지 지목한다,Name who broke the machines,look,dlg_accuse_start,"flg_part3_done,!flg_accused",FALSE,0.3333,0.3981,0.1354,0.4167,chr:chr_pride,파트3 끝에 지목을 미뤘을 때 — 교만의 방에서 다시
+hs_lobby_clock,room_lobby,멈춘 괘종시계,The stopped grandfather clock,look,dlg_hall_clock,,FALSE,0.3229,0.2778,0.0625,0.3241,prop_clock,
+hs_lobby_records,room_lobby,파손 기록을 정리한다,Go over the damage records,look,dlg_part3,"flg_clue_invitation,flg_clue_candles,flg_clue_trophy,flg_clue_gift,flg_clue_watch,flg_clue_calendar,!flg_part3_done",FALSE,0.1562,0.7037,0.1354,0.1574,prop_records,단서 6종을 다 모으면 나타남 → 파트3
 hs_wrath_talk,room_wrath,분노,Wrath,talk,dlg_wrath_talk,,FALSE,0.7135,0.4074,0.1406,0.4259,chr:chr_wrath,
 hs_wrath_clue,room_wrath,구겨진 종이 조각,A crumpled scrap of paper,get,dlg_wrath_clue,!flg_clue_invitation,FALSE,0.1562,0.7500,0.0938,0.1204,prop_invitation,단서 오브젝트 — 누르면 슬라이딩 퍼즐
-hs_wrath_to_hall,room_wrath,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
 hs_sorrow_talk,room_sorrow,슬픔,Sorrow,talk,dlg_sorrow_talk,,FALSE,0.4844,0.4074,0.1354,0.4111,chr:chr_sorrow,
 hs_sorrow_clue,room_sorrow,녹아버린 초,Burnt-down candles,get,dlg_sorrow_clue,!flg_clue_candles,TRUE,0.6771,0.3796,0.1146,0.1444,prop_candles,단서 오브젝트
-hs_sorrow_to_hall,room_sorrow,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
 hs_arrogance_talk,room_arrogance,오만,Arrogance,talk,dlg_arrogance_talk,,FALSE,0.4688,0.4352,0.1406,0.4259,chr:chr_arrogance,
 hs_arrogance_clue,room_arrogance,작은 트로피,A small trophy,get,dlg_arrogance_clue,!flg_clue_trophy,TRUE,0.3646,0.3611,0.0677,0.1630,prop_trophy,단서 오브젝트
-hs_arrogance_to_hall,room_arrogance,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
 hs_greed_talk,room_greed,탐욕,Greed,talk,dlg_greed_talk,,FALSE,0.5625,0.4444,0.1406,0.4259,chr:chr_greed,
 hs_greed_clue,room_greed,포장된 상자,A wrapped box,get,dlg_greed_clue,!flg_clue_gift,TRUE,0.4635,0.3426,0.0677,0.1074,prop_gift,단서 오브젝트
-hs_greed_to_hall,room_greed,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
 hs_lust_talk,room_lust,색욕,Lust,talk,dlg_lust_talk,,FALSE,0.1458,0.4074,0.1406,0.4259,chr:chr_lust,
 hs_lust_clue,room_lust,멈춘 손목시계,A stopped wristwatch,get,dlg_lust_clue,!flg_clue_watch,TRUE,0.5208,0.4259,0.0469,0.1481,prop_watch,단서 오브젝트
-hs_lust_to_hall,room_lust,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
 hs_sloth_talk,room_sloth,나태,Sloth,talk,dlg_sloth_talk,,FALSE,0.4583,0.4074,0.1406,0.4259,chr:chr_sloth,
 hs_sloth_clue,room_sloth,벽에 걸린 캘린더,A calendar on the wall,get,dlg_sloth_clue,!flg_clue_calendar,TRUE,0.1719,0.1574,0.0885,0.1944,prop_calendar,단서 오브젝트
-hs_sloth_to_hall,room_sloth,홀로 나간다,Back to the hall,move,room_hall,,FALSE,0.4531,0.8704,0.0938,0.1019,prop_exit,
+hs_pride_wall,room_pride,벽 틈에서 새는 바람,A draft from a crack in the wall,look,dlg_pride_wall,,FALSE,0.7604,0.4815,0.1042,0.2778,,임시 — 지하실 비밀 통로 복선
+hs_dining_table,room_dining,긴 식탁,The long table,look,dlg_dining_table,,FALSE,0.2708,0.5648,0.4583,0.1759,,임시 — 데모 방
+hs_garden_sundial,room_garden,해시계,The sundial,look,dlg_garden_sundial,,FALSE,0.4479,0.5093,0.1042,0.1481,,임시 — 데모 방

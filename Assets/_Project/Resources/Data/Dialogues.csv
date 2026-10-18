@@ -26,15 +26,16 @@ dlg_front_why,3,chr_doctor,surprised,…일부러 망가뜨리는 사람이 있�
 dlg_front_why,4,chr_sloth,sleepy,들어가서 교만한테 도면 받아. 이 집 구조는 걔가 제일 잘 알아.,Go in and get the floor plan from Pride. She knows this house better than anyone.,,,,
 dlg_front_rebuild,1,chr_doctor,normal,우린 천재잖아. 다시 만들면 되지 않아?,We're geniuses. Can't we just build another one?,,,,임시 — 파트1·2 시트 오면 교체
 dlg_front_rebuild,2,chr_sloth,sleepy,…해봤어. 몇 번인지 세는 것도 그만뒀고.,...We tried. I stopped counting how many times.,,,,
-dlg_front_rebuild,3,chr_sloth,sleepy,들어가 봐. 홀에 교만이 있을 거야. 도면은 걔가 갖고 있어.,Go on in. Pride will be in the hall. She's the one with the floor plan.,,,,
-dlg_hall_pride_first,1,,,"홀 한가운데, 누군가 도면을 펼쳐 들고 서 있었다.","In the middle of the hall, someone stood holding an unrolled floor plan.",,,,임시 — 파트1·2 시트 오면 교체
+dlg_front_rebuild,3,chr_sloth,sleepy,들어가 봐. 로비에 교만이 있을 거야. 도면은 걔가 갖고 있어.,Go on in. Pride will be in the lobby. She's the one with the floor plan.,,,,
+dlg_hall_pride_first,1,,,"로비 한가운데, 누군가 도면을 펼쳐 들고 서 있었다.","In the middle of the lobby, someone stood holding an unrolled floor plan.",,,,임시 — 파트1·2 시트 오면 교체
 dlg_hall_pride_first,2,chr_pride,normal,새로 왔구나. 너도 사고로 떨어졌지?,So you're the new one. Fell in by accident too?,,,,
 dlg_hall_pride_first,3,chr_doctor,surprised,너도… 나야?,"Are you... me, too?",,,,
 dlg_hall_pride_first,4,chr_pride,normal,교만. 이 집 구조는 내가 제일 잘 알아.,Pride. I know this house better than anyone.,[get:ev_chr_pride],,,
-dlg_hall_pride_first,5,chr_pride,normal,이거 가져가. 방이 여섯 개야. 다들 자기 방에 틀어박혀 있어.,Take this. There are six rooms. Everyone's shut away in her own.,[get:ev_house_plan][flag:flg_ch1_start],,,
+dlg_hall_pride_first,5,chr_pride,normal,이거 가져가. 이 집 도면이야. 다들 층마다 자기 방에 틀어박혀 있어.,"Take this. It's the floor plan of the house. Everyone's shut away in her own room, floor by floor.",[get:ev_house_plan][flag:flg_ch1_start],,,
 dlg_hall_pride_first,6,chr_doctor,normal,도면이 손때로 반들반들하다. 아주 오래 들고 다닌 것처럼.,The plan is worn smooth with handling. As if she's carried it for a very long time.,,,,
+dlg_hall_pride_first,7,,,도면을 펼치니 저택이 한눈에 들어온다. (화면 위 '지도' 버튼이나 M 키로 언제든 펼쳐 볼 수 있다),"Unfolding the plan, the whole house comes into view. (Open it any time with the 'Map' button at the top or the M key.)",,,,지도 안내
 dlg_hall_pride,1,chr_pride,normal,여섯 방 다 돌아봐. 다들 뭔가 하나씩 끼고 살아.,Go through all six rooms. Everyone's clinging to something.,,,,임시 — 파트1·2 시트 오면 교체
-dlg_hall_clock,1,chr_doctor,normal,홀의 괘종시계. 바늘이 3시 14분에서 멈춰 있다.,The hall's grandfather clock. The hands are stopped at 3:14.,,,,시트 개요 — 새벽 3시 14분에 멈춘 공간
+dlg_hall_clock,1,chr_doctor,normal,로비의 괘종시계. 바늘이 3시 14분에서 멈춰 있다.,The lobby's grandfather clock. The hands are stopped at 3:14.,,,,시트 개요 — 새벽 3시 14분에 멈춘 공간
 dlg_hall_clock,2,chr_doctor,normal,창밖도 그대로다. 이 저택은 새벽 3시 14분에서 한 발짝도 나가지 못하고 있어.,"Nothing moves outside the window, either. This house hasn't taken a single step past 3:14 a.m.",,,,
 dlg_wrath_talk,1,chr_wrath,angry,뭘 봐. 구경났어?,What are you staring at?,,,,임시 — 파트1·2 시트 오면 교체
 dlg_wrath_talk,2,chr_doctor,normal,당신 기계도 부서졌어?,Was your machine broken too?,,,,
@@ -69,7 +70,7 @@ dlg_sloth_talk,1,chr_sloth,sleepy,…또 왔어? 난 그냥 누워 있을래.,..
 dlg_sloth_talk,2,chr_sloth,sleepy,궁금한 건 교만한테 물어. 걔가 제일 잘 알아.,"If you're curious, ask Pride. She knows best.",,,,
 dlg_sloth_clue,1,chr_doctor,normal,벽에 걸린 낡은 캘린더. 6월 14일에 동그라미가 쳐져 있다.,An old calendar on the wall. June 14 is circled.,[get:ev_calendar][flag:flg_clue_calendar],,,낡은 캘린더 (6/14 동그라미) — 나태의 방
 dlg_sloth_clue,2,chr_sloth,sleepy,"그날짜, 나도 계속 눈이 가더라.",That date... my eyes keep going back to it too.,,,,
-dlg_part3,1,,,홀에 모두를 불러 모았다.,I gathered everyone in the hall.,[fade_out][fade_in],,,연결용 지문
+dlg_part3,1,,,로비에 모두를 불러 모았다.,I gathered everyone in the lobby.,[fade_out][fade_in],,,연결용 지문
 dlg_part3,2,chr_doctor,normal,파손 기록을 전부 모아봤어. 패턴이 있어.,I've gathered every damage record. There's a pattern.,,,,시트 파트3
 dlg_part3,3,chr_wrath,angry,말해.,Say it.,,,,
 dlg_part3,4,chr_doctor,normal,부서진 건 항상 동력부야. 그리고 시각도 항상 같아. 새벽 3시 12분.,It's always the drive assembly. And always the same time. 3:12 a.m.,,,,
@@ -95,8 +96,11 @@ dlg_part4,7,chr_pride,normal,응. 일곱 번 다 나였어. 새벽 3시 12분에
 dlg_part4,8,chr_greed,angry,왜! 나갈 수 있었잖아! 전부!,Why?! We could have gotten out! All of us!,,,,
 dlg_part4,9,chr_pride,sad,"그날 이후로, 아무도 나갈 자격 없다고 생각했으니까.","Because after that day, I decided nobody deserved to leave.",[portrait:chr_pride:sad:side_left],,,
 dlg_part4,10,chr_doctor,surprised,"……너, 평행세계의 내가 아니지.","......You're not a parallel version of me, are you.",,,,
-dlg_part4,11,chr_pride,sad,이제야.,Only now.,[portrait:chr_pride:sad:front][goto:dlg_part5],,,
-dlg_part5,1,chr_pride,sad,"그 초, 기억해?",Those candles. Do you remember?,[fade_out][bgm:bgm_truth][wait:0.3][fade_in],,,시트 파트5
+dlg_part4,11,chr_pride,sad,이제야.,Only now.,[portrait:chr_pride:sad:front][goto:dlg_to_basement],,,
+dlg_to_basement,1,,,교만을 따라 5층 끝 방으로 올라갔다.,I followed Pride up to the room at the end of the fifth floor.,[room:room_pride],,,연결용 지문 — 지도의 빨간 비밀 통로
+dlg_to_basement,2,,,"그 애가 벽을 밀자, 지하로 내려가는 좁은 계단이 드러났다.","She pushed on the wall, and a narrow stairway down to the basement opened up.",,,,
+dlg_to_basement,3,,,…,...,[fade_out][room:room_basement][wait:0.4][goto:dlg_part5],,,
+dlg_part5,1,chr_pride,sad,"그 초, 기억해?",Those candles. Do you remember?,[bgm:bgm_truth][fade_in],,,시트 파트5
 dlg_part5,2,chr_doctor,sad,…….,.......,,,,
 dlg_part5,3,chr_pride,sad,"여섯 개였어. 일곱 개가 아니라 여섯. 하나는 내가 미리 불어서 껐어. ""엄마 오면 같이 켜자""고.","There were six. Not seven — six. I blew one out ahead of time. ""We'll light it together when Mom gets here.""",,,,
 dlg_part5,4,chr_pride,sad,"근데 안 왔잖아. 자정 지나고, 1시 지나고, 3시 지나고.",But you didn't come. Midnight passed. Then one. Then three.,,,,
@@ -124,3 +128,7 @@ dlg_end_stay,1,chr_doctor,sad,이 방에 있을게. 촛불 다 탈 때까지.,I'
 dlg_end_stay,2,chr_pride,sad,"(작게) …생일 축하해, 나. 아니 우리.","(quietly) ...Happy birthday, me. No — us.",[portrait:chr_pride:sad:back_right][ending:end_stay],,,
 dlg_end_leave,1,chr_pride,sad,"그럴 줄 알았어. 상 받으러 가야지, 이번에도.","I knew it. You've got an award to go collect, this time too.",[portrait:chr_pride:sad:back],,,엔딩 C
 dlg_end_leave,2,,,(초 여섯 개가 다시 놓인다. 타임머신 가동),(Six candles are set out again. The time machine starts up.),[sfx:lever][shake][ending:end_leave],,,
+dlg_pride_wall,1,chr_doctor,normal,벽지 이음매로 차가운 바람이 새어 나온다.,A cold draft seeps through a seam in the wallpaper.,,,,임시 — 비밀 통로 복선
+dlg_pride_wall,2,chr_doctor,normal,"…벽 너머, 아래쪽 어딘가로 이어진 것 같다.","...It feels like it leads somewhere below, behind the wall.",,,,
+dlg_dining_table,1,chr_doctor,normal,긴 식탁. 아무도 앉지 않은 지 오래된 것 같다.,A long table. No one has sat here in a long time.,,,,임시 — 데모 방
+dlg_garden_sundial,1,chr_doctor,normal,정원 한가운데 해시계. 그림자가 한 자리에서 꼼짝도 하지 않는다.,A sundial in the middle of the garden. Its shadow hasn't moved an inch.,,,,임시 — 데모 방
