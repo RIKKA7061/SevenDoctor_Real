@@ -33,12 +33,24 @@ namespace SevenDoctors.UI
         public Text RoomLabel { get; private set; }
         public Button NotebookButton { get; private set; }
         public Button MapButton { get; private set; }
+        public Button LogButton { get; private set; }
+        public Button MenuButton { get; private set; }
         public Text EvidenceCountLabel { get; private set; }
 
         public DialogueView Dialogue { get; private set; }
         public ChoiceView Choices { get; private set; }
         public NotebookView Notebook { get; private set; }
         public MapView Map { get; private set; }
+        public LogView Log { get; private set; }
+        public MenuView Menu { get; private set; }
+        public SettingsView Settings { get; private set; }
+
+        /// <summary>
+        /// 대사 진행·핫스팟·단축키를 막아야 하는 창(기록·메뉴·설정)이 떠 있는지.
+        /// 이 창들은 대사 도중에도 열리므로, 뒤에서 대사가 넘어가지 않게 여기서 한 번에 봅니다.
+        /// </summary>
+        public bool ModalOpen =>
+            (Log != null && Log.IsVisible) || (Menu != null && Menu.IsVisible) || (Settings != null && Settings.IsVisible);
         public PortraitView Portrait { get; private set; }
         public TitleView Title { get; private set; }
         public HelperBotView Bot { get; private set; }
@@ -122,9 +134,12 @@ namespace SevenDoctors.UI
             // 방 안에 세워 둔 소품·인물(핫스팟 그림)이 대화 초상화를 가리면 안 됩니다.
             PortraitLayer.SetAsLastSibling();
             Map = MapView.Create(Screen);
-            EnsureMapButton(NotebookButton.transform.parent);
+            Log = LogView.Create(Screen);
+            EnsureTopBarButtons(NotebookButton.transform.parent);
             Title = TitleView.Create(Screen);
             Bot = HelperBotView.Create(Screen);
+            Menu = MenuView.Create(Screen);
+            Settings = SettingsView.Create(Screen);
 
             NotebookButton.onClick.RemoveAllListeners(); // 프리팹에 남아 있을 수 있는 리스너 정리
             PuzzleLayer.gameObject.SetActive(false);
@@ -161,6 +176,7 @@ namespace SevenDoctors.UI
             Choices  = ChoiceView.Create(Screen);
             Notebook = NotebookView.Create(Screen);
             Map = MapView.Create(Screen);
+            Log = LogView.Create(Screen);
 
             PuzzleLayer = UIFactory.Rect("PuzzleLayer", Screen);
             PuzzleLayer.gameObject.SetActive(false);
@@ -170,6 +186,8 @@ namespace SevenDoctors.UI
             PortraitLayer.SetAsLastSibling();
             Title = TitleView.Create(Screen);
             Bot = HelperBotView.Create(Screen);
+            Menu = MenuView.Create(Screen);
+            Settings = SettingsView.Create(Screen);
 
             BuildToast();
             BuildFade();
@@ -217,28 +235,41 @@ namespace SevenDoctors.UI
                              new Vector2(-268, -22), new Vector2(-24, 22));
 
             EvidenceCountLabel = UIFactory.Label("EvidenceCount", bar.transform, "", 22, TextAnchor.MiddleRight, UIFactory.InkDim);
-            EnsureMapButton(bar.transform);
+            EnsureTopBarButtons(bar.transform);
         }
 
         /// <summary>
-        /// 상단바의 '지도' 버튼. 노트 버튼 왼쪽에 둡니다. 예전에 구운 UI 프리팹에는 없으므로
-        /// 없으면 만들고, 증거 개수 글자를 그만큼 왼쪽으로 비켜 놓습니다.
+        /// 상단바의 '지도' · '기록' · '메뉴' 버튼. 노트 버튼 왼쪽으로 차례로 둡니다. 예전에 구운 UI 프리팹에는
+        /// 없으므로 없으면 만들고, 증거 개수 글자를 그만큼 왼쪽으로 비켜 놓습니다.
         /// </summary>
-        void EnsureMapButton(Transform bar)
+        void EnsureTopBarButtons(Transform bar)
         {
-            MapButton = bar.Find("MapButton")?.GetComponent<Button>();
-            if (MapButton == null)
-            {
-                MapButton = UIFactory.Btn("MapButton", bar, Loc.T("ui.topbar.map"), 24,
-                                          new Color(0.16f, 0.17f, 0.23f, 1f), UIFactory.Accent);
-                UIFactory.Anchor(MapButton.GetComponent<RectTransform>(), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-                                 new Vector2(-452, -22), new Vector2(-284, 22));
-            }
-            MapButton.onClick.RemoveAllListeners();
+            MapButton  = EnsureBarButton(bar, "MapButton", "ui.topbar.map", -452f, -284f);
+            LogButton  = EnsureBarButton(bar, "LogButton", "ui.topbar.log", -636f, -468f);
+            MenuButton = EnsureBarButton(bar, "MenuButton", "ui.topbar.menu", -820f, -652f);
 
             if (EvidenceCountLabel != null)
                 UIFactory.Anchor(EvidenceCountLabel.rectTransform, new Vector2(1, 0), new Vector2(1, 1),
-                                 new Vector2(-640, 0), new Vector2(-468, 0));
+                                 new Vector2(-1000, 0), new Vector2(-836, 0));
+
+            // 방 이름은 왼쪽 끝부터 버튼들 앞까지만. 길면 증거 개수 글자와 겹칩니다.
+            if (RoomLabel != null)
+                UIFactory.Anchor(RoomLabel.rectTransform, new Vector2(0, 0), new Vector2(0.45f, 1),
+                                 new Vector2(32, 0), new Vector2(0, 0));
+        }
+
+        static Button EnsureBarButton(Transform bar, string name, string captionKey, float left, float right)
+        {
+            var btn = bar.Find(name)?.GetComponent<Button>();
+            if (btn == null)
+            {
+                btn = UIFactory.Btn(name, bar, Loc.T(captionKey), 24,
+                                    new Color(0.16f, 0.17f, 0.23f, 1f), UIFactory.Accent);
+                UIFactory.Anchor(btn.GetComponent<RectTransform>(), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+                                 new Vector2(left, -22), new Vector2(right, 22));
+            }
+            btn.onClick.RemoveAllListeners();
+            return btn;
         }
 
         void BuildToast()
@@ -275,6 +306,15 @@ namespace SevenDoctors.UI
             var mapLabel = MapButton != null ? MapButton.GetComponentInChildren<Text>() : null;
             if (mapLabel != null) mapLabel.text = Loc.T("ui.topbar.map");
             Map?.Relocalize();
+
+            var logLabel = LogButton != null ? LogButton.GetComponentInChildren<Text>() : null;
+            if (logLabel != null) logLabel.text = Loc.T("ui.topbar.log");
+            Log?.Relocalize();
+
+            var menuLabel = MenuButton != null ? MenuButton.GetComponentInChildren<Text>() : null;
+            if (menuLabel != null) menuLabel.text = Loc.T("ui.topbar.menu");
+            Menu?.Relocalize();
+            Settings?.Relocalize();
         }
 
         public void RefreshEvidenceCount()

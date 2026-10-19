@@ -47,3 +47,35 @@ ui.map.title,저택 지도,Mansion Map,지도
 ui.map.close,닫기  (M),Close  (M),지도
 ui.map.help,가고 싶은 방을 누르세요. 어두운 방은 아직 갈 수 없습니다.,Click a room to go there. Dark rooms aren't open yet.,지도
 ui.map.locked,잠김,Locked,지도 — 잠긴 방 아래 작은 글씨
+ui.topbar.log,기록  (L),Log  (L),상단바 버튼 폭 168px
+ui.log.title,대화 기록,Dialogue Log,대화 기록창
+ui.log.close,닫기  (L),Close  (L),대화 기록창
+ui.log.help,휠·드래그·↑↓ 로 넘깁니다. Home 맨 처음 / End 맨 끝,Scroll with the wheel / drag / ↑↓. Home = first / End = latest,대화 기록창
+ui.log.empty,아직 나눈 대화가 없습니다.,No dialogue yet.,대화 기록창
+ui.log.choice,▶ 선택 — {0},▶ Chose — {0},대화 기록창 — 고른 선택지
+ui.topbar.menu,메뉴  (Esc),Menu  (Esc),상단바 버튼 폭 168px
+ui.title.continue,이어하기,Continue,시작 화면 — 세이브가 있을 때만
+ui.title.new_game,처음부터,New Game,시작 화면 — 세이브가 있을 때 '시작하기' 대신
+ui.title.branch,엔딩 분기점,Ending Branch,시작 화면 — 분기점에 닿은 적 있을 때만
+ui.title.branch_count,엔딩 분기점  ({0} / {1}),Ending Branch  ({0} / {1}),{0} 본 엔딩 수 / {1} 전체
+ui.title.settings,설정,Settings,시작 화면
+ui.menu.title,메뉴,Menu,게임 중 메뉴
+ui.menu.resume,계속하기,Resume,게임 중 메뉴
+ui.menu.save,저장하기,Save,게임 중 메뉴
+ui.menu.save_blocked,대화·퍼즐이 끝나면 저장할 수 있습니다,You can save once the scene ends,게임 중 메뉴 — 저장 버튼 아래
+ui.menu.last_save,마지막 저장  {0},Last saved  {0},게임 중 메뉴 — {0} 시각 · 장소
+ui.menu.settings,설정,Settings,게임 중 메뉴
+ui.menu.to_title,타이틀로  (자동 저장),Title Screen  (autosave),게임 중 메뉴
+ui.menu.quit,게임 종료  (자동 저장),Quit  (autosave),게임 중 메뉴
+ui.save.saved,저장했습니다.,Saved.,토스트
+ui.save.checkpoint,엔딩 분기점을 저장했습니다.,Ending branch saved.,토스트 — [checkpoint] 줄에 닿았을 때
+ui.settings.title,설정,Settings,설정
+ui.settings.close,닫기  (Esc),Close  (Esc),설정
+ui.settings.reset,세이브 초기화,Reset Save Data,설정
+ui.settings.reset_confirm,정말 지울까요?  한 번 더 누르세요,Really delete?  Press again,설정 — 첫 번째 누른 뒤 5초
+ui.settings.reset_note,"이어하기 · 엔딩 분기점 · 본 엔딩 기록이 모두 지워집니다.","Deletes your save, ending branch and endings seen.",설정
+ui.settings.reset_note_ingame,"이어하기 · 엔딩 분기점 · 본 엔딩 기록을 지우고 시작 화면으로 돌아갑니다.","Deletes all save data and returns to the title screen.",설정 — 게임 도중일 때
+ui.settings.reset_none,지울 세이브가 없습니다.,There is no save data.,설정
+ui.settings.reset_done,세이브를 지웠습니다.,Save data deleted.,토스트
+ui.ending.to_branch,분기점으로,Back to the Branch,엔딩 카드 — 분기점 세이브가 있을 때
+ui.ending.collection,본 엔딩  {0} / {1},Endings seen  {0} / {1},엔딩 카드

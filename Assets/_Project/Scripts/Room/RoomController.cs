@@ -74,7 +74,11 @@ namespace SevenDoctors.Room
             Game.UI.SetRoomLabel(room.DisplayName);
             RebuildHotspots();
 
-            if (!keepState) Game.State = GameState.Exploring;
+            if (!keepState)
+            {
+                Game.State = GameState.Exploring;
+                SaveSystem.NoteSafePoint();   // 지도로 옮겨 다니기만 해도 종료 시 그 방에서 이어집니다
+            }
             Debug.Log($"[Room] 입장: {room.DisplayName} ({roomId})");
         }
 

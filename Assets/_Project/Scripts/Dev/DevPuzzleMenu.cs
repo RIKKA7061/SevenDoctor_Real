@@ -87,9 +87,12 @@ namespace SevenDoctors.Dev
             }
             if (target >= rooms.Count || target == current) return;
 
-            // 흐르던 대사와 열려 있던 노트는 접습니다. 방만 바뀌고 대사가 남으면 붕 뜹니다.
+            // 흐르던 대사와 열려 있던 노트·기록창·메뉴는 접습니다. 방만 바뀌고 대사가 남으면 붕 뜹니다.
             if (Game.Dialogue != null && Game.Dialogue.IsPlaying) Game.Dialogue.Stop();
             if (Game.UI.Notebook != null && Game.UI.Notebook.IsVisible) Game.UI.Notebook.Hide();
+            if (Game.UI.Log != null && Game.UI.Log.IsVisible) Game.UI.Log.Hide();
+            Game.UI.Menu?.Hide();
+            Game.UI.Settings?.Hide();
 
             Game.Room.IgnoreLocks = true;
             Game.Room.Enter(rooms[target].Id);
@@ -234,6 +237,8 @@ namespace SevenDoctors.Dev
             Game.Evidence.RestoreFrom(savedEvidence);
             Game.UI.RefreshEvidenceCount();
             Game.Room?.RebuildHotspots();
+            // 대화가 끝나며 잡힌 자동 저장 순간은 되돌리기 전 상태라, 되돌린 뒤 다시 잡습니다.
+            SaveSystem.NoteSafePoint();
 
             Game.UI.Toast("미리보기: 대화 끝 — 진행 상황은 그대로입니다");
             _running = null;
@@ -274,6 +279,7 @@ namespace SevenDoctors.Dev
                 Game.Room?.RebuildHotspots();
 
             Game.State = GameState.Exploring;
+            SaveSystem.NoteSafePoint();   // 되돌린 뒤 상태로 자동 저장 순간을 다시 잡습니다
             Game.UI.Toast(solved ? "미리보기: 성공 — 진행 상황은 그대로입니다"
                                  : "미리보기: 종료 — 진행 상황은 그대로입니다");
             _running = null;

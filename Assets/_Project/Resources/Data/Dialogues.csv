@@ -121,7 +121,7 @@ dlg_part5,18,chr_doctor,normal,"촛불, 다시 켜자.",Let's light the candles 
 dlg_part5,19,chr_pride,surprised,……지금?,......Now?,,,,
 dlg_part5,20,chr_doctor,normal,"6개 말고, 일곱 개로.",Not six. Seven.,,,,
 dlg_part5,21,chr_pride,sad,…….,.......,,,,
-dlg_part5,22,chr_doctor,sad,늦었지만. 정말 늦었지만.,It's late. I know it's so very late.,,,,여기서 엔딩 선택지
+dlg_part5,22,chr_doctor,sad,늦었지만. 정말 늦었지만.,It's late. I know it's so very late.,[checkpoint],,,여기서 엔딩 선택지 — [checkpoint] 로 엔딩 분기점 자동 저장
 dlg_end_together,1,chr_doctor,normal,같이 만들자. 이번엔 3시 14분 전에 돌아올게. 약속해.,Let's build it together. This time I'll be home before 3:14. I promise.,,,,엔딩 A
 dlg_end_together,2,chr_pride,normal,"……약속, 이번엔 믿어볼게.","......This time, I'll believe your promise.",[ending:end_together],,,
 dlg_end_stay,1,chr_doctor,sad,이 방에 있을게. 촛불 다 탈 때까지.,I'll stay in this room. Until the candles burn down.,,,,엔딩 B

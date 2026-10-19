@@ -16,6 +16,8 @@ namespace SevenDoctors.Dialogue
     ///   3) 상태 태그 실행                                (flag, get)
     ///   4) 이 줄에 선택지가 달려 있으면 선택지 표시
     ///   5) 흐름 태그 실행                                (puzzle, goto, ending)
+    ///
+    /// [checkpoint] 가 달린 줄은 1) 보다 먼저, 그 줄을 보여주기 직전 상태를 엔딩 분기점 칸에 저장합니다.
     /// </summary>
     public class DialogueRunner : MonoBehaviour
     {
@@ -23,6 +25,9 @@ namespace SevenDoctors.Dialogue
         public float CharInterval = 0.022f;
 
         public bool IsPlaying { get; private set; }
+
+        /// <summary>지금까지 나온 대사 전부. 대화 기록창(L)이 그립니다.</summary>
+        public DialogueLog Log { get; } = new DialogueLog();
 
         bool _advanceRequested;
         Coroutine _current;
@@ -46,7 +51,7 @@ namespace SevenDoctors.Dialogue
         /// 노트나 퍼즐이 떠 있을 때는 받지 않습니다 — 스페이스는 버튼을 누르는
         /// 키이기도 해서, 그대로 두면 노트에서 스페이스를 눌렀을 때 뒤에서
         /// 대사까지 같이 넘어갑니다. 선택지가 떠 있을 때도 마찬가지로 빠집니다:
-        /// 어느 쪽을 고를지 정하지 않은 채 넘겨 버리면 안 됩니다.
+        /// 어느 쪽을 고를지 정하지 않은 채 넘겨 버리면 안 됩니다. 대화 기록을 읽는 중에도요.
         /// </summary>
         void Update()
         {
@@ -54,6 +59,7 @@ namespace SevenDoctors.Dialogue
             if (Game.State == GameState.InPuzzle) return;
             if (Game.UI == null) return;
             if (Game.UI.Notebook != null && Game.UI.Notebook.IsVisible) return;
+            if (Game.UI.ModalOpen) return;
             if (Game.UI.Choices != null && Game.UI.Choices.IsVisible) return;
 
             _advanceRequested = true;
@@ -71,7 +77,10 @@ namespace SevenDoctors.Dialogue
 
         // ── 진입점 ────────────────────────────────────────────────────────────
 
-        public void Play(string dialogueId, Action onComplete = null)
+        public void Play(string dialogueId, Action onComplete = null) => Play(dialogueId, 0, onComplete);
+
+        /// <summary>startLine 번째 줄부터 틉니다 (그 앞 줄은 건너뜀). 엔딩 분기점을 불러올 때 씁니다.</summary>
+        public void Play(string dialogueId, int startLine, Action onComplete)
         {
             if (string.IsNullOrEmpty(dialogueId)) { onComplete?.Invoke(); return; }
 
@@ -81,7 +90,7 @@ namespace SevenDoctors.Dialogue
                 return;
             }
 
-            _current = StartCoroutine(RunRoutine(dialogueId, onComplete));
+            _current = StartCoroutine(RunRoutine(dialogueId, startLine, onComplete));
         }
 
         /// <summary>
@@ -109,13 +118,13 @@ namespace SevenDoctors.Dialogue
             Game.State = GameState.Exploring;
         }
 
-        IEnumerator RunRoutine(string startId, Action onComplete)
+        IEnumerator RunRoutine(string startId, int startLine, Action onComplete)
         {
             IsPlaying = true;
             var previousState = Game.State;
             Game.State = GameState.InDialogue;
 
-            yield return PlayCore(startId);
+            yield return PlayCore(startId, startLine);
 
             Game.UI.Dialogue.Hide();
             Game.UI.Choices.Hide();
@@ -134,9 +143,10 @@ namespace SevenDoctors.Dialogue
         /// 퍼즐 안에서 오답 반응 대사를 틀 때처럼 '중첩 호출'이 가능합니다.
         /// 다른 코루틴에서 yield return 으로 직접 부르세요.
         /// </summary>
-        public IEnumerator PlayCore(string startId)
+        public IEnumerator PlayCore(string startId, int startLine = 0)
         {
             string currentId = startId;
+            int skipBelow = startLine;   // 첫 대화에서만 이 줄 앞을 건너뜁니다
             int guard = 0;
 
             while (!string.IsNullOrEmpty(currentId))
@@ -159,9 +169,19 @@ namespace SevenDoctors.Dialogue
 
                 foreach (var line in lines)
                 {
+                    if (line.LineNo < skipBelow) continue;
                     if (!Game.Flags.Check(line.RequiredFlag)) continue;
 
                     var tags = TagUtil.ExtractTags(line.Tags);
+
+                    // 0) 엔딩 분기점 — 이 줄부터 다시 볼 수 있게 저장해 둡니다.
+                    //    분기점을 불러와서 바로 이 줄부터 트는 중이면 또 저장하지 않습니다.
+                    bool resumedHere = skipBelow > 0 && line.LineNo == skipBelow;
+                    if (HasTag(tags, "checkpoint") && !resumedHere)
+                    {
+                        SaveSystem.SaveCheckpoint(currentId, line.LineNo);
+                        Game.UI.Toast(Loc.T("ui.save.checkpoint"));
+                    }
 
                     // 1) 보여주기 전 연출
                     yield return ProcessPresentationTags(tags);
@@ -181,6 +201,7 @@ namespace SevenDoctors.Dialogue
                         Game.UI.Choices.Show(choices, c => picked = c);
                         while (picked == null) yield return null;
 
+                        Log.AddChoice(picked);
                         Game.Flags.Set(picked.SetFlag, true);
                         if (!string.IsNullOrEmpty(picked.NextDialogue)) { jumpTo = picked.NextDialogue; break; }
                     }
@@ -207,9 +228,16 @@ namespace SevenDoctors.Dialogue
                     if (!string.IsNullOrEmpty(gotoTarget)) { jumpTo = gotoTarget; break; }
                 }
 
+                skipBelow = 0;
                 if (!string.IsNullOrEmpty(jumpTo)) { currentId = jumpTo; continue; }
                 currentId = lastShown != null ? lastShown.NextDialogue : null;
             }
+        }
+
+        static bool HasTag(List<TagUtil.Tag> tags, string key)
+        {
+            foreach (var t in tags) if (t.Key == key) return true;
+            return false;
         }
 
         List<ChoiceRow> FilterChoices(List<ChoiceRow> source)
@@ -227,6 +255,9 @@ namespace SevenDoctors.Dialogue
             string speaker = Game.Db.CharacterName(line.SpeakerId);
             string body = TagUtil.StripTags(line.Text);
 
+            // 태그만 있고 글자가 없는 줄(장면 전환용 등)은 기록에 남기지 않습니다.
+            if (!string.IsNullOrWhiteSpace(body)) Log.AddLine(line);
+
             ShowPortrait(line);
             Game.UI.Dialogue.Show(speaker, string.Empty, false);
             _advanceRequested = false;
@@ -243,6 +274,9 @@ namespace SevenDoctors.Dialogue
             while (shown < body.Length)
             {
                 if (_advanceRequested) { shown = body.Length; _advanceRequested = false; break; }
+
+                // 대화 기록·메뉴를 보는 동안에는 타이핑과 말소리를 멈춥니다.
+                if (Game.UI.ModalOpen) { yield return null; continue; }
 
                 timer += Time.deltaTime;
                 while (timer >= CharInterval && shown < body.Length)
@@ -390,6 +424,7 @@ namespace SevenDoctors.Dialogue
                         {
                             string label = Game.Db.Evidences.TryGetValue(tag.Value, out var ev)
                                 ? ev.DisplayName : tag.Value;
+                            Log.AddEvidence(ev);
                             Game.UI.Toast(Loc.T("ui.evidence.gained", label));
                             Game.UI.RefreshEvidenceCount();
                         }
