@@ -1,7 +1,7 @@
 ﻿hotspot_id,room_id,표시명,표시명_en,타입,연결대화,필요플래그,1회성,x,y,w,h,이미지,비고
-hs_lab_machine,room_lab,타임머신,The time machine,look,dlg_lab_machine,,FALSE,0.4688,0.1759,0.2917,0.5185,,배경의 원형 장치
-hs_lab_notes,room_lab,실험 노트,Research notes,look,dlg_lab_notes,,FALSE,0.0729,0.4815,0.1979,0.1111,,배경의 책상
-hs_lab_start,room_lab,기동 레버를 당긴다,Pull the ignition lever,look,dlg_lab_start,!flg_prologue_end,TRUE,0.7865,0.4074,0.0885,0.3056,prop_lever,당기면 대사 끝에 저택 앞으로 넘어감 ([room:] 태그)
+hs_lab_machine,room_lab,타임머신,The time machine,look,dlg_lab_machine,,FALSE,0.3854,0.2593,0.2240,0.5000,,배경 가운데 시계 달린 구리 장치
+hs_lab_notes,room_lab,실험 노트,Research notes,look,dlg_lab_notes,,FALSE,0.7760,0.5741,0.1146,0.1204,,배경 오른쪽 책상의 펼친 노트 — 오른쪽 끝은 도우미 로봇이 떠 있는 자리라 비켜 잡음
+hs_lab_start,room_lab,기동 레버를 당긴다,Pull the ignition lever,look,dlg_lab_start,!flg_prologue_end,TRUE,0.6198,0.4444,0.0885,0.3056,prop_lever,당기면 대사 끝에 저택 앞으로 넘어감 ([room:] 태그) — 새 배경에서 타임머신 오른쪽당기면 대사 끝에 저택 앞으로 넘어감 ([room:] 태그)
 hs_front_door,room_front,저택 문,The mansion door,look,dlg_front_door,!flg_met_sloth,FALSE,0.5260,0.5648,0.0729,0.1852,,배경의 현관문
 hs_front_sloth,room_front,그림자 속의 누군가,Someone in the shadows,talk,dlg_front_sloth,,TRUE,0.6927,0.4352,0.1250,0.3796,shadow:chr_sloth,
 hs_lobby_pride_first,room_lobby,도면을 펼쳐 든 누군가,Someone holding a floor plan,talk,dlg_hall_pride_first,!flg_ch1_start,TRUE,0.4323,0.4352,0.1354,0.4130,chr:chr_pride,임시 — 파트1·2 시트 오면 교체

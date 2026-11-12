@@ -38,6 +38,12 @@ MOUTHS = {
     "sorrow_back_left":  dict(box=(179, 347, 226, 368)),
     "sorrow_back_right": dict(box=(369, 347, 416, 368)),
 
+    # 박사 — 턴어라운드 시트(cut_turnaround.py)에서 자른 그림. 옆모습은 입이 얼굴 가장자리에
+    # 있어서 타원을 조금 안쪽으로 잡았습니다. 뒷모습은 입이 안 보이므로 없습니다.
+    "doctor":            dict(box=(332, 300, 367, 322)),
+    "doctor_side_left":  dict(box=(246, 304, 262, 319)),
+    "doctor_side_right": dict(box=(438, 304, 454, 319)),
+
     "arrogance": dict(box=(311, 256, 343, 272)),
     "greed":     dict(box=(376, 245, 410, 263)),
     "wrath":     dict(box=(315, 279, 354, 298)),
