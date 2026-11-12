@@ -145,6 +145,10 @@ namespace SevenDoctors.Room
                 placed ? UIFactory.Hotspot : new Color(0.11f, 0.12f, 0.17f, 0.95f),
                 UIFactory.Ink);
 
+            // 올려놓으면 커서가 '여기서 무슨 일이 일어나는지' 로 바뀝니다 (GameCursor).
+            // 탐색 중에만 — 대사가 흐르는 동안에는 눌러도 아무 일이 없으니 화살표로 둡니다.
+            CursorHint.Attach(button.gameObject, CursorFor(h), exploringOnly: true);
+
             var rt = button.GetComponent<RectTransform>();
 
             if (placed)
@@ -190,6 +194,18 @@ namespace SevenDoctors.Room
                 case "talk": return $"◆  {h.DisplayName}";
                 case "get":  return $"●  {h.DisplayName}";
                 default:     return $"·  {h.DisplayName}";
+            }
+        }
+
+        /// <summary>핫스팟 타입에 맞는 커서. 위 Caption 의 기호(▶ ◆ ● ·)와 같은 구분입니다.</summary>
+        static CursorKind CursorFor(HotspotRow h)
+        {
+            switch (h.Type)
+            {
+                case "move": return CursorKind.Move;
+                case "talk": return CursorKind.Talk;
+                case "get":  return CursorKind.Get;
+                default:     return CursorKind.Look;
             }
         }
 

@@ -33,6 +33,9 @@ namespace SevenDoctors.Core
         [Tooltip("끄면 시작 화면 없이 바로 게임에 들어갑니다. 대사를 손볼 때 편합니다.")]
         public bool ShowTitleOnStart = true;
 
+        [Tooltip("켜두면 마우스를 올린 곳에 따라 커서가 돋보기·손·말풍선으로 바뀝니다. 끄면 늘 화살표 — 누를 곳을 눈으로 찾게 하고 싶을 때 끕니다.")]
+        public bool ContextCursors = true;
+
         // AudioManager 는 실행할 때 코드로 붙이기 때문에, 재생 전에는 인스펙터에
         // 뜨지 않습니다. 여기 있으면 껐다 켜지 않고도 미리 맞춰 둘 수 있습니다.
         [Header("소리 크기")]
@@ -111,6 +114,9 @@ namespace SevenDoctors.Core
             // 힌트 담당은 Room/Puzzle 이 만들어진 뒤에 붙입니다 — OnEnable 에서
             // 그 둘의 이벤트를 구독하기 때문입니다.
             Game.Hints = managers.AddComponent<SevenDoctors.Hint.HintDirector>();
+
+            // 마우스 커서 — 올려놓은 곳이 무엇을 하는 곳인지에 따라 모양이 바뀝니다.
+            managers.AddComponent<GameCursor>().ContextCursors = ContextCursors;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // F1 — 퍼즐 미리보기. 정식 빌드에는 클래스 자체가 없습니다.
