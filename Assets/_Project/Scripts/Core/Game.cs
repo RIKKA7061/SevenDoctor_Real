@@ -22,6 +22,7 @@ namespace SevenDoctors.Core
         public static SevenDoctors.UI.UIRoot UI { get; internal set; }
         public static SevenDoctors.Audio.AudioManager Audio { get; internal set; }
         public static SevenDoctors.Hint.HintDirector Hints { get; internal set; }
+        public static SevenDoctors.Save.SaveDirector Save { get; internal set; }
 
         public static bool IsReady => Db != null && Flags != null;
 
@@ -51,13 +52,16 @@ namespace SevenDoctors.Core
         internal static void Reset()
         {
             Db = null; Flags = null; Evidence = null;
-            Dialogue = null; Room = null; Puzzle = null; UI = null; Audio = null; Hints = null;
+            Dialogue = null; Room = null; Puzzle = null; UI = null; Audio = null; Hints = null; Save = null;
             _state = GameState.Boot;
             StateChanged = null;
         }
     }
 
-    /// <summary>진행 플래그. 세이브 대상이며, 조건식 평가도 여기서 합니다.</summary>
+    /// <summary>
+    /// 진행 플래그. 세이브 대상이며, 조건식 평가도 여기서 합니다.
+    /// 저장·복원은 ActiveFlags / RestoreFrom 으로 합니다 (Save/SaveDirector).
+    /// </summary>
     public class FlagManager
     {
         readonly HashSet<string> _on = new HashSet<string>();

@@ -15,7 +15,7 @@
 실제로 끝까지 돌아갑니다. 아트가 하나도 없어도 동작합니다.
 
 조작: 화면 속 물건·인물을 직접 클릭 / 대화창 아무 데나 클릭해서 진행 / `Tab` 또는 우상단 버튼으로 증거 노트 /
-`M` 또는 우상단 버튼으로 저택 지도 (방 사이 이동은 지도로)
+`M` 또는 우상단 버튼으로 저택 지도 (방 사이 이동은 지도로) / 도우미 로봇을 누르면 창이 떠서 '대화하기'(힌트) · '인벤토리'(증거 노트)
 
 ---
 
@@ -66,6 +66,7 @@ Assets/_Project/
     ├── Dialogue/  DialogueRunner
     ├── Room/      RoomController
     ├── Puzzle/    PuzzleDirector (CodeLock · Deduction · Slide)
+    ├── Save/      SaveData(형식·JSON·파일, 유니티 없이 돎) · SaveDirector(자동 저장·이어 하기)
     ├── UI/        UIFactory · UIRoot · DialogueView · NotebookView
     └── Editor/    SheetImporterWindow · SceneBuilder · UIPrefabBuilder
 ```
@@ -248,6 +249,68 @@ flg_a|flg_b        둘 중 하나라도 (OR)
 
 ---
 
+## 세이브 / 이어 하기
+
+저장 버튼은 없습니다. **방 안에 서 있는 상태(탐색)로 돌아올 때마다 자동으로** 씁니다.
+시작 화면에 세이브가 있으면 **이어 하기 · (방 이름)** 이 맨 위에 나오고, 시작 버튼은 **새 게임** 이 됩니다.
+
+**담는 것** — 켜진 플래그, 가진 증거(얻은 순서대로), 지금 방, 써 버린 1회성 핫스팟. 이 넷이 전부입니다.
+
+- 언어는 세이브가 아니라 PlayerPrefs 에 있습니다 (`Loc`). 진행이 아니라 기기 설정이라 새 게임을 해도 남습니다.
+- 도우미 로봇의 힌트 단계·막힘 판정은 담지 않습니다. 이야기가 나아갈 때마다 0 으로 돌아가는 값입니다.
+- 대사가 몇 번째 줄인지, 퍼즐에 뭘 넣었는지도 담지 않습니다 — 아래 이유로 그런 순간에는 저장하지 않습니다.
+
+**언제 쓰는가** — 탐색 상태이고 대사가 안 흐를 때만. 1회성 핫스팟은 누르는 순간 소모되는데 그 대사가 켤 플래그는
+몇 줄 뒤에 켜집니다. 그 사이에 저장하면 '핫스팟은 없어졌는데 플래그도 없는' 막힌 세이브가 됩니다.
+그래서 **대사·퍼즐 도중에 끄면 그 대사를 시작하기 전으로** 돌아갑니다 (프롤로그 도중에 끄면 세이브가 아직 없습니다).
+바뀐 게 없으면 디스크에 쓰지 않습니다.
+
+**어디에** — `Application.persistentDataPath/save.json`. Windows 에서는
+`%USERPROFILE%\AppData\LocalLow\<Company Name>\<Product Name>\save.json` 입니다 (Player Settings 의 두 이름).
+실행하면 콘솔 `[Save] 세이브 발견 — …` 줄 끝에 실제 경로가 찍힙니다. 사람이 읽을 수 있는 JSON 입니다:
+
+```json
+{
+  "version": 1,
+  "savedAt": "2026-11-12T09:30:00Z",
+  "room": "room_lobby",
+  "flags": ["flg_met_sloth", "flg_prologue_end"],
+  "evidence": ["ev_blueprint"],
+  "consumed": ["hs_lab_lever"]
+}
+```
+
+**슬롯은 하나** 입니다. 갈림길이 엔딩 선택 하나뿐인 외길이고 죽거나 막히는 일이 없어서 되돌아갈 지점을 여러 개 둘
+이유가 없고, 전부 자동 저장이라 슬롯을 고르는 화면도 필요 없습니다. 그래서 새 게임은 세이브를 지웁니다 —
+세이브가 있을 때 **새 게임** 은 두 번 눌러야 시작합니다 (첫 번째는 "저장된 진행이 지워집니다" 로 글자만 바뀝니다).
+
+**엔딩** — 엔딩 카드가 뜨는 순간 세이브를 지웁니다. '처음으로' 를 누른 뒤의 시작 화면에는 '시작하기' 만 나옵니다.
+엔딩 카드에서 그냥 꺼도 같습니다. `GameBootstrap.Restart` 자체는 세이브를 건드리지 않습니다.
+
+**못 쓰는 파일** — 게임은 멈추지 않고, '이어 하기' 없이 새 게임만 나옵니다. 콘솔에 경고가 한 줄 남습니다.
+
+| 상황 | 동작 |
+|---|---|
+| 파일 없음 | 새 게임만 |
+| JSON 이 깨짐 · 칸의 형이 틀림 · `room` 없음 | `save.bad.json` 으로 옮겨 두고 새 게임만 (버그 신고 때 들여다볼 수 있게 지우지는 않음) |
+| `version` 이 이 빌드보다 큼 (더 새 빌드의 세이브) | 위와 같음. 옛 빌드가 새 세이브를 덮어써 없애지 않습니다 |
+| 저장한 뒤 시트가 바뀌어 없는 플래그·증거 ID 가 들어 있음 | 그 ID 만 버리고 이어 합니다 |
+| 저장된 방이 없어졌거나 잠겨 있음 | 지도에 있는 열린 첫 방에서 이어 합니다 |
+| 디스크에 못 씀 (가득 참·권한) | 경고 한 번, 게임은 계속. 다음에 켜면 마지막으로 써진 데서 이어짐 |
+
+**형식을 바꿀 때** — 칸을 더하기만 했으면 `version` 을 그대로 둡니다 (모르는 칸은 읽을 때 건너뛰고, 없는 목록은 빈 목록).
+칸의 뜻이 달라지거나 꼭 있어야 하는 칸이 생기면 `SaveData.CurrentVersion` 을 올리고 `SaveJson.Migrate` 에
+옛 번호 → 새 형식 변환을 쌓습니다. 지금은 v1 이 첫 형식이라 비어 있습니다.
+
+**개발 중에** — F1 미리보기가 도는 동안에는 저장하지 않습니다 (증거를 전부 쥐여 준 가짜 상태라서). 개발자 방 이동 키로
+잠긴 방에 들어가 있을 때는 방만 마지막 정상 방으로 남깁니다. `GameBootstrap` 의 `Show Title On Start` 를 끄면 늘
+새 게임이라 **기존 세이브가 지워집니다.** 세이브를 손으로 지우려면 위 경로의 `save.json` 을 지우면 됩니다.
+
+`Save/SaveData.cs` 는 `UnityEngine` 을 쓰지 않습니다. 형식을 고친 뒤 유니티를 띄우지 않고 저장 → 읽기 왕복을
+돌려 보려는 것이니 그대로 두세요 (로그는 `SaveDirector` 가 찍습니다).
+
+---
+
 ## 지금 되는 것 / 안 되는 것
 
 **되는 것**
@@ -257,11 +320,11 @@ flg_a|flg_b        둘 중 하나라도 (OR)
 - 증거 노트, 인물에게 증거 들이대기(AskTopics 매트릭스)
 - 퍼즐 엔진 3종: **CodeLock**(숫자 자물쇠) · **Deduction**(추리 문장 채우기) · **Slide**(그림 조각 밀어 맞추기)
 - 무결성 검사기
+- 세이브/이어 하기 — 자동 저장 1슬롯 (위 '세이브 / 이어 하기' 절)
 
 **아직 안 되는 것 (다음 작업)**
 - 퍼즐 엔진 3종: Assemble · FindOdd · MiniGame(메모리 우선)
-- 세이브/로드 — `FlagManager` / `EvidenceInventory` / `RoomController` 에 이미
-  `RestoreFrom` 훅을 뚫어놨으니 JSON 직렬화만 붙이면 됩니다
+- 수동 저장·여러 슬롯, 대사·퍼즐 도중 저장 (지금은 그 대사를 시작하기 전으로 돌아갑니다)
 - AudioManager, 포트레이트 표시, 타이틀/엔딩 씬
 
 ---
@@ -307,9 +370,24 @@ Resources/Art/
 |---|---|---|
 | 슬픔 | `sorrow` | 자기 그림 — 정면 + 옆 보기·돌아보기(좌우) + 입 |
 | 분노 / 오만 / 탐욕 / 색욕 | `wrath` / `arrogance` / `greed` / `lust` | 자기 그림 — 정면 + 입 |
-| 박사 / 나태 / 교만(딸) | `doctor` / `sloth` / `pride` | **임시** — 슬픔 그림의 머리·옷 색만 바꾼 것 (방향·입 포함) |
+| 박사 | `doctor` | 자기 그림 — 턴어라운드 시트에서 정면 + 옆(좌우) + 뒤 + 입 (`sheets/doctor_turnaround.webp`) |
+| 나태 / 교만(딸) | `sloth` / `pride` | **임시** — 슬픔 그림의 머리·옷 색만 바꾼 것 (방향·입 포함) |
 
-임시 그림은 `python ArtSource/make_standins.py` 가 만듭니다 (박사 갈색 머리·흰 가운, 나태 초록, 교만 검은 머리·보라 옷).
+임시 그림은 `python ArtSource/make_standins.py` 가 만듭니다 (나태 초록, 교만 검은 머리·보라 옷).
+박사는 목록에서 뺐습니다 — 다시 넣으면 진짜 그림을 임시 그림으로 덮어씁니다.
+
+박사 그림을 다시 뽑을 때 (시트가 바뀌었을 때):
+
+```
+python ArtSource/cut_turnaround.py ArtSource/sheets/doctor_turnaround.webp doctor front,side_right,back --paper=250
+python ArtSource/paint_mouths.py            # 입 — 그림 자리가 바뀌었으면 MOUTHS 의 doctor 좌표도
+python -c "import sys; sys.path.insert(0,'ArtSource'); import gen_evidence as g; g.character_card('doctor')"
+python -c "import sys; sys.path.insert(0,'ArtSource'); import gen_props as g; g.token()"
+```
+
+`--paper=250` 은 흰 가운이 배경과 거의 같은 흰색이라 붙입니다 (안 붙이면 가운 한쪽이 배경으로 지워집니다).
+시트의 옆모습이 오른쪽을 보고 있어서 `side_right` 로 자르고, `side_left` 는 좌우를 뒤집어 만듭니다.
+뒤돌아보기(`back_left`/`back_right`)는 시트에 없어서 연출에서 쓰면 `back` → 옆 → 정면 순으로 대신합니다.
 진짜 그림이 오면 같은 이름으로 덮어쓰면 됩니다. 그 파일마저 없는 인물은 `sorrow.png` 를 빌려 씁니다
 (`PortraitView.FallbackPaintedKey`, 빈 문자열이면 빌려 쓰기를 끔).
 
@@ -341,8 +419,10 @@ python ArtSource/cut_turnaround.py ArtSource/sheets/wrath_turnaround.png wrath
 python ArtSource/cut_turnaround.py 시트.png 키 front,side_left,back_left,back
 ```
 
-방향 이름은 시트 왼쪽부터 순서대로입니다. `_left` 로 끝나는 방향은 `_right` 가 자동으로 생깁니다.
-배경은 종이처럼 밝은 무채색이어야 하고, 인물 외곽선은 검은 선이어야 합니다.
+방향 이름은 시트 왼쪽부터 순서대로이고, '화면에서 보이는 쪽' 입니다 (`side_left` = 화면 왼쪽을 보는 그림).
+`_left` 만 있으면 `_right` 가, `_right` 만 있으면 `_left` 가 좌우반전으로 자동으로 생깁니다.
+배경은 종이처럼 밝은 무채색이어야 하고, 인물 외곽선은 어두운 선이어야 합니다.
+틀어 올린 머리와 뒤통수 사이처럼 머리카락에 갇힌 흰 틈은 머리 높이에서 따로 찾아 지웁니다.
 
 **말할 때 입 움직이기** — `{그림}_mouth.png` (그림과 같은 캔버스, 벌린 입만 불투명) 를 두면 대사가
 찍히는 동안 켰다 껐다 합니다. 다문 입은 원래 그림 것을 씁니다. 없는 방향은 입이 안 움직입니다.
@@ -379,6 +459,14 @@ python ArtSource/cut_turnaround.py 시트.png 키 front,side_left,back_left,back
 
 ```
 python ArtSource/gen_art.py
+```
+
+진짜 그림이 들어온 연구실 배경(`bg_lab`)은 `gen_art.py` 가 더 이상 덮어쓰지 않습니다.
+배경 그림을 새로 받으면 비율을 1920×1080 에 맞춰(꽉 채우고 넘치는 가장자리만 자름) 넣고,
+그 방 핫스팟 좌표를 새 그림의 물건 자리로 다시 잡으세요:
+
+```
+python ArtSource/fit_background.py ArtSource/sheets/bg_lab_source.webp bg_lab
 ```
 
 Live2D 는 이번엔 제외합니다. 표정 교체만으로도 충분히 살아 움직입니다.

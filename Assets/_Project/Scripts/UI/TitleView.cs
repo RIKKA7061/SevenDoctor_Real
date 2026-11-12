@@ -19,10 +19,22 @@ namespace SevenDoctors.UI
     {
         public RectTransform Root { get; private set; }
 
-        Text _title, _tagline, _startLabel, _languageLabel, _quitLabel;
+        Text _title, _tagline, _continueLabel, _startLabel, _languageLabel, _quitLabel;
+        GameObject _continueButton;
 
-        /// <summary>시작 버튼을 눌렀을 때.</summary>
+        // 세이브가 있을 때만 '이어 하기' 가 보이고, 시작 버튼은 '새 게임' 이 됩니다.
+        bool _hasSave;
+        Func<string> _continueDetail;
+
+        // '새 게임' 을 한 번 눌러 둔 상태. 세이브는 하나뿐이라 새로 시작하면 지워지므로
+        // 두 번 눌러야 시작합니다. 확인 창을 따로 띄우지 않고 버튼 글자를 바꿔서 묻습니다.
+        bool _newGameArmed;
+
+        /// <summary>새 게임을 시작하라고 했을 때 (세이브가 있었다면 한 번 더 확인을 받은 뒤).</summary>
         public event Action StartRequested;
+
+        /// <summary>'이어 하기' 를 눌렀을 때.</summary>
+        public event Action ContinueRequested;
 
         public bool IsVisible => Root != null && Root.gameObject.activeSelf;
 
@@ -48,16 +60,27 @@ namespace SevenDoctors.UI
 
             var menu = UIFactory.Rect("Menu", v.Root);
             UIFactory.Anchor(menu, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                             new Vector2(-220, -270), new Vector2(220, -30));
+                             new Vector2(-220, -358), new Vector2(220, -30));
             UIFactory.VLayout(menu, 16, new RectOffset(0, 0, 0, 0), TextAnchor.UpperCenter);
 
             // 캡션을 비워서 만들면 UIFactory.Btn 이 글자 자식을 아예 안 답니다.
             // 그러면 잡을 Text 가 없으니, 처음부터 지금 언어의 문구로 만듭니다.
+
+            // 이어 하기는 맨 위에 둡니다 — 세이브가 있는 사람이 가장 자주 누를 버튼입니다.
+            // 세이브가 없으면 꺼 두고, 꺼진 버튼은 세로 배치에서 자리도 차지하지 않습니다.
+            var resume = UIFactory.Btn("Continue", menu, Loc.T("ui.title.continue"), 30,
+                                       new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
+            UIFactory.Height(resume.gameObject, 72);
+            v._continueLabel = resume.GetComponentInChildren<Text>();
+            v._continueButton = resume.gameObject;
+            resume.onClick.AddListener(() => v.ContinueRequested?.Invoke());
+            resume.gameObject.SetActive(false);
+
             var start = UIFactory.Btn("Start", menu, Loc.T("ui.title.start"), 30,
                                       new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Height(start.gameObject, 72);
             v._startLabel = start.GetComponentInChildren<Text>();
-            start.onClick.AddListener(() => v.StartRequested?.Invoke());
+            start.onClick.AddListener(v.OnStartClicked);
 
             var language = UIFactory.Btn("Language", menu, v.LanguageCaption(), 26,
                                          new Color(0.13f, 0.14f, 0.19f), UIFactory.Ink);
@@ -94,14 +117,56 @@ namespace SevenDoctors.UI
             if (_title != null)   _title.text   = Loc.T("ui.title.name");
             if (_tagline != null) _tagline.text = Loc.T("ui.title.tagline");
 
-            if (_startLabel != null)    _startLabel.text    = Loc.T("ui.title.start");
+            if (_startLabel != null)    _startLabel.text    = StartCaption();
             if (_quitLabel != null)     _quitLabel.text     = Loc.T("ui.title.quit");
             if (_languageLabel != null) _languageLabel.text = LanguageCaption();
+
+            if (_continueButton != null) _continueButton.SetActive(_hasSave);
+            if (_continueLabel != null)  _continueLabel.text = ContinueCaption();
+        }
+
+        /// <summary>
+        /// 세이브가 있는지 알려 줍니다. 있으면 '이어 하기' 가 나오고 시작 버튼이 '새 게임' 으로 바뀝니다.
+        /// detail 은 버튼에 덧붙일 말(이어질 방 이름). 언어가 바뀌면 다시 물어보므로 함수로 받습니다.
+        /// </summary>
+        public void SetContinue(bool available, Func<string> detail = null)
+        {
+            _hasSave = available;
+            _continueDetail = available ? detail : null;
+            _newGameArmed = false;
+            Refresh();
+        }
+
+        string ContinueCaption()
+        {
+            string detail = _continueDetail != null ? _continueDetail() : null;
+            return string.IsNullOrEmpty(detail)
+                ? Loc.T("ui.title.continue")
+                : $"{Loc.T("ui.title.continue")}  ·  {detail}";
+        }
+
+        string StartCaption()
+        {
+            if (!_hasSave) return Loc.T("ui.title.start");
+            return Loc.T(_newGameArmed ? "ui.title.new_game_confirm" : "ui.title.new_game");
+        }
+
+        void OnStartClicked()
+        {
+            // 세이브가 있으면 첫 번째 클릭은 경고만 띄웁니다. 잘못 눌러서 진행을 날리는 일을 막습니다.
+            if (_hasSave && !_newGameArmed)
+            {
+                _newGameArmed = true;
+                Refresh();
+                return;
+            }
+            StartRequested?.Invoke();
         }
 
         public void Show()
         {
             if (Root == null) return;
+            _newGameArmed = false;
             Root.gameObject.SetActive(true);
             Root.SetAsLastSibling();
             Refresh();

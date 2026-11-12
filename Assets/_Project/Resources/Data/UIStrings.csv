@@ -2,6 +2,9 @@
 ui.title.name,일곱 개의 저택,Seven Houses,타이틀
 ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The same face.,
 ui.title.start,시작하기,Start,
+ui.title.continue,이어 하기,Continue,타이틀 — 세이브가 있을 때만 보임. 뒤에 방 이름이 붙음
+ui.title.new_game,새 게임,New Game,타이틀 — 세이브가 있을 때 시작 버튼 글자
+ui.title.new_game_confirm,저장된 진행이 지워집니다 — 한 번 더 누르면 시작,Saved progress will be erased — click again,타이틀 — 새 게임 확인
 ui.title.language,언어,Language,
 ui.title.quit,종료,Quit,
 ui.topbar.notebook,증거 노트  (Tab),Notes  (Tab),상단바 버튼 폭 244px — 길면 넘칩니다
@@ -47,3 +50,5 @@ ui.map.title,저택 지도,Mansion Map,지도
 ui.map.close,닫기  (M),Close  (M),지도
 ui.map.help,가고 싶은 방을 누르세요. 어두운 방은 아직 갈 수 없습니다.,Click a room to go there. Dark rooms aren't open yet.,지도
 ui.map.locked,잠김,Locked,지도 — 잠긴 방 아래 작은 글씨
+ui.bot.talk,대화하기,Talk,도우미 로봇 창 — 누르면 힌트
+ui.bot.inventory,인벤토리,Inventory,도우미 로봇 창 — 누르면 증거 노트 (탐색 중에만)

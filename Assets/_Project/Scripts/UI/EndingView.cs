@@ -28,6 +28,9 @@ namespace SevenDoctors.UI
             ui.Bot?.Hide();
             Game.State = GameState.Title;   // 핫스팟·노트·F1 을 막습니다
 
+            // 이야기가 끝났으니 세이브도 끝입니다. '처음으로' 뒤의 시작 화면에 '이어 하기' 가 남지 않습니다.
+            Game.Save?.OnEndingReached();
+
             var root = UIFactory.Rect("EndingLayer", ui.Screen);
             UIFactory.Anchor(root, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             root.SetAsLastSibling();         // 암전 레이어보다도 위
