@@ -52,8 +52,27 @@ def invitation_puzzle():
 CROP = (142, 140, 882, 880)
 
 
+def queen():
+    """퀸 배치 퍼즐의 말. 흰 실루엣으로 그려 두고 게임에서 색을 입힙니다 (충돌하면 붉게)."""
+    img = Image.new("RGBA", (N * ge.S, N * ge.S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    white = (255, 255, 255, 255)
+    # 왕관 끝의 구슬 다섯 개
+    for x, y in ((212, 300), (362, 230), (512, 200), (662, 230), (812, 300)):
+        d.ellipse([c(x - 46), c(y - 46), c(x + 46), c(y + 46)], fill=white)
+    # 왕관 몸통 — 뾰족한 다섯 갈래
+    d.polygon([(c(x), c(y)) for x, y in
+               ((212, 320), (300, 600), (362, 260), (430, 580), (512, 230), (594, 580),
+                (662, 260), (724, 600), (812, 320), (760, 700), (264, 700))], fill=white)
+    d.rounded_rectangle([c(240), c(690), c(784), c(770)], radius=c(24), fill=white)   # 띠
+    d.rounded_rectangle([c(190), c(800), c(834), c(900)], radius=c(30), fill=white)   # 받침
+    return img
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
+    ge.finish(queen()).save(os.path.join(OUT, "pz_queen.png"))
+    print("  Puzzles/pz_queen.png")
     whole = ge.finish(invitation_puzzle())
     whole.crop(CROP).resize((N, N), Image.LANCZOS).save(os.path.join(OUT, "pz_invitation.png"))
     print("  Puzzles/pz_invitation.png")

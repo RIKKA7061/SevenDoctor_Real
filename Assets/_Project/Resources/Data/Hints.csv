@@ -6,6 +6,8 @@ hnt_front_2,,"flg_prologue_end,!flg_met_sloth",2,그림자 속의 사람에게 �
 hnt_hall_1,,"flg_met_sloth,!flg_ch1_start",1,저택 안 1층 로비로 가 보세요. 누가 도면을 들고 기다리고 있어요.,Head into the lobby on the first floor. Someone's waiting there with a floor plan.,저택 홀
 hnt_hall_2,,"flg_met_sloth,!flg_ch1_start",2,로비에 있는 교만 씨한테 말을 걸어 보세요. 이 집 구조를 제일 잘 안대요.,Talk to Pride in the lobby. She says she knows this house best.,저택 홀
 hnt_records_1,,"flg_clue_invitation,flg_clue_candles,flg_clue_trophy,flg_clue_gift,flg_clue_watch,flg_clue_calendar,!flg_part3_done",1,여섯 방의 물건을 다 모았어요! 1층 로비로 가서 정리해 봐요.,You've found something in all six rooms! Head to the lobby and put it together.,단서 다 모음
+hnt_greed_vault_1,,"flg_greed_vault_seen,!flg_clue_flowers",1,"탐욕 씨 금고 말이에요, 정원 꽃이랑 관계가 있대요. 정원에 가 볼까요?","About Greed's vault — she said it has to do with the garden flowers. Shall we visit the garden?",금고를 봤는데 정원 꽃을 아직 못 봤을 때
+hnt_greed_vault_2,,"flg_greed_vault_seen,!flg_clue_flowers",2,지도(M)에서 정원을 찾아 화단을 잘 들여다보세요. 꽃이 아무 데나 피어 있지 않아요.,Find the garden on the map (M) and take a good look at the flower bed. The flowers don't bloom just anywhere.,
 hnt_rooms_1,,"flg_ch1_start,!flg_part3_done",1,지도(M)를 열어 층마다 있는 방에 가 보세요. 방마다 주인이 이상하게 아끼는 물건이 하나씩 있어요.,"Open the map (M) and visit the rooms on each floor. In each one, the owner is strangely attached to one thing.",단서 모으기
 hnt_rooms_2,,"flg_ch1_start,!flg_part3_done",2,노트를 열어 어느 방 물건이 아직 없는지 세어 보세요. 여섯 개를 다 모으면 1층 로비에서 정리할 수 있어요.,"Open the notebook and count which room's item you're still missing. Once you have all six, go over them in the lobby.",단서 모으기
 hnt_accuse_1,,"flg_part3_done,!flg_accused",1,누가 기계를 부쉈는지 지목할 차례예요. 5층 교만 씨 방으로 가 봐요.,It's time to name who broke the machines. Go to Pride's room on the fifth floor.,지목 전
@@ -15,3 +17,9 @@ hnt_accuse_p3,pzl_accuse,,3,"교만, 그리고 저택 도면이에요.",Pride �
 hnt_inv_p1,pzl_invitation,,1,"윗줄부터 맞춰 보세요. 풍선이 왼쪽 위, 케이크가 오른쪽 위예요.","Start with the top row. The balloon goes top-left, the cake top-right.",슬라이딩 퍼즐
 hnt_inv_p2,pzl_invitation,,2,그림만으로 헷갈리면 오른쪽의 '번호 보기'를 눌러 보세요. 1번부터 차례대로 놓으면 돼요.,"If the picture alone is confusing, press 'Show numbers' on the right. Just put them in order from 1.",슬라이딩 퍼즐
 hnt_inv_p3,pzl_invitation,,3,계속 움직이다 보면 '도우미에게 맡기기'가 나타나요. 제가 대신 맞춰 드릴게요.,Keep sliding and 'Let the helper do it' will appear. I'll put it together for you.,슬라이딩 퍼즐 — 거의 정답
+hnt_vault_p1,pzl_greed_vault,,1,정원 화단도 4×4였죠? 꽃이 핀 칸이 어디였는지 떠올려 보세요. 오른쪽 그림을 눌러 크게 볼 수도 있어요.,"The garden bed was 4×4 too, right? Remember which squares had flowers. You can click the picture on the right to see it up close.",타일 금고
+hnt_vault_p2,pzl_greed_vault,,2,꽃이 핀 칸과 같은 자리의 타일을 한 번씩만 누르세요. 순서는 상관없어요. 헷갈리면 '처음 상태로'부터 다시.,"Press each tile where a flower bloomed, just once. Order doesn't matter. If you lose track, start again from 'Reset'.",타일 금고
+hnt_vault_p3,pzl_greed_vault,,3,"윗줄 두 번째, 둘째 줄 네 번째, 셋째 줄 첫 번째, 맨 아랫줄 세 번째예요.","Top row second, second row fourth, third row first, bottom row third.",타일 금고 — 거의 정답
+hnt_trophy_p1,pzl_trophy,,1,가로줄과 세로줄마다 퀸이 하나씩 들어가야 해요. 금색 퀸이 있는 줄과 대각선부터 지워 보세요.,"Every row and every column gets exactly one queen. Start by ruling out the rows, columns and diagonals of the gold queens.",퀸 배치
+hnt_trophy_p2,pzl_trophy,,2,'공격 범위 보기'를 켜 보세요. 어둡게 칠해지지 않은 칸만 남아요.,"Turn on 'Show attacks'. Only the squares that aren't shaded are left.",퀸 배치
+hnt_trophy_p3,pzl_trophy,,3,남은 칸이 하나뿐인 줄이나 세로줄부터 채우면 막히지 않아요. 정답은 하나뿐이에요.,"Fill the row or column with only one square left first, and you won't get stuck. There's only one answer.",퀸 배치 — 판이 매번 달라서 칸을 집어 줄 순 없음

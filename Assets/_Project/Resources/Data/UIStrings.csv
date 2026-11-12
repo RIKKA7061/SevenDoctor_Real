@@ -52,3 +52,14 @@ ui.map.help,가고 싶은 방을 누르세요. 어두운 방은 아직 갈 수 �
 ui.map.locked,잠김,Locked,지도 — 잠긴 방 아래 작은 글씨
 ui.bot.talk,대화하기,Talk,도우미 로봇 창 — 누르면 힌트
 ui.bot.inventory,인벤토리,Inventory,도우미 로봇 창 — 누르면 증거 노트 (탐색 중에만)
+ui.puzzle.tiles.how,타일을 누르면 그 타일과 위·아래·양옆이 함께 뒤집힙니다. 전부 황동색으로 밝히면 열립니다.,"Pressing a tile flips it and the tiles above, below and beside it. Light every tile brass to open it.",타일 금고
+ui.puzzle.tiles.reset,처음 상태로,Reset,타일 금고
+ui.puzzle.tiles.moves,누른 횟수 {0},Presses: {0},타일 금고
+ui.puzzle.tiles.done,…철컥. 금고가 열렸다.,...Clunk. The vault opens.,타일 금고
+ui.puzzle.queens.how,칸을 누르면 퀸을 놓고 다시 누르면 치웁니다. 가로줄·세로줄·대각선마다 퀸은 하나만. 금색 테두리 퀸은 움직일 수 없습니다.,"Click a square to place a queen, click again to remove it. One queen per row, column and diagonal. Gold-framed queens can't be moved.",퀸 배치
+ui.puzzle.queens.count,놓은 퀸  {0} / {1},Queens  {0} / {1},퀸 배치
+ui.puzzle.queens.attacks_on,공격 범위 보기,Show attacks,퀸 배치
+ui.puzzle.queens.attacks_off,공격 범위 숨기기,Hide attacks,퀸 배치
+ui.puzzle.queens.reset,처음부터,Start over,퀸 배치
+ui.puzzle.queens.conflict,서로 공격하는 퀸이 있습니다. 붉은 퀸을 확인하세요.,Some queens are attacking each other. Check the red ones.,퀸 배치
+ui.puzzle.queens.done,…모든 퀸이 제자리를 찾았다.,...Every queen has found its place.,퀸 배치

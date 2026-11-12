@@ -6,6 +6,7 @@ ev_trophy,시상식 트로피 축소 모형,Miniature Award Trophy,물건,시상
 ev_gift,안 뜯은 선물상자,Unopened Gift Box,물건,포장도 리본도 그대로인 선물상자. 리본에 작은 카드가 끼워져 있다.,Wrapping and ribbon untouched. A small card is tucked under the ribbon.,ic_gift,탐욕의 방,단서 오브젝트
 ev_watch,멈춘 손목시계,Stopped Wristwatch,물건,3시 12분에서 멈춘 손목시계.,A wristwatch stopped at 3:12.,ic_watch,색욕의 방,단서 오브젝트
 ev_calendar,낡은 캘린더,Old Calendar,기록,6월 14일에 동그라미가 쳐진 낡은 캘린더. 그 칸에 뭔가 적혀 있다.,An old calendar with June 14 circled. Something is written in that box.,ic_calendar,나태의 방,단서 오브젝트
+ev_flowers,화단의 꽃,Flower Bed,물건,4×4로 칸을 나눈 정원 화단. 몇 칸에만 붉은 꽃이 피어 있다. 일부러 그렇게 심은 것 같다.,"A garden bed split into a 4×4 grid. Red flowers bloom in only a few squares, as if planted that way on purpose.",ic_flowers,정원,탐욕의 방 타일 금고 단서 — 꽃이 핀 칸 = 누를 타일 (Puzzles 탭 pzl_greed_vault 정답과 같아야 함)
 ev_chr_wrath,분노,Wrath,인물,평행세계의 나. 늘 무언가에 화가 나 있다.,"Another me, from a parallel world. Always angry at something.",ic_chr_wrath,분노의 방,추리 슬롯용 인물 카드
 ev_chr_sorrow,슬픔,Sorrow,인물,평행세계의 나. 이유 없이 눈물이 난다고 한다.,Another me. Says the tears come for no reason.,ic_chr_sorrow,슬픔의 방,추리 슬롯용 인물 카드
 ev_chr_arrogance,오만,Arrogance,인물,평행세계의 나. 자기가 받은 상 이야기를 좋아한다.,Another me. Likes to talk about her awards.,ic_chr_arrogance,오만의 방,추리 슬롯용 인물 카드

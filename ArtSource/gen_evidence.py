@@ -425,6 +425,52 @@ def gift():
     return img
 
 
+# ── 화단의 꽃 (정원) ─────────────────────────────────────────────────────────
+# 위에서 내려다본 4×4 화단. 꽃이 핀 칸 = 탐욕의 방 타일 금고에서 누를 칸.
+# Puzzles 탭 pzl_greed_vault 의 정답(0100/0001/1000/0010)과 같아야 합니다. 바꾸면 둘 다 바꾸세요.
+
+FLOWER_BED = ("0100", "0001", "1000", "0010")
+
+
+def flowers():
+    img = card_background()
+    obj = layer_like(img)
+    d = ImageDraw.Draw(obj)
+    wood, wood_sh = (138, 98, 64), (104, 72, 46)
+    soil, soil_dk = (92, 66, 48), (74, 52, 38)
+    leaf, leaf_dk = (86, 128, 78), (62, 98, 58)
+    petal, petal_sh, heart = (206, 64, 76), (160, 40, 54), (246, 204, 96)
+
+    x0, y0, size = 172, 172, 680
+    rrect(d, (x0 - 34, y0 - 34, x0 + size + 34, y0 + size + 34), 18, wood)           # 화단 나무 틀
+    rrect(d, (x0 - 34, y0 + size, x0 + size + 34, y0 + size + 34), 12, wood_sh, w=0)
+    cell = size / 4
+    for r, row in enumerate(FLOWER_BED):
+        for col, ch in enumerate(row):
+            bx, by = x0 + col * cell, y0 + r * cell
+            rrect(d, (bx + 6, by + 6, bx + cell - 6, by + cell - 6), 8, soil if (r + col) % 2 else soil_dk, w=4)
+            cx, cy = bx + cell / 2, by + cell / 2
+            if ch == "1":
+                for k in range(3):   # 잎
+                    a = math.radians(30 + k * 120)
+                    ell(d, (cx + math.cos(a) * 46 - 22, cy + math.sin(a) * 46 - 14,
+                            cx + math.cos(a) * 46 + 22, cy + math.sin(a) * 46 + 14), leaf, w=4)
+                for k in range(5):   # 꽃잎
+                    a = math.radians(-90 + k * 72)
+                    px, py = cx + math.cos(a) * 30, cy + math.sin(a) * 30
+                    ell(d, (px - 26, py - 26, px + 26, py + 26), petal if k % 2 == 0 else petal_sh, w=4)
+                ell(d, (cx - 16, cy - 16, cx + 16, cy + 16), heart, w=4)
+            else:
+                for k in range(3):   # 빈 칸 — 흙과 작은 돌
+                    sx = cx + (k - 1) * 30 + (r * 7 + col * 13) % 11 - 5
+                    sy = cy + ((k * 17 + r * 5 + col * 3) % 23) - 11
+                    ell(d, (sx - 7, sy - 5, sx + 7, sy + 5), (120, 100, 84), w=0)
+
+    shadow(img, obj)
+    img.alpha_composite(obj)
+    return img
+
+
 # ── 멈춘 손목시계 ────────────────────────────────────────────────────────────
 # 숨은 것: 3시 자리의 날짜창 '14'
 
@@ -578,7 +624,8 @@ def character_card(key):
 if __name__ == "__main__":
     print("단서:")
     for name, fn in (("ic_house_plan", house_plan), ("ic_invitation", invitation), ("ic_candles", candles),
-                     ("ic_trophy", trophy), ("ic_gift", gift), ("ic_watch", watch), ("ic_calendar", calendar)):
+                     ("ic_trophy", trophy), ("ic_gift", gift), ("ic_watch", watch), ("ic_calendar", calendar),
+                     ("ic_flowers", flowers)):
         save(fn(), name)
     print("인물 카드:")
     for key in CHARACTERS:
