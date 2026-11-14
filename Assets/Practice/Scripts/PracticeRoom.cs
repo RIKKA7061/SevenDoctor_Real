@@ -15,10 +15,4 @@ public class PracticeRoom : MonoBehaviour
 
         background.sprite = sprite;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
