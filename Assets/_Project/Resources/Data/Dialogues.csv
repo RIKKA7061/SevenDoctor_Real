@@ -53,14 +53,24 @@ dlg_sorrow_clue,2,chr_sorrow,sad,이거 볼 때마다 이상하게 눈물이 나
 dlg_arrogance_talk,1,chr_arrogance,normal,인사는 됐고. 내가 누군지는 알지? 평행세계 이론의 권위자.,Skip the greetings. You know who I am — the authority on parallel-world theory.,,,,임시 — 파트1·2 시트 오면 교체
 dlg_arrogance_talk,2,chr_doctor,normal,…그건 나도 마찬가지야.,...So am I.,,,,
 dlg_arrogance_talk,3,chr_arrogance,normal,그러니까 더 이상하지. 내 기계가 부서졌다는 게.,Which makes it stranger. That a machine of mine could break.,[get:ev_chr_arrogance],,,
-dlg_arrogance_clue,1,chr_doctor,normal,시상식 트로피를 줄여 만든 모형. 받침에 날짜가 새겨져 있다.,A scaled-down award trophy. There's a date engraved on the base.,[get:ev_trophy][flag:flg_clue_trophy],,,시상식 트로피 축소 모형 — 오만의 방
-dlg_arrogance_clue,2,chr_arrogance,surprised,이거 내가 받은 거 맞지? 근데 왜 여기 있지.,"This is mine, isn't it? Then why is it here?",,,,
+dlg_arrogance_clue,1,chr_doctor,normal,작은 트로피가 유리 진열장 안에 잠겨 있다. 진열장 바닥은 체스판이고 퀸 말 몇 개가 박혀 있다.,"A small trophy, locked in a glass case. The floor of the case is a chessboard with a few queens fixed in place.",,,,트로피 진열장 — 오만의 방
+dlg_arrogance_clue,2,chr_arrogance,normal,퀸을 서로 안 부딪히게 다 세우면 열린대. 난 한 번도 못 열어 봤지만.,"They say it opens once every queen is standing without clashing. Not that I've ever managed it.",[puzzle:pzl_trophy],,,여기서 퀸 배치 퍼즐
+dlg_arrogance_clue_done,1,chr_doctor,normal,…찰칵. 진열장이 열렸다. 시상식 트로피를 줄여 만든 모형. 받침에 날짜가 새겨져 있다.,...Click. The case opens. A scaled-down award trophy. There's a date engraved on the base.,[get:ev_trophy],,,퍼즐 성공 대사. 단서 플래그는 퍼즐의 성공플래그가 켭니다
+dlg_arrogance_clue_done,2,chr_arrogance,surprised,이거 내가 받은 거 맞지? 근데 왜 여기 있지.,"This is mine, isn't it? Then why is it here?",,,,
+dlg_arrogance_clue_later,1,chr_doctor,normal,퀸이 자꾸 서로 부딪히네. 조금 있다가 다시 해 보자.,The queens keep clashing. I'll try again in a bit.,,,,퍼즐을 미뤘을 때
 dlg_greed_talk,1,chr_greed,normal,손님이네. 필요한 거 있으면 말해. 이 집 물건은 다 내 손을 거쳐.,A customer. Tell me what you need — everything in this house goes through my hands.,,,,임시 — 파트1·2 시트 오면 교체
 dlg_greed_talk,2,chr_doctor,normal,타임머신 부품도?,Time machine parts too?,,,,
 dlg_greed_talk,3,chr_greed,normal,그게 제일 비싸지. 만들면 부서지니까.,Those are the priciest. Build one and it breaks.,[get:ev_chr_greed],,,
-dlg_greed_clue,1,chr_doctor,normal,포장도 리본도 그대로인 선물상자. 리본에 끼운 카드에 날짜가 적혀 있다.,"A gift box, wrapping and ribbon untouched. The card under the ribbon has a date on it.",[get:ev_gift][flag:flg_clue_gift],,,안 뜯은 선물상자 — 탐욕의 방
-dlg_greed_clue,2,chr_doctor,normal,이건 얼마야?,How much for this one?,,,,
-dlg_greed_clue,3,chr_greed,normal,이건 안 팔아. 이유는 모르겠는데.,That one's not for sale. Don't ask me why.,,,,
+dlg_greed_vault_locked,1,chr_doctor,normal,벽에 황동 타일 금고가 박혀 있다. 4×4 타일이 전부 어둡다.,A brass tile vault is set into the wall. All sixteen tiles are dark.,[flag:flg_greed_vault_seen],,,정원 꽃을 보기 전 — 탐욕의 방
+dlg_greed_vault_locked,2,chr_greed,normal,그건 안 팔아. 열지도 못할걸.,That's not for sale. You couldn't open it anyway.,,,,
+dlg_greed_vault_locked,3,chr_greed,normal,꽃이 피는 자리를 아는 사람만 열 수 있대. 이 집 정원 말이야.,They say only someone who knows where the flowers bloom can open it. The garden here.,,,,
+dlg_greed_vault_locked,4,chr_doctor,normal,정원… 가 봐야겠다.,The garden... I should take a look.,,,,
+dlg_greed_clue,1,chr_doctor,normal,황동 타일 금고. 4×4… 정원 화단도 4×4였지.,The brass tile vault. Four by four... so was the garden bed.,,,,정원 꽃을 본 뒤 — 탐욕의 방
+dlg_greed_clue,2,chr_doctor,normal,꽃이 핀 자리를 눌러 보자.,Let's press where the flowers bloomed.,[puzzle:pzl_greed_vault],,,여기서 타일 금고 퍼즐
+dlg_greed_clue_done,1,chr_doctor,normal,금고 안에 포장도 리본도 그대로인 선물상자가 있다. 리본에 끼운 카드에 날짜가 적혀 있다.,"Inside the vault, a gift box, wrapping and ribbon untouched. The card under the ribbon has a date on it.",[get:ev_gift],,,퍼즐 성공 대사. 단서 플래그는 퍼즐의 성공플래그가 켭니다
+dlg_greed_clue_done,2,chr_doctor,normal,이건 얼마야?,How much for this one?,,,,
+dlg_greed_clue_done,3,chr_greed,normal,이건 안 팔아. 이유는 모르겠는데.,That one's not for sale. Don't ask me why.,,,,
+dlg_greed_clue_later,1,chr_doctor,normal,…타일이 다시 어두워졌다. 화단 그림을 다시 떠올려 보자.,...The tiles have gone dark again. Let me picture the flower bed once more.,,,,퍼즐을 미뤘을 때
 dlg_lust_talk,1,chr_lust,normal,"새 얼굴… 아니, 같은 얼굴이지. 우리 다.","A new face... no, the same face. All of us.",,,,임시 — 파트1·2 시트 오면 교체
 dlg_lust_talk,2,chr_doctor,normal,당신 기계도?,Your machine too?,,,,
 dlg_lust_talk,3,chr_lust,normal,물론. 다들 서로 의심하느라 바빠. 보고 있으면 꽤 재밌어.,Of course. Everyone's busy suspecting everyone else. It's rather fun to watch.,[get:ev_chr_lust],,,
@@ -132,3 +142,5 @@ dlg_pride_wall,1,chr_doctor,normal,벽지 이음매로 차가운 바람이 새�
 dlg_pride_wall,2,chr_doctor,normal,"…벽 너머, 아래쪽 어딘가로 이어진 것 같다.","...It feels like it leads somewhere below, behind the wall.",,,,
 dlg_dining_table,1,chr_doctor,normal,긴 식탁. 아무도 앉지 않은 지 오래된 것 같다.,A long table. No one has sat here in a long time.,,,,임시 — 데모 방
 dlg_garden_sundial,1,chr_doctor,normal,정원 한가운데 해시계. 그림자가 한 자리에서 꼼짝도 하지 않는다.,A sundial in the middle of the garden. Its shadow hasn't moved an inch.,,,,임시 — 데모 방
+dlg_garden_flowers,1,chr_doctor,normal,4×4로 칸을 나눈 화단. 꽃은 몇 칸에만 피어 있다.,A flower bed split into a 4×4 grid. Flowers bloom in only a few squares.,[get:ev_flowers][flag:flg_clue_flowers],,,화단의 꽃 — 탐욕의 방 금고 단서
+dlg_garden_flowers,2,chr_doctor,normal,일부러 이렇게 심은 것 같아. 어디에 피었는지 기억해 두자.,Looks like they were planted this way on purpose. I'll remember where they bloom.,,,,

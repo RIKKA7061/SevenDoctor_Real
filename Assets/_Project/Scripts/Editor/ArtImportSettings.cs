@@ -11,6 +11,8 @@ namespace SevenDoctors.EditorTools
     /// "왜 배경이 안 나오지" 를 한참 헤매게 됩니다. 그 사고를 원천 차단하는 장치입니다.
     ///
     /// 아트 담당에게는 이렇게만 전하면 됩니다 — "PNG 를 폴더에 넣기만 하세요."
+    ///
+    /// Cursors 폴더만 예외로 Sprite 가 아니라 Cursor 타입으로 들입니다 (아래 ApplyCursor).
     /// </summary>
     public class ArtImportSettings : AssetPostprocessor
     {
@@ -24,6 +26,12 @@ namespace SevenDoctors.EditorTools
 
             // 이미 한 번 처리한 에셋은 건드리지 않습니다 (아트가 손으로 조정한 값 보존)
             if (!string.IsNullOrEmpty(importer.userData) && importer.userData.Contains("sd-art")) return;
+
+            if (assetPath.Contains("/Cursors/"))
+            {
+                ApplyCursor(importer);
+                return;
+            }
 
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
@@ -42,6 +50,25 @@ namespace SevenDoctors.EditorTools
             else                                          importer.maxTextureSize = 1024;
 
             importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.userData = "sd-art";
+        }
+
+        /// <summary>
+        /// 마우스 커서 그림 (Resources/Art/Cursors). Cursor.SetCursor 는 CPU 에서 읽을 수 있는
+        /// 압축 안 된 텍스처만 받습니다. Sprite 로 들어가면 게임은 멀쩡히 도는데 커서만 OS 기본
+        /// 모양으로 남아서, 원인을 찾기 어렵습니다.
+        /// </summary>
+        static void ApplyCursor(TextureImporter importer)
+        {
+            importer.textureType = TextureImporterType.Cursor;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.isReadable = true;
+            importer.npotScale = TextureImporterNPOTScale.None;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.maxTextureSize = 256;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
             importer.userData = "sd-art";
         }
 

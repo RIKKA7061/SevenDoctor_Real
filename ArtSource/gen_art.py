@@ -838,7 +838,8 @@ def bot_face(kind):
 
 if __name__ == "__main__":
     print("배경:")
-    for name, fn in [("bg_lab", bg_lab), ("bg_front", bg_front), ("bg_living", bg_living),
+    # bg_lab 은 진짜 그림이 들어왔습니다 (fit_background.py, sheets/bg_lab_source.webp). 덮어쓰지 않게 뺐습니다.
+    for name, fn in [("bg_front", bg_front), ("bg_living", bg_living),
                      ("bg_hall", bg_hall), ("bg_storage", bg_storage), ("bg_secret", bg_secret),
                      ("bg_bedroom", bg_bedroom), ("bg_bath", bg_bath),
                      ("bg_laundry", bg_laundry), ("bg_guest", bg_guest)]:
@@ -860,6 +861,8 @@ if __name__ == "__main__":
         json.dump(face_manifest, f, ensure_ascii=False, indent=1)
     print("  Faces/faceparts.json")
 
+    # 도우미 로봇은 이 도형 버전을 씁니다. cut_bot.py(턴어라운드 시트 버전)로 바꾸려면
+    # HelperBotView 의 칸 크기·막힘 불빛 자리도 같이 바꿔야 합니다 — Docs/도우미로봇.md 참고.
     print("도우미 로봇:")
     save(bot_body(), "Bot", "bot_body", BOTW, BOTH)
     for k in ("normal", "happy", "curious", "hint", "sleepy", "panic"):

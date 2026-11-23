@@ -63,6 +63,9 @@ namespace SevenDoctors.UI
             frame.raycastTarget = true;
             frame.gameObject.AddComponent<RectMask2D>();
 
+            // 그림 위에서는 돋보기 커서 — 누른 자리가 확대된다는 뜻입니다 (GameCursor).
+            CursorHint.Attach(frame.gameObject, CursorKind.Look);
+
             var content = UIFactory.Box("Image", frt, Color.white);
             UIFactory.Anchor(content.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             content.sprite = sprite;

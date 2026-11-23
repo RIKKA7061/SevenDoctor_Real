@@ -25,7 +25,17 @@ namespace SevenDoctors.UI
         Text _continueLabel, _branchLabel, _settingsLabel;
         Button _continue, _branch;
 
-        /// <summary>이어하기 / 처음부터 / 엔딩 분기점 중 하나를 눌렀을 때.</summary>
+        // 이어하기 칸이 있으면 '이어 하기' 가 보이고, 시작 버튼은 '새 게임' 이 됩니다. Refresh 때마다 디스크를 봅니다.
+        bool _hasSave;
+
+        // '새 게임' 을 한 번 눌러 둔 상태. 새로 시작하면 이어하기 칸이 지워지므로 두 번 눌러야 시작합니다.
+        // 확인 창을 따로 띄우지 않고 버튼 글자를 바꿔서 묻습니다.
+        bool _newGameArmed;
+
+        /// <summary>
+        /// 이어하기 / 새 게임 / 엔딩 분기점 중 하나를 골랐을 때.
+        /// 새 게임은 이어하기 칸이 있으면 한 번 더 확인을 받은 뒤에 옵니다.
+        /// </summary>
         public event Action<StartMode> StartRequested;
 
         public bool IsVisible => Root != null && Root.gameObject.activeSelf;
@@ -55,20 +65,24 @@ namespace SevenDoctors.UI
                              new Vector2(-240, -400), new Vector2(240, 110));
             UIFactory.VLayout(menu, 14, new RectOffset(0, 0, 0, 0), TextAnchor.UpperCenter);
 
-            // 이어하기 — 글자 두 줄(아래 줄은 저장 시각·장소)이라 조금 높습니다.
+            // 캡션을 비워서 만들면 UIFactory.Btn 이 글자 자식을 아예 안 답니다.
+            // 그러면 잡을 Text 가 없으니, 처음부터 지금 언어의 문구로 만듭니다.
+
+            // 이어 하기는 맨 위에 둡니다 — 세이브가 있는 사람이 가장 자주 누를 버튼입니다.
+            // 세이브가 없으면 꺼 두고, 꺼진 버튼은 세로 배치에서 자리도 차지하지 않습니다.
+            // 글자 두 줄(아래 줄은 저장 시각·장소)이라 조금 높습니다.
             v._continue = UIFactory.Btn("Continue", menu, Loc.T("ui.title.continue"), 30,
                                         new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Height(v._continue.gameObject, 84);
             v._continueLabel = v._continue.GetComponentInChildren<Text>();
             v._continue.onClick.AddListener(() => v.StartRequested?.Invoke(StartMode.Continue));
+            v._continue.gameObject.SetActive(false);
 
-            // 캡션을 비워서 만들면 UIFactory.Btn 이 글자 자식을 아예 안 답니다.
-            // 그러면 잡을 Text 가 없으니, 처음부터 지금 언어의 문구로 만듭니다.
             var start = UIFactory.Btn("Start", menu, Loc.T("ui.title.start"), 30,
                                       new Color(0.20f, 0.17f, 0.10f), UIFactory.Accent);
             UIFactory.Height(start.gameObject, 68);
             v._startLabel = start.GetComponentInChildren<Text>();
-            start.onClick.AddListener(() => v.StartRequested?.Invoke(StartMode.NewGame));
+            start.onClick.AddListener(v.OnStartClicked);
 
             v._branch = UIFactory.Btn("Branch", menu, Loc.T("ui.title.branch"), 26,
                                       new Color(0.13f, 0.14f, 0.19f), UIFactory.Accent);
@@ -121,13 +135,15 @@ namespace SevenDoctors.UI
             if (_languageLabel != null) _languageLabel.text = LanguageCaption();
             if (_settingsLabel != null) _settingsLabel.text = Loc.T("ui.title.settings");
 
-            // 세이브가 있으면 이어하기를 맨 위에, 시작 버튼은 '처음부터' 로 바꿔 부릅니다.
+            // 세이브가 있으면 이어하기를 맨 위에(아래 줄에 저장 시각·장소), 시작 버튼은 '새 게임' 으로 바꿔 부릅니다.
+            // 설정에서 세이브를 지우면 여기가 다시 불려 버튼이 사라집니다.
             var save = SaveSystem.LoadMain();
-            if (_continue != null) _continue.gameObject.SetActive(save != null);
-            if (_continueLabel != null && save != null)
+            _hasSave = save != null;
+            if (!_hasSave) _newGameArmed = false;
+            if (_continue != null) _continue.gameObject.SetActive(_hasSave);
+            if (_continueLabel != null && _hasSave)
                 _continueLabel.text = $"{Loc.T("ui.title.continue")}\n<size=20>{SaveSystem.Describe(save)}</size>";
-            if (_startLabel != null)
-                _startLabel.text = Loc.T(save != null ? "ui.title.new_game" : "ui.title.start");
+            if (_startLabel != null) _startLabel.text = StartCaption();
 
             bool branch = SaveSystem.HasBranch;
             if (_branch != null) _branch.gameObject.SetActive(branch);
@@ -135,9 +151,28 @@ namespace SevenDoctors.UI
                 _branchLabel.text = Loc.T("ui.title.branch_count", SaveSystem.EndingsSeenCount, Game.Db.Endings.Count);
         }
 
+        string StartCaption()
+        {
+            if (!_hasSave) return Loc.T("ui.title.start");
+            return Loc.T(_newGameArmed ? "ui.title.new_game_confirm" : "ui.title.new_game");
+        }
+
+        void OnStartClicked()
+        {
+            // 세이브가 있으면 첫 번째 클릭은 경고만 띄웁니다. 잘못 눌러서 진행을 날리는 일을 막습니다.
+            if (_hasSave && !_newGameArmed)
+            {
+                _newGameArmed = true;
+                Refresh();
+                return;
+            }
+            StartRequested?.Invoke(StartMode.NewGame);
+        }
+
         public void Show()
         {
             if (Root == null) return;
+            _newGameArmed = false;
             Root.gameObject.SetActive(true);
             Root.SetAsLastSibling();
             Refresh();

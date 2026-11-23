@@ -184,6 +184,31 @@ def token(key="doctor"):
     print("  Props/prop_token_doctor.png  256x256")
 
 
+# ── 황동 타일 금고 (탐욕의 방) — 타일 금고 퍼즐 ──────────────────────────────
+# 4×4 타일이 전부 어두운 상태. 퍼즐을 풀면 선물상자가 나오므로 금고만 그립니다.
+
+def vault():
+    img = ge.canvas()
+    d = ImageDraw.Draw(img)
+    brass, brass_sh, brass_hi = (178, 138, 70), (132, 98, 48), (222, 186, 112)
+    tile, tile_sh = (110, 34, 44), (78, 22, 32)
+
+    rrect(d, (180, 160, 844, 900), 28, brass)                         # 금고 몸통
+    poly(d, [(780, 176), (830, 176), (830, 884), (780, 884)], brass_sh, w=0)
+    rrect(d, (180, 160, 844, 230), 22, brass_hi)                      # 윗면
+    rrect(d, (232, 260, 792, 820), 16, (58, 44, 30))                  # 타일 판
+    cell = 560 / 4
+    for r in range(4):
+        for col in range(4):
+            x, y = 232 + col * cell, 260 + r * cell
+            rrect(d, (x + 12, y + 12, x + cell - 12, y + cell - 12), 12, tile, w=5)
+            ell(d, (x + 30, y + 26, x + 58, y + 50), tile_sh, w=0)
+    for x in (260, 764):                                              # 경첩·나사
+        ell(d, (x - 14, 840, x + 14, 868), brass_sh, w=4)
+    rrect(d, (420, 836, 604, 872), 10, brass_sh, w=4)                 # 명판
+    return img
+
+
 # ── 클릭 영역 표시 점 ────────────────────────────────────────────────────────
 
 def marker():
@@ -210,5 +235,6 @@ if __name__ == "__main__":
     save(grandfather_clock(), "prop_clock")
     save(records(), "prop_records")
     save(exit_arrow(), "prop_exit", max_side=256)
+    save(vault(), "prop_vault")
     marker()
     token()

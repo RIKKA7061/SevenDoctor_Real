@@ -2,6 +2,9 @@
 ui.title.name,일곱 개의 저택,Seven Houses,타이틀
 ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The same face.,
 ui.title.start,시작하기,Start,
+ui.title.continue,이어 하기,Continue,타이틀 — 세이브가 있을 때만 보임. 아래 줄에 저장 시각·장소가 붙음
+ui.title.new_game,새 게임,New Game,타이틀 — 세이브가 있을 때 시작 버튼 글자
+ui.title.new_game_confirm,저장된 진행이 지워집니다 — 한 번 더 누르면 시작,Saved progress will be erased — click again,타이틀 — 새 게임 확인
 ui.title.language,언어,Language,
 ui.title.quit,종료,Quit,
 ui.topbar.notebook,증거 노트  (Tab),Notes  (Tab),상단바 버튼 폭 244px — 길면 넘칩니다
@@ -54,8 +57,6 @@ ui.log.help,휠·드래그·↑↓ 로 넘깁니다. Home 맨 처음 / End 맨 �
 ui.log.empty,아직 나눈 대화가 없습니다.,No dialogue yet.,대화 기록창
 ui.log.choice,▶ 선택 — {0},▶ Chose — {0},대화 기록창 — 고른 선택지
 ui.topbar.menu,메뉴  (Esc),Menu  (Esc),상단바 버튼 폭 168px
-ui.title.continue,이어하기,Continue,시작 화면 — 세이브가 있을 때만
-ui.title.new_game,처음부터,New Game,시작 화면 — 세이브가 있을 때 '시작하기' 대신
 ui.title.branch,엔딩 분기점,Ending Branch,시작 화면 — 분기점에 닿은 적 있을 때만
 ui.title.branch_count,엔딩 분기점  ({0} / {1}),Ending Branch  ({0} / {1}),{0} 본 엔딩 수 / {1} 전체
 ui.title.settings,설정,Settings,시작 화면
@@ -79,3 +80,16 @@ ui.settings.reset_none,지울 세이브가 없습니다.,There is no save data.,
 ui.settings.reset_done,세이브를 지웠습니다.,Save data deleted.,토스트
 ui.ending.to_branch,분기점으로,Back to the Branch,엔딩 카드 — 분기점 세이브가 있을 때
 ui.ending.collection,본 엔딩  {0} / {1},Endings seen  {0} / {1},엔딩 카드
+ui.bot.talk,대화하기,Talk,도우미 로봇 창 — 누르면 힌트
+ui.bot.inventory,인벤토리,Inventory,도우미 로봇 창 — 누르면 증거 노트 (탐색 중에만)
+ui.puzzle.tiles.how,타일을 누르면 그 타일과 위·아래·양옆이 함께 뒤집힙니다. 전부 황동색으로 밝히면 열립니다.,"Pressing a tile flips it and the tiles above, below and beside it. Light every tile brass to open it.",타일 금고
+ui.puzzle.tiles.reset,처음 상태로,Reset,타일 금고
+ui.puzzle.tiles.moves,누른 횟수 {0},Presses: {0},타일 금고
+ui.puzzle.tiles.done,…철컥. 금고가 열렸다.,...Clunk. The vault opens.,타일 금고
+ui.puzzle.queens.how,칸을 누르면 퀸을 놓고 다시 누르면 치웁니다. 가로줄·세로줄·대각선마다 퀸은 하나만. 금색 테두리 퀸은 움직일 수 없습니다.,"Click a square to place a queen, click again to remove it. One queen per row, column and diagonal. Gold-framed queens can't be moved.",퀸 배치
+ui.puzzle.queens.count,놓은 퀸  {0} / {1},Queens  {0} / {1},퀸 배치
+ui.puzzle.queens.attacks_on,공격 범위 보기,Show attacks,퀸 배치
+ui.puzzle.queens.attacks_off,공격 범위 숨기기,Hide attacks,퀸 배치
+ui.puzzle.queens.reset,처음부터,Start over,퀸 배치
+ui.puzzle.queens.conflict,서로 공격하는 퀸이 있습니다. 붉은 퀸을 확인하세요.,Some queens are attacking each other. Check the red ones.,퀸 배치
+ui.puzzle.queens.done,…모든 퀸이 제자리를 찾았다.,...Every queen has found its place.,퀸 배치

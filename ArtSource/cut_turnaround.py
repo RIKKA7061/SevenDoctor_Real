@@ -4,9 +4,11 @@
 
     python ArtSource/cut_turnaround.py ArtSource/sheets/wrath_turnaround.png wrath
     python ArtSource/cut_turnaround.py 시트.png 키 front,side_left,back_left,back
+    python ArtSource/cut_turnaround.py ArtSource/sheets/doctor_turnaround.webp doctor front,side_right,back --paper=250
 
 왼쪽부터 그려진 순서대로 방향 이름을 붙입니다. 기본값은 front,side_left,back_left,back.
-_left 로 끝나는 방향은 좌우를 뒤집어 _right 도 같이 만듭니다 (시트에 따로 있으면 그걸 씁니다).
+_left 로 끝나는 방향은 좌우를 뒤집어 _right 도 같이 만듭니다 (_right 만 있으면 _left 를). 시트에 따로 있으면 그걸 씁니다.
+방향 이름은 '화면에서 보이는 쪽' 입니다 — side_left 는 화면 왼쪽을 보고 있는 그림.
 
 출력: Assets/_Project/Resources/Art/Portraits/
     {키}.png            front
@@ -42,6 +44,9 @@ GROUND_BAND = 0.05     # 바닥 띠 높이 (인물 키 대비)
 EDGE_INK = (34, 28, 30)
 MIN_GAP = 6            # 인물 사이 빈 열이 이만큼 이어져야 다른 인물로 봅니다
 MIN_FIGURE_PIXELS = 4000
+HEAD_BAND = 0.30       # 머리카락 사이 종이를 찾는 높이 (인물 키 대비, 위에서부터)
+HOLE_MIN_PIXELS = 45   # 이보다 큰 덩어리만 지웁니다 (시트 픽셀). 박사 시트(2000px 폭) 기준으로
+                       # 머리카락 사이 틈은 60~240, 흰자위 중 순백인 조각은 30 이하였습니다
 
 
 def luminance(rgb):
@@ -89,6 +94,44 @@ def find_background(rgb):
     shadow = ground & (lum > SHADOW_LUM) & (sat < PAPER_SAT + 5)
     gap = (lum > PAPER_LUM_GAP) & (sat < PAPER_SAT)
     return spread(bg, (shadow | gap) & ~line)
+
+
+def clear_hair_holes(rgb, bg, min_pixels=HOLE_MIN_PIXELS):
+    """머리카락 가닥 사이에 갇힌 종이(틀어 올린 머리와 뒤통수 사이 같은 곳)는 테두리와
+    이어져 있지 않아 칠하기가 못 들어갑니다. 머리 높이(인물 위쪽 HEAD_BAND)에서
+    종이 색 덩어리가 일정 크기 이상이면 배경으로 돌립니다. 흰자위는 작아서 남습니다."""
+    lum = luminance(rgb.astype(np.float32))
+    sat = rgb.max(axis=2).astype(np.int16) - rgb.min(axis=2).astype(np.int16)
+    top, bottom = figure_rows(~bg)
+    head_end = int(top + (bottom - top) * HEAD_BAND)
+
+    cand = np.zeros_like(bg)
+    cand[top:head_end] = ((lum > PAPER_LUM) & (sat < PAPER_SAT) & ~bg)[top:head_end]
+    seen = np.zeros_like(bg)
+    h, w = bg.shape
+    cleared = 0
+    for y0, x0 in zip(*np.nonzero(cand)):
+        if seen[y0, x0]:
+            continue
+        stack, blob = [(y0, x0)], []
+        seen[y0, x0] = True
+        while stack:
+            y, x = stack.pop()
+            blob.append((y, x))
+            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+                if 0 <= ny < h and 0 <= nx < w and cand[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    stack.append((ny, nx))
+        if len(blob) >= min_pixels:
+            ys, xs = zip(*blob)
+            bg[list(ys), list(xs)] = True
+            cleared += 1
+    # 덩어리 둘레의 섞인 색도 걷어 냅니다 (외곽선은 남깁니다).
+    for _ in range(LINE_GAP):
+        bg = bg | (grow(bg) & (lum > PAPER_LUM - 40) & (sat < PAPER_SAT + 10))
+    if cleared:
+        print(f"  머리카락 사이 종이 {cleared}군데를 지웠습니다")
+    return bg
 
 
 def figure_rows(fg):
@@ -158,13 +201,24 @@ def main():
         print(__doc__)
         sys.exit(1)
 
-    sheet_path, key = sys.argv[1], sys.argv[2]
-    poses = (sys.argv[3] if len(sys.argv) > 3 else "front,side_left,back_left,back").split(",")
+    # --paper=250 : 종이로 볼 밝기 하한. 흰 외투가 종이처럼 거의 흰색인 시트(박사)는 올려야
+    # 외투까지 배경으로 지워지지 않습니다. 배경이 순백(255)일 때만 올리세요.
+    global PAPER_LUM, PAPER_LUM_GAP
+    args = []
+    for a in sys.argv[1:]:
+        if a.startswith("--paper="):
+            PAPER_LUM = PAPER_LUM_GAP = float(a.split("=", 1)[1])
+        else:
+            args.append(a)
+
+    sheet_path, key = args[0], args[1]
+    poses = (args[2] if len(args) > 2 else "front,side_left,back_left,back").split(",")
 
     rgb = np.asarray(Image.open(sheet_path).convert("RGB"))
     lum = luminance(rgb.astype(np.float32))
 
     bg = find_background(rgb)
+    bg = clear_hair_holes(rgb, bg)
     bg_lum = float(np.median(lum[bg]))
 
     # 종이에 묻은 먼지 점을 버립니다. 인물의 허리 높이에서 시작해 이어진 것만 남깁니다 —
@@ -206,11 +260,13 @@ def main():
         canvas.paste(piece, (px, py))   # 넘치는 부분은 paste 가 알아서 잘라 냅니다
         made[pose] = canvas
 
+    # 한쪽 방향만 그려져 있으면 좌우를 뒤집어 반대쪽을 만듭니다 (_left ↔ _right 어느 쪽이든).
     for pose in list(made):
-        if pose.endswith("_left"):
-            right = pose[:-len("_left")] + "_right"
-            if right not in made:
-                made[right] = ImageOps.mirror(made[pose])
+        for side, other in (("_left", "_right"), ("_right", "_left")):
+            if pose.endswith(side):
+                twin = pose[:-len(side)] + other
+                if twin not in made:
+                    made[twin] = ImageOps.mirror(made[pose])
 
     for pose, img in made.items():
         name = key if pose == "front" else f"{key}_{pose}"

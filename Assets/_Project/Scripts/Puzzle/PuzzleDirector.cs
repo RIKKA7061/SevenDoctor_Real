@@ -15,6 +15,8 @@ namespace SevenDoctors.Puzzle
     ///   CodeLock  — 성격 조합 자물쇠 / 추억의 날짜 금고 / 애너그램(변형)
     ///   Deduction — 모순 찾기 / 거짓말쟁이 대화 / 어긋난 증언(2장 메인)
     ///   Slide     — 그림 조각 밀어 맞추기 (PuzzleDirector.Slide.cs)
+    ///   Tiles     — 타일 금고: 누르면 상하좌우가 같이 뒤집힘 (PuzzleDirector.Tiles.cs)
+    ///   Queens    — 퀸 배치: 서로 공격하지 않게 N 개 (PuzzleDirector.Queens.cs)
     /// 나머지(Assemble / FindOdd / MiniGame)는 여기에 case 를 추가하면 같은 방식으로 붙습니다.
     ///
     /// 실패 페널티는 두지 않습니다. 원스토리 추리게임에서 페널티는 이탈률만 올립니다.
@@ -62,6 +64,16 @@ namespace SevenDoctors.Puzzle
                 case "slide":
                 case "sliding":
                     yield return RunSlide(puzzle);   // PuzzleDirector.Slide.cs
+                    break;
+
+                case "tiles":
+                case "tile":
+                    yield return RunTiles(puzzle);   // PuzzleDirector.Tiles.cs
+                    break;
+
+                case "queens":
+                case "queen":
+                    yield return RunQueens(puzzle);  // PuzzleDirector.Queens.cs
                     break;
 
                 default:

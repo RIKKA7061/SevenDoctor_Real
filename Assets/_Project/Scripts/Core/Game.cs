@@ -57,7 +57,10 @@ namespace SevenDoctors.Core
         }
     }
 
-    /// <summary>진행 플래그. 세이브 대상이며, 조건식 평가도 여기서 합니다.</summary>
+    /// <summary>
+    /// 진행 플래그. 세이브 대상이며, 조건식 평가도 여기서 합니다.
+    /// 저장·복원은 ActiveFlags / RestoreFrom 으로 합니다 (SaveSystem).
+    /// </summary>
     public class FlagManager
     {
         readonly HashSet<string> _on = new HashSet<string>();

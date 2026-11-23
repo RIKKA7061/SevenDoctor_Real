@@ -5,7 +5,6 @@
 
     python ArtSource/make_standins.py
 
-    박사 doctor   갈색 머리 + 흰 가운
     나태 sloth    잿빛 초록 머리 + 칙칙한 초록 옷
     교만 pride    검은 머리 + 짙은 보라 옷
 
@@ -25,7 +24,8 @@ SOURCE_HAIR = (30, 120, 220)
 
 # (색상 각도, 채도, 밝기 배율) — 머리카락 / 옷
 STANDINS = {
-    "doctor": dict(hair=(25, 0.55, 0.62), coat=(40, 0.04, 1.04)),
+    # 박사는 진짜 그림이 들어왔습니다 (cut_turnaround.py, sheets/doctor_turnaround.webp).
+    # 여기 다시 넣으면 그 그림을 슬픔 색 바꾼 임시 그림으로 덮어씁니다.
     "sloth":  dict(hair=(100, 0.30, 0.82), coat=(90, 0.20, 0.82)),
     "pride":  dict(hair=(275, 0.35, 0.42), coat=(270, 0.22, 0.52)),
 }

@@ -33,6 +33,9 @@ namespace SevenDoctors.Core
         [Tooltip("끄면 시작 화면 없이 바로 게임에 들어갑니다. 대사를 손볼 때 편합니다.")]
         public bool ShowTitleOnStart = true;
 
+        [Tooltip("켜두면 마우스를 올린 곳에 따라 커서가 돋보기·손·말풍선으로 바뀝니다. 끄면 늘 화살표 — 누를 곳을 눈으로 찾게 하고 싶을 때 끕니다.")]
+        public bool ContextCursors = true;
+
         // AudioManager 는 실행할 때 코드로 붙이기 때문에, 재생 전에는 인스펙터에
         // 뜨지 않습니다. 여기 있으면 껐다 켜지 않고도 미리 맞춰 둘 수 있습니다.
         [Header("소리 크기")]
@@ -148,27 +151,33 @@ namespace SevenDoctors.Core
             // 그 둘의 이벤트를 구독하기 때문입니다.
             Game.Hints = managers.AddComponent<SevenDoctors.Hint.HintDirector>();
 
+            // 마우스 커서 — 올려놓은 곳이 무엇을 하는 곳인지에 따라 모양이 바뀝니다.
+            managers.AddComponent<GameCursor>().ContextCursors = ContextCursors;
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // F1 — 퍼즐 미리보기. 정식 빌드에는 클래스 자체가 없습니다.
             _dev = managers.AddComponent<SevenDoctors.Dev.DevPuzzleMenu>();
 #endif
 
             // 5) 배선
-            ui.NotebookButton.onClick.AddListener(() =>
-            {
-                if (Game.State == GameState.Exploring || ui.Notebook.IsVisible) ui.Notebook.Toggle();
-            });
+            ui.NotebookButton.onClick.AddListener(() => ToggleNotebook());
             ui.MapButton.onClick.AddListener(ToggleMap);
             ui.LogButton.onClick.AddListener(ToggleLog);
             ui.MenuButton.onClick.AddListener(ToggleMenu);
-            // 대화·퍼즐이 끝나 탐색으로 돌아올 때마다 그 순간을 기억합니다 (종료 시 자동 저장용).
+            // 자동 저장 — 대화·퍼즐이 끝나 탐색으로 돌아오거나, 탐색 중에 플래그·증거·1회성 핫스팟이
+            // 바뀌면 표시만 해 두고, 프레임 끝(LateUpdate)에 여전히 탐색 중이면 씁니다.
             Game.StateChanged += (_, next) => { if (next == GameState.Exploring) SaveSystem.NoteSafePoint(); };
+            Game.Flags.FlagChanged += (_, __) => SaveSystem.NoteSafePoint();
+            Game.Evidence.EvidenceAdded += _ => SaveSystem.NoteSafePoint();
+            Game.Room.Interacted += _ => SaveSystem.NoteSafePoint();
             ui.Notebook.AskRequested += OnAskRequested;
             ui.RefreshEvidenceCount();
 
             if (ui.Bot != null)
             {
                 ui.Bot.AskRequested += OnHintRequested;
+                ui.Bot.InventoryRequested += OnInventoryRequested;
+                ui.Bot.CanOpenInventory = CanOpenNotebook;
                 Game.Hints.StuckChanged += ui.Bot.SetStuck;
             }
 
@@ -193,6 +202,8 @@ namespace SevenDoctors.Core
             }
             else if (ShowTitleOnStart && ui.Title != null)
             {
+                // 시작 화면은 보일 때마다 디스크의 세이브를 읽어 '이어 하기'·'엔딩 분기점' 을 낼지 정합니다.
+                // 없거나 깨졌으면 버튼이 아예 안 나옵니다 — 눌러 보고 나서야 안 된다고 하지 않습니다.
                 Game.State = GameState.Title;
                 ui.Title.Show();
 
@@ -207,6 +218,8 @@ namespace SevenDoctors.Core
                 mode = picked.Value;
             }
 
+            // 시작 화면을 꺼 둔 경우(ShowTitleOnStart)는 늘 새 게임입니다. 대사를 손보려고 끄는 옵션이라
+            // 처음부터 나오는 게 맞습니다.
             EnterGame(mode, startRoom, db);
         }
 
@@ -217,11 +230,18 @@ namespace SevenDoctors.Core
         /// 서 있기만 한 상태가 저장되면, 불러왔을 때 프롤로그 없이 연구실에 덩그러니 서게 됩니다.
         /// 분기점도 이어 붙인 대화가 끝날 때까지 잡지 않습니다 — 그래서 분기점에서 엔딩을 보다가
         /// 종료해도 이어하기 칸은 그대로 남습니다.
+        ///
+        /// 새 게임은 이어하기 칸을 지우고 시작합니다 (세이브가 있으면 시작 화면이 한 번 더 물어본 뒤입니다).
+        /// 엔딩 분기점과 본 엔딩 기록은 회차를 넘어 남습니다.
         /// </summary>
         void EnterGame(StartMode mode, string startRoom, GameDatabase db)
         {
             // 타이틀 화면 위에 로봇이 떠 있으면 안 되므로 여기서 켭니다.
             Game.UI.Bot?.Show();
+
+            // 이어하기 칸을 지우는 건 '새 게임' 을 직접 골랐을 때뿐입니다. 분기점 세이브를 못 읽어
+            // 새 게임으로 떨어진 경우까지 지우면, 확인도 없이 본편 진행이 날아갑니다.
+            bool chosenNewGame = mode == StartMode.NewGame;
 
             var save = SaveSystem.Load(mode);
             if (mode != StartMode.NewGame && save == null)
@@ -232,6 +252,7 @@ namespace SevenDoctors.Core
 
             if (mode == StartMode.NewGame)
             {
+                if (chosenNewGame) SaveSystem.DeleteMain();
                 Game.Room.Enter(startRoom);
                 if (!string.IsNullOrEmpty(StartDialogueId) && db.GetDialogue(StartDialogueId) != null)
                     Game.Dialogue.Play(StartDialogueId, SaveSystem.EnableSafePoints);
@@ -244,13 +265,11 @@ namespace SevenDoctors.Core
             Game.UI.RefreshEvidenceCount();
 
             if (!save.Resumes) SaveSystem.EnableSafePoints();   // 방에 들어서는 순간이 곧 저장할 순간
-            Game.Room.Enter(save.roomId);
-            if (Game.Room.CurrentRoomId != save.roomId)
-            {
-                // 시트가 바뀌어 그 방이 없어졌거나 잠겼으면 시작 방으로.
-                Debug.LogWarning($"[Boot] 세이브의 방 '{save.roomId}' 에 들어갈 수 없어 시작 방으로 갑니다.");
-                Game.Room.Enter(startRoom);
-            }
+            // 시트가 바뀌어 그 방이 없어졌거나 잠겼으면, 지도에 있는 열린 방(없으면 시작 방)으로.
+            string room = SaveSystem.ResolveRoom(save.roomId, startRoom);
+            if (room != save.roomId)
+                Debug.LogWarning($"[Boot] 세이브의 방 '{save.roomId}' 에 들어갈 수 없어 '{room}' 에서 이어 합니다.");
+            Game.Room.Enter(room);
 
             if (save.Resumes)
             {
@@ -267,7 +286,11 @@ namespace SevenDoctors.Core
         {
             Loc.Changed -= OnLanguageChanged;
 
-            if (Game.UI != null && Game.UI.Bot != null) Game.UI.Bot.AskRequested -= OnHintRequested;
+            if (Game.UI != null && Game.UI.Bot != null)
+            {
+                Game.UI.Bot.AskRequested -= OnHintRequested;
+                Game.UI.Bot.InventoryRequested -= OnInventoryRequested;
+            }
             if (Game.Hints != null && Game.UI != null && Game.UI.Bot != null)
                 Game.Hints.StuckChanged -= Game.UI.Bot.SetStuck;
         }
@@ -277,6 +300,34 @@ namespace SevenDoctors.Core
         {
             if (Game.Hints == null || Game.UI == null || Game.UI.Bot == null) return;
             Game.UI.Bot.Say(Game.Hints.Ask());
+        }
+
+        /// <summary>
+        /// 도우미 로봇 창에서 '인벤토리' 를 골랐을 때. 지금까지 얻은 단서를 보여 줍니다 — 증거 노트를 엽니다.
+        /// 노트를 열 수 없는 때(대사·퍼즐 도중)에는 창의 버튼이 흐려져 있어서 여기까지 오지 않습니다.
+        /// </summary>
+        void OnInventoryRequested()
+        {
+            var notebook = Game.UI != null ? Game.UI.Notebook : null;
+            if (notebook != null && !notebook.IsVisible && CanOpenNotebook()) notebook.Show();
+        }
+
+        /// <summary>노트는 탐색 중에만 엽니다 (닫는 건 언제든). 로봇 창의 버튼도 이걸 보고 흐려집니다.</summary>
+        static bool CanOpenNotebook()
+        {
+            var notebook = Game.UI != null ? Game.UI.Notebook : null;
+            return notebook != null && (notebook.IsVisible || Game.State == GameState.Exploring);
+        }
+
+        /// <summary>
+        /// 증거 노트 여닫기. 상단 버튼·Tab 이 이걸 부릅니다.
+        /// 여는 건 탐색 중에만, 닫는 건 언제든 됩니다. 여닫았으면 true.
+        /// </summary>
+        static bool ToggleNotebook()
+        {
+            if (!CanOpenNotebook()) return false;
+            Game.UI.Notebook.Toggle();
+            return true;
         }
 
         /// <summary>
@@ -393,15 +444,31 @@ namespace SevenDoctors.Core
                 return;
             }
 
-            if (WasNotebookKeyPressed())
+            // 로봇 창이 떠 있으면 키보드는 그 창만 봅니다. Esc 로 닫고, Tab·M·L 은 창 뒤에서 몰래 열리지 않게 막습니다.
+            if (ui.Bot != null && ui.Bot.IsMenuOpen)
             {
-                if (Game.State == GameState.Exploring || Game.UI.Notebook.IsVisible)
-                    Game.UI.Notebook.Toggle();
+                if (WasEscapePressed()) ui.Bot.CloseMenu();
+                return;
             }
+
+            if (WasNotebookKeyPressed()) ToggleNotebook();
             else if (WasMapKeyPressed()) ToggleMap();
             else if (WasLogKeyPressed()) ToggleLog();
             else if (Game.State == GameState.InDialogue && WasWheelUp()) ToggleLog();   // 대사 중 휠 위로 = 지난 대사 보기
             else if (WasEscapePressed()) OnEscape();
+        }
+
+        /// <summary>
+        /// 자동 저장은 프레임 끝에 씁니다. 표시를 받은 그 자리에서 쓰면 어중간한 순간이 저장됩니다 —
+        /// 대화가 끝나 탐색으로 돌아온 같은 프레임에 다음 대화·퍼즐이 이어 붙는 경우가 그렇습니다.
+        /// F1 미리보기가 도는 동안은 증거를 전부 쥐여 준 가짜 상태라 미룹니다.
+        /// </summary>
+        void LateUpdate()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_dev != null && _dev.IsRunningPuzzle) return;
+#endif
+            SaveSystem.FlushPending();
         }
 
         /// <summary>

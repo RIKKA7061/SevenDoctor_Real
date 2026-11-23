@@ -8,6 +8,8 @@ flg_clue_trophy,시상식 트로피 축소 모형 발견 (오만의 방),FALSE,2
 flg_clue_gift,안 뜯은 선물상자 발견 (탐욕의 방),FALSE,2,단서 오브젝트
 flg_clue_watch,멈춘 손목시계 발견 (색욕의 방),FALSE,2,단서 오브젝트
 flg_clue_calendar,낡은 캘린더 발견 (나태의 방),FALSE,2,단서 오브젝트
+flg_clue_flowers,화단의 꽃 발견 (정원),FALSE,2,탐욕의 방 타일 금고 단서 — 단서 6종에는 안 셈
+flg_greed_vault_seen,탐욕의 방 타일 금고를 처음 봄,FALSE,2,힌트용 — 금고를 본 뒤에야 정원 힌트가 나옴
 flg_part3_done,파트3 의심 끝 — 지목 가능,FALSE,3,
 flg_accused,교만 지목 성공 — 파트4·5,FALSE,4,
 flg_end_together,엔딩 A 함께 고친다,FALSE,5,
