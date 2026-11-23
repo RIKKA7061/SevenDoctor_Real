@@ -154,6 +154,7 @@ F1 (에디터·개발 빌드) — 대화·퍼즐 미리보기. 진행 중인 대
 구글 시트에서 가져올 때는 Rooms 탭에 위 네 컬럼이 있어야 합니다.
 
 새로 생긴 방(식당·정원·2~5층 복도·지하실)의 배경은 `python ArtSource/gen_rooms.py` 가 그린 데모입니다.
+탐욕의 방(`bg_storage`)·오만의 방(`bg_guest`)은 손그림 원본(`ArtSource/sheets/*_room.webp`)을 `python ArtSource/make_rooms_art.py` 로 16:9 에 맞춘 것입니다.
 
 ## 대화 기록
 
