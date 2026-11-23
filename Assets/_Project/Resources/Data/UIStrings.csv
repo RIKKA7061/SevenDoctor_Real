@@ -1,6 +1,6 @@
 ﻿string_id,ko,en,비고
-ui.title.name,일곱 개의 저택,Seven Houses,타이틀
-ui.title.tagline,일곱 개의 세계에서 온 같은 얼굴,Seven worlds. The same face.,
+ui.title.name,Rewind Manor,Rewind Manor,타이틀
+ui.title.tagline,A Time Puzzle,A Time Puzzle,
 ui.title.start,시작하기,Start,
 ui.title.continue,이어 하기,Continue,타이틀 — 세이브가 있을 때만 보임. 아래 줄에 저장 시각·장소가 붙음
 ui.title.new_game,새 게임,New Game,타이틀 — 세이브가 있을 때 시작 버튼 글자
@@ -74,8 +74,8 @@ ui.settings.title,설정,Settings,설정
 ui.settings.close,닫기  (Esc),Close  (Esc),설정
 ui.settings.reset,세이브 초기화,Reset Save Data,설정
 ui.settings.reset_confirm,정말 지울까요?  한 번 더 누르세요,Really delete?  Press again,설정 — 첫 번째 누른 뒤 5초
-ui.settings.reset_note,"이어하기 · 엔딩 분기점 · 본 엔딩 기록이 모두 지워집니다.","Deletes your save, ending branch and endings seen.",설정
-ui.settings.reset_note_ingame,"이어하기 · 엔딩 분기점 · 본 엔딩 기록을 지우고 시작 화면으로 돌아갑니다.","Deletes all save data and returns to the title screen.",설정 — 게임 도중일 때
+ui.settings.reset_note,이어하기 · 엔딩 분기점 · 본 엔딩 기록이 모두 지워집니다.,"Deletes your save, ending branch and endings seen.",설정
+ui.settings.reset_note_ingame,이어하기 · 엔딩 분기점 · 본 엔딩 기록을 지우고 시작 화면으로 돌아갑니다.,Deletes all save data and returns to the title screen.,설정 — 게임 도중일 때
 ui.settings.reset_none,지울 세이브가 없습니다.,There is no save data.,설정
 ui.settings.reset_done,세이브를 지웠습니다.,Save data deleted.,토스트
 ui.ending.to_branch,분기점으로,Back to the Branch,엔딩 카드 — 분기점 세이브가 있을 때
