@@ -36,6 +36,7 @@ namespace SevenDoctors.Room
         public event Action<HotspotRow> Interacted;
 
         readonly HashSet<string> _consumed = new HashSet<string>();
+        RoomLights _lights;
 
         static readonly Color[] PlaceholderTints =
         {
@@ -71,6 +72,11 @@ namespace SevenDoctors.Room
             Game.Audio?.PlayBgm(room.Bgm);
 
             ApplyBackground(room);
+
+            // 배경 위의 빛(전구·크리스탈·테두리 조명) — Resources/Data/RoomLights.csv 에 적힌 방만
+            if (_lights == null) _lights = gameObject.AddComponent<RoomLights>();
+            _lights.Show(roomId);
+
             Game.UI.SetRoomLabel(room.DisplayName);
             RebuildHotspots();
 

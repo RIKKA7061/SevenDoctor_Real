@@ -1,0 +1,25 @@
+light_id,room_id,종류,x,y,w,h,색,세기,속도,연결,개수,비고
+lab_l_glow,room_lab,glow,0.182,0.257,0.095,0.170,#FFB860,0.8,0.35,,,왼쪽 갓 전구 후광
+lab_l_core,room_lab,core,0.182,0.257,0.036,0.065,#FFE2B0,0.9,,lab_l_glow,,왼쪽 전구 알
+lab_l_beam,room_lab,beam,0.182,0.262,0.200,0.398,#FFB860,0.07,,lab_l_glow,,왼쪽 갓 아래 빛줄기 → 작업대
+lab_l_spill,room_lab,spill,0.172,0.480,0.340,0.500,#FF9A4A,0.09,,lab_l_glow,,왼쪽 벽·작업대에 번진 빛
+lab_c_glow,room_lab,flicker,0.388,0.294,0.080,0.145,#FFA040,0.85,1,,,가운데 알전구 — 오래돼서 가끔 깜빡임
+lab_c_core,room_lab,core,0.388,0.294,0.030,0.054,#FFD48E,0.95,,lab_c_glow,,가운데 전구 알
+lab_c_spill,room_lab,spill,0.388,0.400,0.260,0.400,#FF8A3A,0.09,,lab_c_glow,,가운데 벽돌벽에 번진 빛 (같이 깜빡임)
+lab_t_glow,room_lab,glow,0.632,0.287,0.080,0.145,#4FE6D8,0.8,0.25,,,청록 전구 후광
+lab_t_core,room_lab,core,0.632,0.287,0.030,0.054,#D2FFF8,0.85,,lab_t_glow,,청록 전구 알
+lab_t_spill,room_lab,spill,0.632,0.420,0.260,0.400,#36C9C0,0.08,,lab_t_glow,,칠판·벽에 번진 청록 빛
+lab_r_glow,room_lab,glow,0.840,0.256,0.095,0.170,#FFB860,0.8,0.3,,,오른쪽 갓 전구 후광
+lab_r_core,room_lab,core,0.840,0.256,0.036,0.065,#FFE2B0,0.9,,lab_r_glow,,오른쪽 전구 알
+lab_r_beam,room_lab,beam,0.840,0.262,0.200,0.398,#FFB860,0.07,,lab_r_glow,,오른쪽 갓 아래 빛줄기 → 책상
+lab_r_spill,room_lab,spill,0.835,0.480,0.300,0.500,#FF9A4A,0.09,,lab_r_glow,,오른쪽 벽·책장에 번진 빛
+lab_d_glow,room_lab,glow,0.925,0.555,0.045,0.075,#FFD08A,0.7,0.2,,,책상 스탠드 갓 속
+lab_d_spill,room_lab,spill,0.900,0.660,0.160,0.130,#FFB060,0.14,,lab_d_glow,,스탠드 빛이 책상에 고인 자리
+lab_x_glow,room_lab,glow,0.572,0.472,0.075,0.150,#6ED2FF>#B48CFF,0.9,0.5,,,크리스탈 — 하늘색↔보라로 천천히 색이 돎
+lab_x_core,room_lab,core,0.572,0.472,0.025,0.060,#E6FBFF,0.9,,lab_x_glow,,크리스탈 심
+lab_x_spill,room_lab,spill,0.565,0.480,0.200,0.280,#5AB8FF>#9A7CFF,0.1,,lab_x_glow,,크리스탈 빛이 타임머신 몸통·칠판에 비침
+lab_x_clock,room_lab,spill,0.515,0.505,0.060,0.100,#6ED2FF>#B48CFF,0.08,,lab_x_glow,,시계판 오른쪽에 비친 크리스탈 빛
+lab_x_spark,room_lab,sparkle,0.572,0.460,0.060,0.200,#CFF6FF>#E2CCFF,0.9,1,,10,크리스탈 둘레로 떠오르는 마법 가루
+lab_m_ring1,room_lab,ring,0.500,0.384,0.070,0.016,#FFC870,0.85,0.35,,13,타임머신 돔 아래 테두리 조명 — 앞쪽 반 바퀴, 불빛이 돌아감
+lab_m_ring2,room_lab,ring,0.500,0.651,0.072,0.018,#FFC870,0.75,-0.35,,13,타임머신 아래 테두리 조명 — 반대로 돌아감
+lab_m_spill,room_lab,spill,0.500,0.720,0.240,0.100,#FFB050,0.08,,lab_m_ring2,,테두리 조명이 바닥 톱니에 비친 빛

@@ -22,11 +22,12 @@ namespace SevenDoctors.UI
     ///   Art/Bot/bot_body          몸통 (표정 없음)
     ///   Art/Bot/bot_face_{표정}   얼굴만. normal happy curious hint sleepy panic
     /// </summary>
-    public class HelperBotView : MonoBehaviour
+    public partial class HelperBotView : MonoBehaviour
     {
         public const string ArtFolder = "Art/Bot";
 
         const float BaseY = 384f;       // 대화창(340) 위
+        const float HomeX = -46f;       // 평소 자리 — 화면 오른쪽 끝에서 이만큼 안쪽
         const float BobPeriod = 2.6f;   // 부유 유닛으로 떠 있는 느낌
         const float BobAmount = 9f;
         const float BubbleSeconds = 8f; // 힌트를 띄워 두는 시간
@@ -39,7 +40,7 @@ namespace SevenDoctors.UI
         static readonly Vector2 MenuPortraitSize = new Vector2(168f, 200f);
         static readonly Vector2 MenuButtonSize = new Vector2(400f, 76f);
 
-        RectTransform _root, _bot, _bubble, _menu;
+        RectTransform _root, _bot, _rig, _bubble, _menu;
         Image _body, _face, _antenna, _menuFace;
         Text _bubbleText, _talkLabel, _inventoryLabel;
         Button _button, _talkButton, _inventoryButton;
@@ -83,7 +84,7 @@ namespace SevenDoctors.UI
             _bot = _button.GetComponent<RectTransform>();
             _bot.anchorMin = _bot.anchorMax = new Vector2(1f, 0f);
             _bot.pivot = new Vector2(1f, 0f);
-            _bot.anchoredPosition = new Vector2(-46f, BaseY);
+            _bot.anchoredPosition = new Vector2(HomeX, BaseY);
             _bot.sizeDelta = BotSize;
 
             // 캡션이 비어 있어도 글자 자식은 붙습니다. 로봇에는 필요 없으니 끕니다.
@@ -192,13 +193,18 @@ namespace SevenDoctors.UI
         {
             var bodySprite = Resources.Load<Sprite>(ArtFolder + "/bot_body");
 
+            // 그림은 전부 Rig 아래에 둡니다. 걷다 넘어지거나 졸며 고개를 끄덕일 때 Rig 만 기울이면
+            // 누르는 칸(_bot) 은 그대로라 클릭 영역이 같이 눕지 않습니다. 발밑 가운데를 축으로 돕니다.
+            _rig = UIFactory.Rect("Rig", _bot);
+            _rig.pivot = new Vector2(0.5f, 0f);
+
             // 안테나 — 상태 표시등. 막혔을 때만 켜집니다.
-            _antenna = UIFactory.Box("Antenna", _bot, new Color(0.45f, 0.68f, 0.95f, 0f));
+            _antenna = UIFactory.Box("Antenna", _rig, new Color(0.45f, 0.68f, 0.95f, 0f));
             UIFactory.Anchor(_antenna.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
                              new Vector2(-34f, -30f), new Vector2(34f, 6f));
             _antenna.raycastTarget = false;
 
-            _body = UIFactory.Box("Body", _bot,
+            _body = UIFactory.Box("Body", _rig,
                                   bodySprite != null ? Color.white : new Color(0.86f, 0.86f, 0.84f));
             UIFactory.Anchor(_body.rectTransform, Vector2.zero, Vector2.one,
                              Vector2.zero, new Vector2(0f, -AntennaRoom));
@@ -206,7 +212,7 @@ namespace SevenDoctors.UI
             _body.preserveAspect = true;
             _body.raycastTarget = false;
 
-            _face = UIFactory.Box("Face", _bot, new Color(0.13f, 0.14f, 0.18f));
+            _face = UIFactory.Box("Face", _rig, new Color(0.13f, 0.14f, 0.18f));
             UIFactory.Anchor(_face.rectTransform, Vector2.zero, Vector2.one,
                              Vector2.zero, new Vector2(0f, -AntennaRoom));
             _face.preserveAspect = true;
@@ -226,6 +232,7 @@ namespace SevenDoctors.UI
         {
             CloseMenu();
             HideBubble();
+            ResetIdle();
             if (_root != null) _root.gameObject.SetActive(false);
         }
 
@@ -326,11 +333,16 @@ namespace SevenDoctors.UI
         {
             if (_bot == null) return;
 
-            _bobPhase += Time.unscaledDeltaTime;
+            float dt = Time.unscaledDeltaTime;
+            _bobPhase += dt * _bobSpeed;
+
+            // 혼자 노는 동작(걷기·넘어지기·졸기) — HelperBotView.Idle.cs. 위치·기울기·둥실거림 정도를 정합니다.
+            UpdateIdle(dt);
 
             // 위아래로 천천히. 떠 있다는 걸 이것만으로 보여 줍니다.
-            float bob = Mathf.Sin(_bobPhase * Mathf.PI * 2f / BobPeriod) * BobAmount;
-            _bot.anchoredPosition = new Vector2(_bot.anchoredPosition.x, BaseY + bob);
+            float bob = Mathf.Sin(_bobPhase * Mathf.PI * 2f / BobPeriod) * BobAmount * _bobScale;
+            _bot.anchoredPosition = new Vector2(HomeX + _idleX, BaseY + bob + _idleY);
+            if (_rig != null) _rig.localRotation = Quaternion.Euler(0f, 0f, _rigAngle);
 
             if (_antenna != null)
             {

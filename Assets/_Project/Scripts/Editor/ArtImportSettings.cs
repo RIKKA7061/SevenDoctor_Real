@@ -49,7 +49,10 @@ namespace SevenDoctors.EditorTools
             else if (assetPath.Contains("/Evidence/"))    importer.maxTextureSize = 1024;   // 노트에서 크게 보기 때문에
             else                                          importer.maxTextureSize = 1024;
 
-            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            // 빛 효과(FX)는 알파 그라데이션뿐이라 압축하면 계단이 생깁니다. 작아서 무압축으로 둡니다.
+            importer.textureCompression = assetPath.Contains("/FX/")
+                ? TextureImporterCompression.Uncompressed
+                : TextureImporterCompression.CompressedHQ;
             importer.userData = "sd-art";
         }
 
