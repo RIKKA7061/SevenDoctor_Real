@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 namespace Practice
 {
@@ -20,8 +21,11 @@ namespace Practice
         [Header("대화창 본문 글자 연출 ------------------------------------------------------------")]
         [SerializeField] private float speed = 0.03f;
         [SerializeField] private bool isTyping = false;
-        [SerializeField] private Coroutine ChatShowing;
+        private Coroutine ChatShowing;
         [SerializeField] GameObject ReverseTriangle;
+
+        [Header("키보드 연결 안됨 에러 출력 여부 ------------------------------------------------------------")]
+        [SerializeField] private bool isNotKeyboardConnected_OnceDebuggedIt = false;
 
 
         string[] ChatDB =
@@ -37,6 +41,22 @@ namespace Practice
             OnClick();
         }
 
+        void Update()
+        {
+            if (Keyboard.current == null)
+            {
+                if (isNotKeyboardConnected_OnceDebuggedIt == false)
+                {
+                    Debug.Log("키보드가 연결되어 있지 않습니다.");
+                    isNotKeyboardConnected_OnceDebuggedIt = true;
+                }
+            }
+            else if (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                OnClick();
+            }
+        }
+
         public void OnClick()
         {
             if (isTyping == true)
@@ -47,6 +67,9 @@ namespace Practice
                 // 대사 전부 출력
                 NextPage();
                 ReverseTriangle.SetActive(true);
+
+                /* 스토리 진행도 UP */
+                storyIndex++;
             }
             else if(isTyping == false)
             {
@@ -57,7 +80,7 @@ namespace Practice
             }
         }
 
-        public void NextPage()
+        private void NextPage()
         {
             if (storyIndex >= ChatDB.Length)
             {
@@ -66,20 +89,9 @@ namespace Practice
                 return;
             }
 
-            string name = ChatDB[storyIndex].Split(':')[0];
-            string chat = currentChat;
+            // 화자 이름이 비어있으면 Name UI를 비활성화 (이름표 숨기기)
+            NameShow(currentName);
 
-            if (string.IsNullOrEmpty(name))
-            {
-                Debug.Log("화자가 비었습니다.");
-                Name.gameObject.SetActive(false);
-            }
-            else
-            {
-                Name.gameObject.SetActive(true);
-            }
-
-            Name.text = name;
             Chat.text = currentChat;
 
             isTyping = false;
@@ -98,10 +110,13 @@ namespace Practice
             isTyping = true;
             ReverseTriangle.SetActive(false);
 
-            Name.text = ChatDB[storyIndex].Split(':')[0];
+            currentName = ChatDB[storyIndex].Split(':')[0];
+
+            // 화자 이름이 비어있으면 Name UI를 비활성화 (이름표 숨기기)
+            NameShow(currentName);
+
             Chat.text = "";
 
-            currentName = ChatDB[storyIndex].Split(':')[0];
             currentChat = ChatDB[storyIndex].Split(':')[1];
 
             for (int i = 0; i < currentChat.Length; i++)
@@ -112,6 +127,20 @@ namespace Practice
             isTyping = false;
             ReverseTriangle.SetActive(true);
             storyIndex++;
+        }
+
+        private void NameShow(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                Debug.Log("화자가 비었습니다.");
+                Name.gameObject.SetActive(false);
+            }
+            else
+            {
+                Name.gameObject.SetActive(true);
+            }
+            Name.text = name;
         }
     }
 }

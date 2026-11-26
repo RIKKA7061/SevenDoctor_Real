@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 381165919}
   - component: {fileID: 381165921}
   - component: {fileID: 381165920}
+  - component: {fileID: 381165922}
   m_Layer: 5
   m_Name: ReverseTriangle
   m_TagString: Untagged
@@ -311,7 +312,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -50, y: 50}
+  m_AnchoredPosition: {x: -50, y: 32}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &381165920
@@ -327,14 +328,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6117647}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 5c4b66aa5117c5947a997aeb76bc7556, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -352,6 +353,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 381165918}
   m_CullTransparentMesh: 1
+--- !u!111 &381165922
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381165918}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 860de82dfac2b18448650ede486a2412, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 860de82dfac2b18448650ede486a2412, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &818453220
 GameObject:
   m_ObjectHideFlags: 0
@@ -522,9 +540,12 @@ MonoBehaviour:
   Name: {fileID: 818453222}
   Chat: {fileID: 1648994944}
   storyIndex: 0
+  currentName: 
+  currentChat: 
   speed: 0.035
   isTyping: 0
   ReverseTriangle: {fileID: 381165918}
+  isNotKeyboardConnected_OnceDebuggedIt: 0
 --- !u!4 &1114206825
 Transform:
   m_ObjectHideFlags: 0
@@ -591,7 +612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
