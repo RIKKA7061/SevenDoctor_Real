@@ -54,7 +54,7 @@ dlg_arrogance_talk,1,chr_arrogance,normal,인사는 됐고. 내가 누군지는 
 dlg_arrogance_talk,2,chr_doctor,normal,…그건 나도 마찬가지야.,...So am I.,,,,
 dlg_arrogance_talk,3,chr_arrogance,normal,그러니까 더 이상하지. 내 기계가 부서졌다는 게.,Which makes it stranger. That a machine of mine could break.,[get:ev_chr_arrogance],,,
 dlg_arrogance_clue,1,chr_doctor,normal,작은 트로피가 유리 진열장 안에 잠겨 있다. 진열장 바닥은 체스판이고 퀸 말 몇 개가 박혀 있다.,"A small trophy, locked in a glass case. The floor of the case is a chessboard with a few queens fixed in place.",,,,트로피 진열장 — 오만의 방
-dlg_arrogance_clue,2,chr_arrogance,normal,퀸을 서로 안 부딪히게 다 세우면 열린대. 난 한 번도 못 열어 봤지만.,"They say it opens once every queen is standing without clashing. Not that I've ever managed it.",[puzzle:pzl_trophy],,,여기서 퀸 배치 퍼즐
+dlg_arrogance_clue,2,chr_arrogance,normal,퀸을 서로 안 부딪히게 다 세우면 열린대. 난 한 번도 못 열어 봤지만.,They say it opens once every queen is standing without clashing. Not that I've ever managed it.,[puzzle:pzl_trophy],,,여기서 퀸 배치 퍼즐
 dlg_arrogance_clue_done,1,chr_doctor,normal,…찰칵. 진열장이 열렸다. 시상식 트로피를 줄여 만든 모형. 받침에 날짜가 새겨져 있다.,...Click. The case opens. A scaled-down award trophy. There's a date engraved on the base.,[get:ev_trophy],,,퍼즐 성공 대사. 단서 플래그는 퍼즐의 성공플래그가 켭니다
 dlg_arrogance_clue_done,2,chr_arrogance,surprised,이거 내가 받은 거 맞지? 근데 왜 여기 있지.,"This is mine, isn't it? Then why is it here?",,,,
 dlg_arrogance_clue_later,1,chr_doctor,normal,퀸이 자꾸 서로 부딪히네. 조금 있다가 다시 해 보자.,The queens keep clashing. I'll try again in a bit.,,,,퍼즐을 미뤘을 때
@@ -132,7 +132,7 @@ dlg_part5,19,chr_pride,surprised,……지금?,......Now?,,,,
 dlg_part5,20,chr_doctor,normal,"6개 말고, 일곱 개로.",Not six. Seven.,,,,
 dlg_part5,21,chr_pride,sad,…….,.......,,,,
 dlg_part5,22,chr_doctor,sad,늦었지만. 정말 늦었지만.,It's late. I know it's so very late.,[checkpoint],,,여기서 엔딩 선택지 — [checkpoint] 로 엔딩 분기점 자동 저장
-dlg_end_together,1,chr_doctor,normal,같이 만들자. 이번엔 3시 14분 전에 돌아올게. 약속해.,Let's build it together. This time I'll be home before 3:14. I promise.,,,,엔딩 A
+dlg_end_together,1,chr_doctor,normal,늦었지만. 정말 늦었지만.,Let's build it together. This time I'll be home before 3:14. I promise.,,,,엔딩 A
 dlg_end_together,2,chr_pride,normal,"……약속, 이번엔 믿어볼게.","......This time, I'll believe your promise.",[ending:end_together],,,
 dlg_end_stay,1,chr_doctor,sad,이 방에 있을게. 촛불 다 탈 때까지.,I'll stay in this room. Until the candles burn down.,,,,엔딩 B
 dlg_end_stay,2,chr_pride,sad,"(작게) …생일 축하해, 나. 아니 우리.","(quietly) ...Happy birthday, me. No — us.",[portrait:chr_pride:sad:back_right][ending:end_stay],,,

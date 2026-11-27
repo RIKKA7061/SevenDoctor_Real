@@ -1,8 +1,10 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Practice
 {
@@ -28,17 +30,24 @@ namespace Practice
         [SerializeField] private bool isNotKeyboardConnected_OnceDebuggedIt = false;
 
 
-        string[] ChatDB =
-        {
-            "박사:좋아 이제 테스트만 하면 된다",
-            "박사:이 날을 위해 내가 몇십년을 준비했지",
-            "박사:잠깐, 갑자기 새로운 에러 코드가 떳..",
-            ":펑!"
-        };
+        [Header("대화 DB ------------------------------------------------------------")]
+        [SerializeField] private TextAsset DialoguesCSV;
+        [SerializeField] private bool isChatBoxInitialized = false;
+        [SerializeField] private List<string> nameBox = new List<string>();
+        [SerializeField] private List<string> chatBox = new List<string>();
+        [SerializeField] private string[] dialoguesHangs;
+
+
+        [Header("캐릭터 DB ------------------------------------------------------------")]
+        [SerializeField] private TextAsset CharactersCSV;
+        [SerializeField] private Dictionary<string, string> charactersDB = new Dictionary<string, string>();
+        [SerializeField] private string[] charactersHangs;
+
+
 
         void Start()
         {
-            OnClick();
+            InitializeCSV();
         }
 
         void Update()
@@ -59,13 +68,18 @@ namespace Practice
 
         public void OnClick()
         {
+            if(isChatBoxInitialized == false)
+            {
+                Debug.Log("대화 DB가 초기화되지 않았습니다.");
+                return;
+            }
             if (isTyping == true)
             {
                 /* 스킵 */
                 StopCoroutine(ChatShowing); // 연출 중인 코루틴을 중지
 
                 // 대사 전부 출력
-                NextPage();
+                SkipTypeEffect_ChatShow();
                 ReverseTriangle.SetActive(true);
 
                 /* 스토리 진행도 UP */
@@ -76,13 +90,13 @@ namespace Practice
                 // 다음 대사 출력
                 ReverseTriangle.SetActive(false);
 
-                ChatShowing = StartCoroutine(ChatShow());
+                ChatShowing = StartCoroutine(TypeEffect_ChatShow());
             }
         }
 
-        private void NextPage()
+        private void SkipTypeEffect_ChatShow()
         {
-            if (storyIndex >= ChatDB.Length)
+            if (storyIndex >= chatBox.Count)
             {
                 Debug.Log("스토리가 끝났습니다. 대화창을 닫습니다.");
                 Panel.SetActive(false);
@@ -98,9 +112,9 @@ namespace Practice
             ReverseTriangle.SetActive(true);
         }
 
-        IEnumerator ChatShow()
+        IEnumerator TypeEffect_ChatShow()
         {
-            if (storyIndex >= ChatDB.Length)
+            if (storyIndex >= chatBox.Count)
             {
                 Debug.Log("스토리가 끝났습니다. 대화창을 닫습니다.");
                 Panel.SetActive(false);
@@ -110,14 +124,14 @@ namespace Practice
             isTyping = true;
             ReverseTriangle.SetActive(false);
 
-            currentName = ChatDB[storyIndex].Split(':')[0];
+            currentName = nameBox[storyIndex];
 
             // 화자 이름이 비어있으면 Name UI를 비활성화 (이름표 숨기기)
             NameShow(currentName);
 
             Chat.text = "";
 
-            currentChat = ChatDB[storyIndex].Split(':')[1];
+            currentChat = chatBox[storyIndex];
 
             for (int i = 0; i < currentChat.Length; i++)
             {
@@ -141,6 +155,91 @@ namespace Practice
                 Name.gameObject.SetActive(true);
             }
             Name.text = name;
+        }
+
+
+        private void InitializeCSV()
+        {
+            dialoguesHangs = DialoguesCSV.text.Split('\n');
+            charactersHangs = CharactersCSV.text.Split('\n');
+
+            // CharactersCSV
+            for (int i = 1; i < charactersHangs.Length; i++)
+            {
+                if (string.IsNullOrEmpty(charactersHangs[i]))
+                {
+                    continue;
+                }
+                List<string> Box = SplitCells(charactersHangs[i]);
+                charactersDB.Add(Box[0], Box[1]);
+            }
+
+            // DialoguesCSV
+            for (int i = 1; i < dialoguesHangs.Length; i++)
+            {
+                if (string.IsNullOrEmpty(dialoguesHangs[i]))
+                {
+                    continue;
+                }
+                List<string> Box = SplitCells(dialoguesHangs[i]);
+                if (charactersDB.ContainsKey(Box[2]))
+                {
+                    nameBox.Add(charactersDB[Box[2]]);
+                }
+                else
+                {
+                    nameBox.Add(Box[2]); // 빈 화자
+                }
+                chatBox.Add(Box[4]);
+            }
+
+            isChatBoxInitialized = true;
+            OnClick();
+        }
+
+        private List<string> SplitCells(string line)
+        {
+            bool isTextMode = false;
+            List<string> Box = new List<string>();
+            string memoji = "";
+
+            for (int j = 0; j < line.Length; j++)
+            {
+                if (line[j] == ',' && isTextMode == false)
+                {
+                    Box.Add(memoji);
+                    memoji = "";
+                }
+                else if (line[j] == '\"' && isTextMode == false)
+                {
+                    isTextMode = true;
+                }
+                else if (line[j] == '\"' && isTextMode == true)
+                {
+                    if (j + 1 < line.Length)
+                    {
+                        if (line[j + 1] == '\"')
+                        {
+                            memoji += line[j];
+                            j++;
+                        }
+                        else
+                        {
+                            isTextMode = false;
+                        }
+                    }
+                    else
+                    {
+                        isTextMode = false;
+                    }
+                }
+                else
+                {
+                    memoji += line[j];
+                }
+            }
+            Box.Add(memoji);
+            return Box;
         }
     }
 }
